@@ -6,8 +6,8 @@
 		<property name="launcher.version" value="1.2.10"/>
 		
 		<property name="repos" value="../../../.."/>
-		<property name="web" value="${repos}/LitWRRepository"/>
-		<property name="omcl" value="${repos}/OpenMCL"/>
+		<property name="web" value="${repos}/litwr/repository/trunk/LitWRRepository"/>
+		<property name="omcl" value="${repos}/litwr/omcl/trunk/OpenMCL"/>
 		<property name="json" value="${repos}/org.cakelab.json"/>
 		
 		<property name="repository" value="${web}/repository"/>
