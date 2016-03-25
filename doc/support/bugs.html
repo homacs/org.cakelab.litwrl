@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>LitWR Launcher - Technical Support - Bugs and Feature Requests</title>
+		<!-- standard meta data -->
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="author" content="Holger Machens">
+		<meta name="date" content="${system.datetime}">
+		<!-- meta data for search engines -->
+		<meta name="description" content="${project.description}">
+		<meta name="keywords" lang="en" content="${project.keywords}">
+		<!-- meta name="robots" content="noindex,nofollow"-->
+	</head>
+	<body>
+		<h1 style="text-align: center"><a href="../index.html">Life in the Woods Renaissance Launcher</a></h1>
+		<h2 style="text-align: center">Bugs and Feature Requests</h2>
+		<p style="text-align: center">last updated: ${system.date}</p>
+		<br/>
+		<h3>OPEN</h3>
+		<dl>
+		<dt id="0022">[BUG:022] Game Crashes with: "Error: Already Tesselating!"</dt>
+		<dd>This is most probably the result of a race condition. 
+			<br/>Currently getting investigated. 
+			<br/>Status: OPEN
+		</dd>
+		<dt id="0009">[BUG:009] See-through on Different Objects with Shaders Enabled</dt>
+		<dd>This is a confirmed bug for ATI graphics cards with Sildurs shaders 
+		    in version 1.13. 
+			<br/>Current solution: See <a href="faq.html#0009">FAQ</a>
+			<br/>Status: OPEN
+		</dd>
+		<dt id="0020">[BUG:020] Any text is garbled/ overlaying on the help page / news page.</dt>
+		<dd>
+		<br/>Analysis so far: Neither character encoding, font cache nor CSS related.
+		<br/>Status: OPEN
+		</dd>
+		<dt id="0012">[FRQ:012] Shader Installation Procedure Confusing</dt>
+		<dd>Installation procedure causes confusion due to the following reasons:
+			<ul>
+			<li>Steps of the installation are not explained.</li>
+			<li>Popup dialog which notifies about the next step fails to raise to the 
+			    top of the window hierarchy.</li>
+			</ul>
+			<br/>Analysis: Second item can't be fixed (Java/Windows issue)
+			<br/>Status: OPEN
+		</dd>
+		<dt id="0015">[FRQ:015] Can't change the games folder on config tab</dt>
+		<dd>This feature is just not yet supported.
+		<br/>Status: OPEN
+		</dd>
+		<dt id="0016">[FRQ:016] Have to relogin when switching to Minecraft</dt>
+		<dd>When switching between Minecraft installations and Life in the Woods 
+			Renaissance, the user needs to relogin, because the authentication 
+			token is no longer valid.
+		<br/>Possible fix: Copy authentication token from Minecraft directory.
+		<br/>Workaround: Share Minecraft directory with Minecraft launcher (see <a href="faq.html#0016">FAQ</a>)
+			 or create another user account in OS.
+		<br/>Status: OPEN
+		</dd>
+		<dt id="0020">[FRQ:021] Allow to Switch between Mojang Accounts</dt>
+		<dd>
+		<br/>Status: OPEN
+		</dd>
+		</dl>
+		
+		
+		
+		
+		
+		<h3>CLOSED</h3>
+		<dl>
+		<dt id="0019">[BUG:019] Shader Patch not Working and Shader Package 0kb</dt>
+		<dd>Two issues: Patching fails and rollback fails (which should fix the first).<br/>
+			Needs analysis.
+		<br/>FIXED: (1) Java canonical file names converts long file names to 8.3 format, which lead errors during compression.
+		<br/>FIXED: (2) Undeleted left overs in temp folder lead to shader files merged with previously processed shaders.
+		<br/>Status: CLOSED
+		</dd>
+		<dt id="0017">[BUG:017] Corrupted Package Descriptor After Interrupted Download</dt>
+		<dd>Occurs if the download of the package descriptor was interrupted by a timeout.
+		<br/>FIXED: Fix prevents corrupted package to be stored and deletes detected 
+			corrupted package descriptors. Missing package descriptors will be fetched 
+			with the next try.
+		<br/>Workaround: Delete local repository cache 
+		(see <a href="faq.html#0017">FAQ</a>).
+		<br/>Status: CLOSED
+		</dd>
+		<dt id="0018">[BUG:018] Issue with German Umlaute</dt>
+		<dd>Error: Launcher can't find users home directory.
+		<br/>Known Windows Java 1.7 BUG: https://bugs.openjdk.java.net/browse/JDK-8067281
+		<br/>Another issue with different character encoding used by forge setup
+		<br/>FIXED: Users have to update to 1.8 and said issue with forge setup is solved.
+		<br/>Status: CLOSED
+		</dd>
+		<dt id="0014">[BUG:014] Apple JVM (1.6) causes Launcher to crash</dt>
+		<dd>The launcher requires <em>Oracle</em> Java 1.7 or higher.
+			An install script which selects the correct JVM for Mac OS X 
+			is currently missing.<br/>
+			<br/>FIX: Installation script prevents usage of Java 1.6
+			<br/>Status: CLOSED
+		</dd>
+		<dt id="0006">[FRQ:006] Launcher needs a proper manual</dt>
+		<dd>People can't find folders <code>saves</code>, <code>screenshots</code> etc.
+			<br/>Current solution: See <a href="faq.html#0006">FAQ</a>
+			<br/>FIX: manual now available
+			<br/>Status: CLOSED
+		</dd>
+		<dt id="0001">[BUG:001] Launcher Does not Start After Java Update</dt>
+		<dd>The desktop shortcut contains the full qualified path to the Java
+			executable which changes with each Java update.
+			<br/>Current solution: Run the installation script again.
+			<br/>FIX: v1.2.3: launch script determines best java installation dynamically.
+			<br/>Status: CLOSED
+		</dd>
+		<dt id="0002">[FRQ:002] Batchfile Instead of JScript Installation Script</dt>
+		<dd>Windows installation script not executable, because it is not recognised as script.
+			<br/>FIX: v1.2.3: A batch file was added to call the script.
+			<br/>Status: CLOSED
+		</dd>
+		<dt id="0004">[FRQ:004] application icons next to shortcut confuse users</dt>
+		<dd>This happens, because people see the icon and think it is the desktop shortcut.
+			<br/>FIX: v1.2.3: Icon is placed in a sub-folder to prevent confusion.
+			<br/>Status: CLOSED
+		</dd>
+		<dt id="0005">[BUG:005] "Could not create the Java Virtual Machine"</dt>
+		<dd>Confirmed issue with 32bit Java installation on Windows.
+			<br/>Current solution: See <a href="faq.html#0005">FAQ</a>
+			<br/>FIX: v1.2.3: launch script determines best java installation dynamically.
+			<br/>Status: CLOSED
+		</dd>
+		<dt id="0007">[BUG:007] Launcher windows too big for my screen</dt>
+		<dd>
+			<br/>FIX: v1.2.3: windows and dialogs adjust to desktop size.
+			<br/>Status: CLOSED
+		</dd>
+		<dt id="0003">[BUG:003] Flickering with Shaders Enabled</dt>
+		<dd>Issue is caused by multi-threaded chunk loading and was 
+		    reported for NVidea graphics cards only.
+			<br/>Solution: See <a href="faq.html#0003">FAQ</a>.
+			<br/>Status: CLOSED
+		</dd>
+		<dt id="0010">[BUG:010] Log contains "[error] java.io.IOException: Stream closed"</dt>
+		<dd>This "error" message basically means, that Minecraft or Forge or any mods
+			are still writing to the log (file) while it has already been
+			closed due to a shutdown. 
+			<br/>
+			This is not caused by the launcher and does not mean any
+			harm to your system or files.
+			<br/>Solution: Ignore it.
+			<br/>Status: CLOSED
+		</dd>
+		<dt id="0011">[BUG:011] Checksum Error when Installing Extreme Shader</dt>
+		<dd>Checksum was correct on server side and successfully validated on 
+			client side by the developer. Issue vanished after reinstall and 
+			the actual reason has never been found.
+			<br/>
+			<br/>Status: CLOSED
+		</dd>
+		<dt id="0013">[BUG:013] Game Crashes with "NullPointerException" or "Ticking Memory .."</dt>
+		<dd>Originally, it is a memory issue (meaning the JVM doesn't get
+			enough memory or can't free memory fast enough).
+			The issue is most probably caused by the world generator - at least it occurs
+			always during chunk loading. The launcher maximises the memory
+			size given to Minecraft according to the memory size of your system
+			to minimise the possibility of this issue to occur, but it still happens occasionally.
+			There is no way we could fix it but you can significantly reduce 
+			the probability of this issue by using the following workarounds suggested. 
+			<br/>
+			Workarounds: See <a href="faq.html#0013">FAQ</a><br/>
+			<br/>Status: CLOSED
+		</dd>
+		
+		</dl>
+	</body>
+
+</html>

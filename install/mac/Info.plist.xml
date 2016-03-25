@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+	<key>CFBundleName</key>
+	<string>LifeInTheWoodsRenaissanceLauncher</string>
+	<key>CFBundleDisplayName</key>
+	<string>Life in the Woods Renaissance Launcher</string>
+	<key>CFBundleIdentifier</key>
+	<string>ca.lifeinthewoods.litwrl</string>
+	<key>CFBundleVersion</key>
+	<string>1.2.4</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>litw</string>
+	<key>CFBundleExecutable</key>
+	<string>LifeInTheWoodsRenaissanceLauncher</string>
+	<key>CFBundleIconFile</key>
+	<string>LifeInTheWoodsRenaissanceLauncher</string>
+</dict>
+</plist>

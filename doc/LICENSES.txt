@@ -1,0 +1,78 @@
+
+Date: 17th Sep. 2015
+
+The following statements apply to the Life in the Woods Renaissance 
+Launcher (LitWR-L).
+
+You can find copies of all licenses mentioned here in the folder
+'licenses'.
+
+
+
+
+The software LitWR-L is licensed under GPLv3 see gpl-3.0.txt in 
+folder doc/licenses.
+
+
+THIRDPARTY LICENSES
+===================
+LitWR-L makes use of thirdparty libraries as mentioned in the 
+following subsections.
+ 
+ 
+JTattoo
+-------
+JTattoo 1.6.11 by Michael Hagen (http://www.jtattoo.net/Contact.html). 
+A library with utilities for Java Swing user interface development. 
+
+  JTattoo is licensed under GPLv3.
+
+
+Minecraft Libraries
+-------------------
+LitWR-L makes use of the following libraries of Minecraft 
+(http://minecraft.net) by Mojang (http://mojang.com). 
+
+1. Bootstrap library (Minecraft.jar) which is responsible
+   to upgrade and start the Minecraft launcher.
+ 
+2. Launcher library (launcher.jar) which is responsible to 
+   install, update, configure and launch the Minecraft game 
+   client.
+ 
+Both are not bundled with LitWR-L and not redistributed by us. 
+On request of the user the LitWR-L will download those libraries
+from the official Minecraft sources and link to it at runtime.
+
+LitWR-L does not modify the code of those libraries. Both 
+libraries are basically employed for the purposes mentioned above.
+
+The way we are using the Minecraft assets complies with the 
+statements of the Minecraft End User License Agreement 
+(Minecraft-EULA.txt) and the associated "Guidelines for the name, 
+brand and assets of any of our games" (Minecraft-Guidelines.txt) 
+by Mojang.
+  
+
+Minecraft Forge Installer Library
+---------------------------------
+Forge (http://files.minecraftforge.net/) provides a standardised 
+modding API to several Minecraft mods in the Life in the Woods 
+Renaissance mod-pack. 
+
+LitWR-L makes use of the Forge installer library to install 
+Forge. The library is downloaded on demand and linked at runtime 
+to the Launcher in order to install Forge. 
+
+Forge is licensed under the Forge Public License 1.0
+(Forge-Public-License-1.0.txt).
+
+
+JNBT
+----
+jnbt (http://sourceforge.net/projects/jnbt/) is a library to
+access Minecraft NBT files. It is derived from the Minecraft
+AnvilConverter and has its own open source like license:
+see JNTB-LICENSE.TXT. 
+
+

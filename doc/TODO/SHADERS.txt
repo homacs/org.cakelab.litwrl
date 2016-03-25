@@ -1,0 +1,119 @@
+
+
+
+
+
+
+
+
+	       Integration of Shader Packages
+	       ------------------------------
+	
+	
+					    Draft
+	
+	
+	
+				Implemented in v1.1.0
+			
+				
+				
+				
+				    Holger Machens 
+
+
+
+
+
+DISCLAIMER: This software is still work in progress. See TODO.txt!
+
+
+
+
+
+
+Shader packs get a meta-package called shaders in 
+
+   meta/shaders/1.0.0
+   
+   
+This meta-package has a package descriptor with the following content:
+
+
+
+{
+ "name": "Shader Packs",
+  "version": "1.0.0",
+  "required": [
+    "thirdparty/shadermod/2.3.28"
+    "thirdparty/optifine/HD_U_A4"
+  ],
+  "optional": [
+  	"thirdparty/shader/sildurs/1.0.8_Light",
+  	"thirdparty/shader/sildurs/1.0.8_Medium",
+  	"thirdparty/shader/sildurs/1.0.8_High",
+  ]
+}
+
+
+Referenced mods and shaders get added as usual.
+
+The Mod-pack will be extended by an optional section
+with a reference on the shaders package.
+
+
+{
+  "filename": "LifeInTheWoodsRenaissanceClientBasic.zip", 
+  "name": "Life in the Woods Renaissance Client Basic", 
+  "checksum": "20829d24e6f2ede2bdbd008b31bc5b4c", 
+  "downloadUrl": "file:///home/homac/tmp/repository/client/basic/1.0.1/LifeInTheWoodsRenaissanceClientBasic.zip", 
+  "location": "client/basic/1.0.1", 
+  "version": "1.0.1", 
+  "required": [
+    "thirdparty/minecraft/client/1.7.10", 
+    "thirdparty/forge/1.7.10-10.13.2.1230"
+  ],
+  "optional": [
+  	"meta/shaders/1.0.0"
+  ]
+}
+
+
+
+All of the files needed are available via ad.fly links. To support this we have to 
+open an external browser with the link.
+
+Thus, the package descriptor gets extended by a flag
+
+
+   downloadExternal : true
+   
+
+
+During installation or abort the setup service will then open a dialog
+which tells the user that we are going to open a browser and which
+exactly file he has to download.
+
+The dialog will have the following elements:
++ a button "Download" which opens the external browser.
++ a file selector, which is used to locate the downloaded file
++ a cancel button to skip the installation of shaders
+
+The downloaded file will be checked on filename and checksum
+and the installation will proceed.
+
+All downloads will be stored in the local repository.
+
+
+
+SETTINGS:
+
++ Clouds OFF
++ Clouds Shadow OFF
++ OpenGL Fast
++ tweakBlockDamage ON
++ OldLighting OFF
++ Render Distance: max 16
++ Memory to max available
+
+

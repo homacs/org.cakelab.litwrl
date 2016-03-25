@@ -1,0 +1,693 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>Life in the Woods Renaissance - Launcher and Helper Mod Manual</title>
+		<!-- standard meta data -->
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="author" content="Holger Machens">
+		<meta name="date" content="${system.datetime}">
+		<!-- meta data for search engines -->
+		<meta name="description" content="${project.description}">
+		<meta name="keywords" lang="en" content="${project.keywords}">
+		<!-- meta name="robots" content="noindex,nofollow"-->
+	</head>
+	<body>
+		<h1 style="text-align: center">Life in the Woods Renaissance Launcher</h1>
+		<p style="text-align: center">Launcher and Helper Mod Manual</p>
+		<p style="text-align: center">Version ${project.version}<br/></p> 
+		<p style="text-align: center">${system.date}</p>
+		<p style="text-align: center">Holger Machens</p>
+
+		<br/>
+		<p>This is the user manual of the <a href="../index.html">launcher</a> for 
+			<a href="http://lifeinthewoods.ca">Life in the Woods: Renaissance</a>. The launcher was developed to
+			ease installation and update of the mod-pack and addons like shaders. However, the launcher is not 
+			necessary to run Life in the Woods Renaissance. You can also download and install the mod-pack manually
+			from the <a href="http://lifeinthewoods.ca">web-site</a>.
+		</p>
+		<h1 id="Contents">Contents</h1>
+		<table>
+		<tr><td>
+			<h2><a href="#Installation">Installation</a></h2>
+			<table>
+			<tr><td>
+			<a href="#Prerequisites">Prerequisites</a>
+			</td></tr>
+			<tr><td>
+			<a href="#Download">Download</a>
+			</td></tr>
+			<tr><td>
+			<a href="#Windows">Windows</a>
+			</td></tr>
+			<tr><td>
+			<a href="#MacOS">MacOS</a>
+			</td></tr>
+			<tr><td>
+			<a href="#Linux">Linux</a>
+			</td></tr>
+			<tr><td>
+			<a href="#PlatformIndependent">Platform Independent</a>
+			</td></tr>
+			</table>
+		</td></tr>
+		<tr><td>
+			<h2><a href="#Application">Application</a></h2>
+			<table>
+			<tr><td>
+				<a href="#Start">Start</a>
+			</td></tr>
+			<tr><td>
+				<a href="#Interface">User Interface</a>
+			</td></tr>
+			<tr><td>
+				<a href="#Directories">Directories</a>
+			</td></tr>
+			<tr><td>
+				<a href="#Game">Install and Start a Game</a>
+				<table>
+				<tr><td></td><td>
+					<em><a href="#GameVariant">Game Variant</a></em>
+				</td></tr>
+				<tr><td></td><td>
+					<em><a href="#Configuration">Configuration</a></em>
+				</td></tr>
+				</table>
+			</td></tr>
+			</table>
+		</td></tr>
+		<tr><td>
+		<tr><td>
+			<h2><a href="#HelperMod">Helper Mod</a></h2>
+			<table>
+			<tr><td>
+				<a href="#HelperModConfiguration">Configuration</a>
+			</td></tr>
+			<tr><td>
+				<a href="#HelperModShaderPatching">Shader Patching</a>
+			</td></tr>
+			</table>
+		</td></tr>
+		<tr><td>
+			<h2><a href="#Troubleshooting">Troubleshooting</a></h2>
+		</td></tr>
+		<tr><td>
+			<h2><a href="#SecurityAndPrivacy">Security and Privacy Statement</a></h2>
+		</td></tr>
+		</table>		
+		
+		<h1 id="Installation">Installation</h1>
+		<p>This section will guide you through the installation of the launcher. The launcher requires Java SE 
+		1.7 minimum and comes in a package with installation scripts for all supported platforms 
+		(Windows/MacOS/Linux).
+		</p>
+		<h2 id="Prerequisites">Prerequisites</h2>
+		<p>Minimum requirement is <b>Oracle Java SE 1.7</b> either the JRE or the JDK package. 
+			However, it is recommended by Mojang to use the latest Java version for better performance. 
+			Download Java 1.8 <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">here</a>. 
+			In case that link is no longer valid go <a href="http://java.oracle.com/">here</a> and 
+			navigate to Java SE (which means "Standard Edition").
+		</p>
+		<p>
+		Easiest way for Ubuntu/Debian users are the WEB UPD8 PPA packages, see:
+		<a href="http://www.webupd8.org/2012/01/install-oracle-java-jdk-7-in-ubuntu-via.html">WEB UPD8</a>
+		</p>
+		
+		<b>Important notes:</b>
+		<ul>
+		<li>If you are running a 64bit architecture, then you have to have a 64bit Java as well!</li>
+		<li>Oracle is necessary: Neither the Launcher nor Minecraft will run properly 
+			with non-oracle Java environments such as OpenJDK or Apple Java.</li>
+		</ul>
+		<p>However, the installation scripts will check first if all those requirements are met.</p>
+		<h2 id="Download">Download</h2>
+		<p>The installation package of the launcher can be found 
+		<a href="http://lifeinthewoods.ca/litwr/downloads/LifeInTheWoodsRenaissanceLauncher.zip">here</a>. 
+		If you consider a manual install of the mod-pack only, visit the download page on the 
+		<a href="http://lifeinthewoods.ca/downloads.html">official web-site</a> of Life in the Woods Renaissance.
+		</p>
+		<h2 id="Windows">Windows</h2>
+		<p>In order to install the launcher you have to perform the following steps:</p>
+		<ol>
+		<li><b>Unzip the downloaded installation package</b> (see <a href="#Download">Download</a>) 
+			to a folder, where you want the launcher to be installed.</li>
+		<li><b>Run the installation script <code>windows\install.bat</code></b>. You can 
+			start the installation script with a double click. The installation 
+			script checks if you have a suitable Java installation and creates 
+			a shortcut on your desktop, that is all. You can move the shortcut to 
+			any location you like.</li>
+		</ol>
+		<h2 id="MacOS">MacOS</h2>
+		<p>In order to install the launcher you have to perform the following steps:</p>
+		<ol>
+		<li><b>Unzip the downloaded installation package</b> (see <a href="#Download">Download</a>) 
+			to a temporary folder.</li>
+		<li><b>Run the installation script <code>mac/install.command</code></b>. You can 
+			start the installation script with a double click. If that does not work for 
+			you, then start the Terminal application (command line), navigate inside the unzipped folder,
+			and execute <code>chmod +x mac/install.command && mac/install.command</code>. The installation 
+			script checks if you have a suitable Java installation and creates 
+			an Application Bundle with the launcher on your desktop, that is all. You can move the Application Bundle to 
+			any location you want.</li>
+		<li><b>Remove the unzipped folder</b> when you are done. The launcher 
+			has been copied to the Application Bundle and the unzipped folder is no longer needed.
+		</ol>
+		<h2 id="Linux">Linux</h2>
+		<ol>
+		<li><b>Unzip the downloaded installation package</b> (see <a href="#Download">Download</a>) 
+			to a folder, where you want the launcher to be installed.</li>
+		<li><b>Run the installation script <code>linux/install.sh</code></b>. You can 
+			start the installation script with a double click. If that does not work for 
+			you, then start a shell (e.g. xterm), navigate inside the unzipped folder,
+			and execute <code>chmod +x linux/install.sh && linux/install.sh</code>. The installation 
+			script checks if you have a suitable Java installation and creates 
+			a desktop link in the top-level directory of the unzipped folder. This link should
+			be compatible with most window managers of debian derivates (e.g. Ubuntu).
+			You can move the desktop link to any location you like (e.g. menu or toolbar).</li>
+		</ol>
+		<h2 id="PlatformIndependent">Platform Independent</h2>
+		<p>
+		The installation package contains the launcher's Java archive (<code>litwrl.jar</code>). 
+		If the above installation scripts did not work for you, then you can always start the launcher with the command:<br/>
+		</p>
+		<pre>
+		> java -jar litwrl.jar
+		</pre>
+		<p>
+		Make sure you have at least Oracle Java SE 1.7 installed (see <a href="#Prerequisites">Prerequisites</a>).
+		</p>
+		<h1 id="Application">Application</h1>
+		<h2 id="Start">Start</h2>
+		<p>When you start the launcher you may experience a short delay of 1-2 seconds without 
+			a visual feedback until the graphical user interface (GUI) shows up.
+		</p>
+		<p> Especially during the first 
+			start the launcher will then need some time to initialise its local directory 
+			(see Section <a href="#Directories">Directories</a>). 
+			This will be indicated with the text <em>"initialising .."</em> on the button in 
+			the center of the footer in the GUI (see Section <a href="#Interface">User Interface</a>).
+		</p>
+		<h2 id="Interface">User Interface</h2>
+		<p>The GUI of the launcher is basically subdivided into a header, a center and a footer.</p>
+		<dl>
+		<dt>Header</dt>
+		<dd>The header, which also shows the LitWR logo, allows you to switch between the different tabs, 
+		namely <em>News</em>, <em>Config</em>, <em>Log</em>, <em>Credits</em> and <em>?</em> (the help page).
+		</dd>
+		<dt>Center</dt>
+		<dd>The center shows the content of the selected tab. In the Figure you see 
+		the content of the selected tab <em>News</em>. 
+		<dt>Footer</dt>
+		<dd>The footer contains (from left to right) the <em>progress bar</em>, the <em>Install/Play</em> button and the <em>variant selector</em>.
+		The Install/Play button is used to start an installation/upgrade of a game and to start an installed game. The variant selector is used to select
+		one of the two variants of Life in the Woods Renaissance (see Section <a href="#GameVariant">Game Variant</a> for details).
+		</dd>
+		</dl>
+		<div align="center"><img src="images/news.png"/></div>		
+		<h2>Tab Sheets</h2>
+		<p>The GUI provides the following tab sheets:</p>
+		<dl>
+		<dt>News</dt>
+		<dd>The launcher will always start with the News tab selected to show you recent news related to Life in the Woods Renaissance.</dd>
+		<dt>Config</dt>
+		<dd>The configuration page allows you to configure your game installation (see Section <a href="#Configuration">Configuration</a>).</dd>
+		<dt>Log</dt>
+		<dd>The <em>Log</em> tab shows you messages of the launcher which provide detailed information about ongoing tasks. This 
+		tab will be automatically opened during installation or upgrade to give more feedback about what's actually going on. 
+		However, you can always switch to another tab.</dd>
+		<dt>Credits</dt>
+		<dd>This tab provides links to all the organisations and people somehow 
+			involved in the creation of Life in the Woods Renaissance or related components, artwork etc..</dd>
+		<dt>? (Help Page)</dt>
+		<dd>This tab contains a brief getting started guide for newcomers and links 
+			to available documentation for all mods which alter the game play.</dd>
+		</dl>
+		<h1 id="Directories">Directories</h1>
+		<p>This sections explains which directories are used by the 
+		launcher on your system and where you can find things you know from Minecraft.</p>
+		<dl>
+		<dt>Launcher Bootstrap Directory</dt>
+		<dd>This is the directory, you have originally unzipped from the installation package you have downloaded. 
+		Respective on MacOS this is the Application Bundle that was created by the installation script. 
+		The bootstrap directory contains a copy of the launcher which is used to boot 
+		into the latest version of the launcher. So, when you have just downloaded the launcher, the bootstrap 
+		and the latest version of the launcher will be the same. With updates this will change.
+		</dd>
+		<dt>Launcher Local Directory (<code>$HOME/.litwrl</code>)</dt>
+		<dd>The local directory is located in your home directory (Windows: <code>C:\Users\&lt;login&gt;\.litwrl</code>, MacOS: <code>/Users/&lt;login&gt;/.litwrl</code>, Linux: <code>/home/&lt;login&gt;/.litwrl</code>). 
+			The local directory contains almost everything the launcher needs to operate 
+			and to run Life in the Woods Renaissance.
+			<ul>
+			<li><code>litwrl.cfg</code>: Configuration file of the launcher.</li>
+			<li><code>litwrl.log</code>: Log file of the launcher, with the same contents shown in <em>Log</em> tab.</li>
+			<li><code>repository</code>: Local cache of mod-pack information (dependencies, versions, etc.) and data (downloaded files). 
+				It also contains the latest version of the launcher itself.</li>
+			<li><code>games</code>: This directory contains the modded game installations for Life in the Woods Renaissance. 
+			For example if you have installed Life in the Woods Renaissance in variant Basic, 
+			then this directory will contain a game directory <code>LitWR.Basic</code> with all mods and shader etc. in it. 
+			<li><code>minecraft</code> (optional): By default, the launcher will create its own Minecraft installation in its Local Directory. You can change that on the <em>Config</em> tab.
+			</ul>
+		</dd>
+		<dt>Minecraft Working Directory</dt>
+		<dd>By default, the launcher will create its own installation of Minecraft in its Local Directory (see above). 
+			You can also choose to use your own minecraft installation on the <em>Config</em> tab 
+			(see <a href="#Configuration">Configuration</a>).
+		</dd>
+		<dt>Game Directory</dt>
+		<dd>The game directory was already mentioned under Launcher Local Directory. 
+			Game directories created by the launcher are located in the subdirectory <code>games</code> 
+			in the launchers local directory. A game directory contains <code>mods</code>, 
+			<code>configs</code>, <code>saves</code>, <code>screenshots</code>, 
+			<code>shaderpacks</code> and more of a game installation of Life in the Woods Renaissance. Since 
+			there are two different variants of game configurations, you may have 
+			two different game installations in this folder: <code>LitWR.Basic</code> and <code>LitWR.Hungry</code> 
+			(see Sections <a href="#GameVariant">Game Variant</a> for more). 
+		</dl>
+		
+		<h2 id="Game">Install and Start a Game</h2>
+		<p>When you start the launcher for the first time, it will be preconfigured 
+			to install Minecraft and Life in the Woods Renaissance in variant Basic 
+			without shaders in its local directory. You can start the installation 
+			process by clicking on the <em>Install/Play</em> button in the footer 
+			of the GUI (see Section <a href="#Interface">Interface</a>). When 
+			the installation is finished the <em>Install/Play</em> button will
+			change to <em>Play</em> and you can click it again to start the game.
+		</p>
+		<p>The following sections will explain the different game variants and 
+			configurations you can chose for installation.</p>
+		<h3 id="GameVariant">Game Variant</h3>
+		<p>Life in the Woods Renaissance comes in two variants: Basic and Hungry. 
+		Both refer basically to different levels difficulty based on 
+		modifications of hunger and food/growth mechanics. Basic can be 
+		considered as <em>standard</em> and Hungry as <em>difficult</em>.
+		</p>
+		<p>The variant selector (lower right corner in the GUI) selects the 
+		variant you would like to install/play. You can have both installed 
+		and switch between them but they will not share the same worlds. 
+		When you connect to a server it is not necessary to select a specific
+		variant, they are both compatible with certain variant running on the 
+		server.
+		</p>
+		<h3 id="Configuration">Configuration</h3>
+		<p>The configuration of a game variant can be viewed and edited in the 
+			<em>Config</em> tab (see below). This section will explain the different 
+			elements on the <em>Config</em> tab beginning at the top.
+		</p>
+		<div align="center"><img src="images/config-page.png"/></div>
+		<h4 id="WorkingDirectory">Working Directory</h4>
+		<p>This field contains the path to the Minecraft working directory 
+			(see also Section <a href="#Directories">Directories</a>). 
+			You can change this path either by editing or via a click on 
+			the folder icon to the right. </p>
+		<ul>
+			<li>
+			If you have chosen a folder which does not exist or do not contain a Minecraft
+			installation, the launcher will create a new Minecraft installation at this location.</li>
+			<li>If you have selected a path to 
+			another Minecraft installation (e.g. your normal Minecraft installation), then 
+			the launcher will detect it and install just missing files (such as the 
+			required Forge version) and add profiles for the Life in the Woods Renaissance 
+			games you have installed. In case you switch back to your 
+			Minecraft installation, you will then have to select the profile you would 
+			like to use in the lower left corner of the Minecraft launcher window.</li>
+		</ul>
+		<p>
+			By default, the launcher will create its own Minecraft installation in 
+			his local directory. This prevents the launcher from any 
+			modifications or anomalies that might exist in your normal 
+			Minecraft installation. However, one disadvantage for you might be
+			that you have to login again every time you switch between 
+			Life in the Woods Renaissance and your normal Minecraft installation. 
+			You can fix that by selecting your normal Minecraft installation in 
+			this field. The launcher will then share this installation with the 
+			Minecraft launcher and you will only have to login again if the
+			authentication token is expired.
+		</p>	
+		
+		<h4 id="ConfigVariant">Variant</h4>
+		<p>This field just displays the variant you have chosen with the 
+			<a href="#Interface">variant selector</a> in the lower right 
+			corner (footer) of the launcher GUI (see also Section 
+			<a href="#GameVariant">Game Variant</a>).
+		</p>
+		<h3 id="ConfigVersion">Version</h3>
+		<p>This field displays the current version of the mod-pack. This is not the launcher version.
+		The launcher version is always displayed in the window title.</p>
+		<h3 id="ConfigProfile">Profile</h3>
+		<p>This field displays the name of the profile which is also the name of the game directory 
+		(see Section <a href="#Directories">Directories</a>). 
+		The name of the profile always consists of the prefix 
+		<code>LitWR.</code> followed by the name of the variant. When you 
+		share your Minecraft installation with the LitWR launcher, this profile will also 
+		show up in the Minecraft launcher and you can safely start LitWR from there too.
+		</p>
+		<h4 id="ConfigGameDirectory">Game Directory</h4>
+		<p>This field displays the game directory of the selected 
+			LitWR variant (see Section <a href="#Directories">Directories</a>).
+		</p>
+		<h4 id="JVMArguments">JVM Arguments</h4>
+		<p>This field contains the arguments which will be given to 
+		Java during start of the Minecraft client. When a game variant 
+		has been selected for the first time, the launcher analyses your
+		hardware and adjusts these arguments to optimise performance.
+		</p>
+		<p>
+		<b>Warning:</b> JVM arguments have significant impact on the 
+		performance and can cause the game to crash or not start at all. 
+		You can always reset these arguments by clicking the 
+		<em>Reset</em> button below.
+		</p>
+		<h4 id="Shader">Shader</h4>
+		<p>This field generally allows you to activate visual 
+			enhancements to Minecraft. Visual enhancements include at 
+			formost a shader and the mods ShaderModCore and OptiFine to 
+			make the shader work, but also the mod DynamicLights, 
+			which lets torches emit light while holding them in 
+			your hand.
+		</p>
+		<p>The list of shaders is ordered by performance impact. 
+		The topmost are the lightest and the bottommost reduce 
+		FPS more.
+		</p>
+		<p> To support the Streams mod (generates flowing rivers) shaders 
+			are getting patched during the start of the Minecraft client. 
+			We have added patches for Sildur's shaders only, which is the 
+			main reason why we support just Sildur's shaders. You can always 
+			add other shaders, but they will not shade streams unless you add 
+			patches for them as well. Refer to Section 
+			<a href="#HelperModShaderPatching">Shader Patching</a> 
+			in order to learn how you can add support for your shader.
+		</p>
+		<p>When a shader was selected, the installation process 
+			will require you to download some packages through your 
+			Internet browser. But don't worry, the launcher will guide 
+			you and you will basically just have to click 
+			buttons and links. The empty field, or field 
+			<em>none</em> or <em>internal</em> represent 
+			Minecraft vanilla shading (i.e. no custom shaders).
+		</p>
+		<p><b>Please note:</b> Activation of shaders is twofold: It makes your game 
+		look prettier (at least for most people) but it reduces 
+		frames per second and game performance in general. 
+		Reduced FPS can cause motion sickness for some people, 
+		which you may experience as getting more or less dizzy. 
+		It is not dangerous but uncomfortable. We tried to find good 
+		general settings for the shaders we support but you 
+		may still have to adjust them for your system. If this 
+		is getting to fiddly or impossible, then just unselect the shader. Also, 
+		you may have to deal with some shader/graphics card issues 
+		that have been reported earlier. In this case refer to the 
+		<a href="http://homac.cakelab.org/projects/litwrl/support/faq.html">FAQ</a> 
+		to solve them.
+		</p>
+		<h4 id="ResetButton"><em>Reset</em> Button</h4>
+		<p>The reset button resets the JVM arguments and the Shader to its default settings.
+			In case of the JVM arguments, that means that the launcher will reassess your 
+			hardware which might come handy in case you have added memory for example.
+		</p>
+			
+			
+		<h1 id="HelperMod">Helper Mod</h1>
+		The helper mod does a couple of things which can't be achieved by just 
+		adding configurations to the mod-pack:
+		<dl>
+		<dt>Modifications to <code>RuinsPositionsFile.txt</code></dt>
+		<dd>The Ruins mod maintains a database of generated ruins in the world save 
+			folder (<code>RuinsPositionsFile.txt</code>). The helper mod allows to add 
+			a standard entry to this database each time a new world is created. 
+			<br/><em>Available on server and client side.</em>
+		</dd>
+		<dt>Default World Type</dt>
+		<dd>LitWR uses Biomes O'Plenty as default world generator. To prevent confusion, 
+			the mod promotes Biomes O'Plenty to be the default world type. 
+			Users don't need to select the world type manually and the Biomes O'Plenty 
+			reminder notification can be suppressed. 
+			<br/><em>Available on server and client side.</em>
+		</dd>
+		<dt>Solves Key Binding Conflict</dt>
+		<dd>OptiFine provides a zoom or binocular function. The default key for this 
+			functionality unfortunately conflicts with the default key binding for sprinting 
+			(<code>left CTRL</code>). The mod detects this conflict and solves it by 
+			remapping the zoom key to <code>Z</code>.
+			<br/><em>Available on client side only.</em> 
+		</dd>
+		<dt>Shader Patching</dt>
+		<dd>As explained in Section <a href="#Shader">Shader</a>, shaders have to be patched
+			to support the streams mod. The mod provides a method to patch shaders 
+			dynamically (see Section <a href="#HelperModShaderPatching">Shader Patching</a> for details).
+			<br/><em>Available on client side only.</em> 
+		</dd>
+		<dt>LitWR Main Menu</dt>
+		<dd>The mod also adds the LitWR logo and theme music to the main menu.
+			<br/><em>Available on client side only.</em> 
+		</dd>
+		</dl>
+		<h2 id="HelperModConfiguration">Configuration</h2>
+		<p>The helper mod uses a configuration file at the standard location suggested by Forge, which is:</p>
+		<pre>
+		<code>&lt;game directory&gt;/config/litwr.cfg</code>
+		</pre>
+		<p><em>Please note that there is another configuration <code>litwr-launcher.cfg</code> which 
+			belongs to the launcher only.</em>
+		</p>
+		<p>If the configuration file does not exist, it is created at the first start of the Minecraft launcher 
+			and populated with default values. The configuration file may contain the following properties:</p>
+		<dl>
+		<dt><code>B:displayLitwrLabel</code></dt>
+		<dd>
+			Boolean value, which controls whether the LitWR logo will be displayed in the main menu or not.
+			<br/>Default: <code>true</code>
+			<br/>Side(s): Client
+		</dd>
+		<dt><code>B:exchangeDefaultWorldType</code></dt>
+		<dd>
+			Flag, which controls whether the default world type will be exchanged
+			with the one given in property <code>S:newDefaultWorldType</code>.
+			<br/>Default: <code>true</code>
+			<br/>Affected Side(s): Client and Server
+		</dd>
+		<dt><code>S:newDefaultWorldType</code></dt>
+		<dd>
+			The world type which will be promoted to be default.
+			<br/>Default: <code>BIOMESOP</code>
+			<br/>Affected Side(s): Client and Server
+		</dd>
+		<dt><code>B:suppressBOPsNotifier</code></dt>
+		<dd>
+			A boolean flag, which controls whether the mod will suppress the reminder notification 
+			banner of Biomes O'Plenty.
+			<br/>Default: <code>true</code>
+			<br/>Affected Side(s): Client
+		</dd>
+		<dt><code>B:patchShaders</code></dt>
+		<dd>
+			Boolean flag, which controls whether shaders will be patched or not.
+			<br/>Default: <code>true</code>
+			<br/>Affected Side(s): Client
+		</dd>
+		<dt><code>S:ruinsPositionsInitialContent</code></dt>
+		<dd>
+			A string which will be used as initial content for the file RuinsPositionsFile.txt.
+			<br/>Default: <code>-1200 1 -1200 1200 250 1200 SpawnBlocker</code>
+			<br/>Affected Side(s): Client and Server
+		</dd>
+		<dt><code>B:solveZoomKeybindingConflict</code></dt>
+		<dd>
+			A flag, which controls whether the mod will resolve a keybinding conflict between
+			OptiFine's zoom key and the sprint key or not.
+			<br/>Default: <code>true</code>
+			<br/>Affected Side(s): Client
+		</dd>
+		</dl>
+		<h4>Example Config File</h4>		
+		<pre>
+		general {
+		    B:displayLitwrLabel=true
+		    B:exchangeDefaultWorldType=true
+		    S:newDefaultWorldType=BIOMESOP
+		    B:patchShaders=true
+		    S:ruinsPositionsInitialContent=-1200 1 -1200 1200 250 1200 SpawnBlocker
+		    B:solveZoomKeybindingConflict=true
+		    B:suppressBOPsNotifier=true
+		}
+		</pre>
+		<h2 id="HelperModShaderPatching">Shader Patching</h2>
+		<p>Based on block IDs, shaders decide which function they 
+			apply to shade blocks. For example many shaders differentiate
+			between plants and solid blocks and manipulate the shape of 
+			plants to let them look like they are waving in the wind. 
+			Another example are water blocks which are shaded differently
+			to apply reflections to the water surface.
+		</p>
+		<p>Obviously, the shader can't shade blocks properly if it does 
+			not know the given block ID. Streams is a mod, which adds flowing 
+			rivers. To visualise the flow, streams adds a bunch of new blocks. 
+			Because those new blocks are unknown to the shader, they are not
+			shaded.
+		</p>
+		<p>A practical approach to solve this issue is, to determine the 
+			missing block IDs and add them to the branch, where the shader decides
+			whether a block is water or not.
+		</p>
+		<p>Unfortunately, the IDs of blocks introduced by mods, are 
+			issued dynamically by the mod loader (i.e. Forge). Thus, in different 
+			installations of the same mod, the IDs of its introduced blocks may be 
+			different. This means, the modifications made to the shader in one 
+			installation will not work in another installation.
+		</p>
+		<p>To overcome this issue, the helper mod of LitWR introduces a functionality
+			to patch shaders at the start of the client using a preprocessor. The 
+			preprocessor scans so-called <em>shader patch template files</em> for 
+			specific <em>preprocessor statements</em> and exchanges them by 
+			dynamically generated strings based on the installation and environment 
+			of the running Minecraft client instance.
+		</p>
+		<h3>Procedure</h3>
+		<p>On each start the dynamic shader patch instance runs the following 
+			tasks for thoses shaders in folder "shaderpacks" which have 
+		 a corresponding template patch file folder in 
+		 <code>mods/resouces/litwr/shaderpatch</code>:</p>
+		<ol>
+		<li><b>Backup:</b> If it not already exists, a backup of
+		the original shaderpack is stored in "mods/resources/litwr/shaderpatch/backups".
+		</li>
+		<li><b>Unpack Original:</b> The original shaderpack from the backup location is
+		unpacked to a temporary working directory.
+		</li>
+		<li><b>Preprocess Patch Templates:</b> The shader pack's template patch files folder 
+		gets fed to the preprocessor. Its result is written to the temporary working 
+		directory in order to <b>override</b> existing original shader files.
+		</li>
+		<li><b>Install Patched Shaderpack:</b> When preprocessing is successfully 
+		finished, the result is packed again (zip) and moved back to the shaderpacks 
+		folder, <b>replacing</b> the shaderpack with the same name.
+		</li>
+		<li><b>Reinitialise Shader:</b> If the shaderpack was already loaded, it will be
+		forced to unload and reinitialise with the patched shaderpack.
+		</li>
+		</ol>
+		
+		<h3>Patch Template Files</h3>
+		<p>
+		Patch template files are shader files which contain modifications
+		in respect to the original shader file. Those modifications can for 
+		example be added preprocessor statements which will be replaced later 
+		on by the preprocessor (thus, the name patch template). 
+		Patch template files <b>replace</b> shader files at the same location
+		in the shaderpack. Additional shader files will be copied to the 
+		patched shader pack as well.
+		</p>
+		<p>
+		A patch template file <code>T</code> for a given shader file <code>O</code> 
+		of the shader pack <code>P</code> has to be stored in the folder 
+		<code>mods/resources/litwr/shaderpatch/P/T</code> to replace the shader
+		file <code>shaderpacks/P/O</code>.
+		</p>
+		<h4>Example:</h4>
+		The shader pack <code>Sildurs Vibrant Shader Medium 1.13.zip</code> contains
+		a shader file <code>shaders/gbuffers_water.vsh</code>. To replace this file
+		we place the modified version of it in the following path:
+		<code>mods/resources/litwr/shaderpatch/Sildurs Vibrant Shader Medium 1.13.zip/shaders/gbuffers_water.vsh</code>.
+		Please note, that the modified shader is located in a folder even though the
+		folder has the postfix <code>.zip</code>.
+		
+		<h3>Preprocessor Statements</h3>
+		Every line starting with <code>&#47;*#spp-</code> and ending with <code>*&#47;</code> 
+		is considered as a preprocessor statement. The preprocessor will replace the 
+		entire line when it gets processed. Thus, any other code in the same line including and after 
+		<code>*&#47;</code> will be discarded!
+		
+		<h4>Syntax:</h4>
+		<table border="1">
+		<tr>
+		<td><em>statement</em></td><td><code><b>&#47;*#spp-</b></code><em>command</em><code><b>*&#47;</b></code></td>
+		</tr>
+		<tr>
+		<td><em>command</em></td><td><code><b>paste</b> </code><em>parameter</em> | <code><b>call</b></code> <em>methodcall</em></td>
+		</tr>
+		<tr>
+		<td><em>methodcall</em></td><td><em>method</em> <code><b>(</b></code> <em>parameters</em> <code><b>)</b></code></td>
+		</tr>
+		<tr>
+		<td><em>method</em></td><td><code><b>getBlockIds</b></code></td>
+		</tr>
+		<tr>
+		<td><em>parameters</em></td><td><em>parameter</em>[<b>, </b><em>parameters</em>]</td>
+		</tr>
+		</table>
+		
+		<h4>Commands</h4>
+		The following commands are supported:
+		<table border="1">
+		<tr>
+		<th>Command</th><th>Meaning</th>
+		</tr>
+		<tr>
+		<td><code><b>paste</b></code> <em>parameter</em></td><td>Replace the line with the string following the paste command.</td>
+		</tr>
+		<tr>
+		<td><code><b>call</b></code> <em>methodcall</em></td><td>Replace the line with the result of the following <em>methodcall</em>.</td>
+		</tr>
+		</table>
+		
+		<h4>Methods</h4>
+		<p>Methods are actual methods of objects in the Java code of the mod. 
+		The following methods are supported:
+		</p>
+		<table border="1">
+		<tr>
+		<th>Method</th><th>Parameters</th><th>Meaning</th>
+		</tr>
+		<tr>
+		<td><code><b>getBlockIds</b></code></td><td>String <em>blockNameSubstring</em>,<br/>String <em>separator</em></td><td>This method searches the block registry for blocks with a block name containing the given <em>blockNameSubstring</em>. 
+		It concatenates the block IDs of found blocks in a string using the string <em>separator</em> as separator between ids.</td>
+		</tr>
+		</table>
+		
+		
+		<h4>Example:</h4>
+		This example shows how to add shader preprocessor results without
+		breaking the actual shader code. If the preprocessor is not present
+		to replace the requested lines, the shader can still run.
+		
+		<pre>
+		if (mc_Entity == 8 || mc_Entity == 9 
+		&#47;*#spp-paste " || mc_Entity == "*&#47;
+		&#47;*#spp-call getBlockIds("streams:river/tile.water", "|| mc_Entity == ")*&#47;
+		) {
+		    isWater = true;
+		}
+		</pre>
+		
+		<h1 id="Troubleshooting">Troubleshooting</h1>
+		<p>The launcher developer maintains a <a href="http://homac.cakelab.org/projects/litwrl/support">support web-site</a>.
+		It features:
+		</p>
+		<ul><li><a href="http://homac.cakelab.org/projects/litwrl/support/faq.html">FAQs</a> to solve known issues,</li>
+		<li>a <a href="http://homac.cakelab.org/projects/litwrl/support/bugs.html">list</a> of filed bugs and feature requests,</li>
+		<li>and <a href="http://homac.cakelab.org/projects/litwrl/support/report.html">instructions</a> to report bugs or request features.</li>
+		</ul>
+		<h1 id="SecurityAndPrivacy">Security and Privacy Statement</h1>
+		<h2>Privacy</h2>
+		<p>Neither the launcher nor the helper mod gather or distributes any kind of information 
+			about the user or his system. The launcher just downloads files and has no other 
+			communication related functions.
+		</p>
+		<h2>Downloads</h2>
+		<p>The launcher communicates with various source on the Internet to receive files. 
+		To prevent injection of malicious code, the launcher does checksum check on 
+		downloaded files where possible. An exception are for example Sildur's shaders, because
+		they update from time to time without changing its version number 
+		and/or download location. Thus, we cannot do checksum checks without breaking 
+		the download when the shader was updated.
+		</p>
+		<h2>Open Source</h2>
+		<p>The launcher and the shader are open source. Everybody can 
+		review the source code <a href="http://homac.cakelab.org/projects/litwrl">here</a>.	This guarantees that no one can add 
+		malicious code or spy functionalities without other people 
+		getting aware of it.
+		</p>
+	</body>
+
+</html>

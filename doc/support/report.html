@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>LitWR Launcher - Technical Support - Report Bug/Request Feature</title>
+		<!-- standard meta data -->
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="author" content="Holger Machens">
+		<meta name="date" content="${system.datetime}">
+		<!-- meta data for search engines -->
+		<meta name="description" content="${project.description}">
+		<meta name="keywords" lang="en" content="${project.keywords}">
+		<!-- meta name="robots" content="noindex,nofollow"-->
+	</head>
+	<body>
+		<h1 style="text-align: center"><a href="../index.html">Life in the Woods Renaissance Launcher</a></h1>
+		<h2 style="text-align: center">Filing Bugs or Feature Requests</h2>
+		<p style="text-align: center">last updated: ${system.date}</p>
+		<br/>
+		<p>Please send bug reports and feature request to <a href="http://homac.cakelab.org/contact/">me</a>. 
+		Members of the <a href="http://phedran.com/phederation/forum/index.php">phederation</a> can alternatively post their issues in the <a href="http://phedran.com/phederation/forum/viewtopic.php?t=139">forum</a>.
+		<h3>Technical Details in Bug Reports</h3>
+		<p>To find solutions we will need technical details about the issue. 
+		If you are not sure which technical details are required to analyse 
+		the issue then copy and zip the files in the list below. This list 
+		contains abbreviations for the following folders:
+		</p>
+		<ul>
+		<li><code>&lt;litwrl-dir&gt;</code>: This is the working directory of the launcher. 
+		It can be found in your home directory: 
+		<ul>
+		<li>Windows: <code>%HOME%\.litwrl</code>. <code>%HOME%</code> is usually <code>C:\Users\&lt;your-login&gt;</code></li>
+		<li>MacOS: <code>$HOME/.litwrl</code>. <code>$HOME</code> is usually <code>/Users/&lt;your-login&gt;</code></li>
+		<li>Linux: <code>$HOME/.litwrl</code>. <code>$HOME</code> is usually <code>/home/&lt;your-login&gt;</code></li>
+		</ul>
+		</li>
+		<li><code>&lt;gamedir&gt;</code>: This is the folder, where the Launcher installs the LitWR variant (Basic or Hungry)
+		you are using. This is either <code>&lt;litwrl-dir&gt;/games/LitWR.Basic</code> 
+		or <code>&lt;litwrl-dir&gt;/games/LitWR.Hungry</code>
+		</li>
+		<li><code>&lt;minecraft&gt;</code>: This refers to the Minecraft working directory. By default, the launcher 
+		creates a separate Minecraft installation in <code>&lt;litwrl-dir&gt;/minecraft</code>. In case you have changed the 
+		working directory property on the config tab inside the launcher, it will be installed at that location instead. 
+		</ul>
+		<h4>Files to be Attached to a Bug Report</h4>
+		<dl>
+		<dt><code>&lt;litwr-dir&gt;/ltwrl.log</code></dt>
+		<dt><code>&lt;gamedir&gt;/logs/fml-client-latest.log</code></dt>
+		<dt><code>&lt;gamedir&gt;/logs/fml-junk-earlystartup.log</code></dt>
+		<dt><code>&lt;gamedir&gt;/logs/latest.log</code></dt>
+		<dt><code>&lt;gamedir&gt;/logs/shadersmod.log</code></dt>
+		</dl>
+		
+	</body>
+
+</html>

@@ -1,0 +1,651 @@
+
+
+
+
+
+
+
+
+
+               LIFE IN THE WOODS RENAISSANCE LAUNCHER
+
+                            LitW/R-L
+ 
+
+
+
+
+                       System Specification
+
+                          Version 0.0.7
+
+
+ 
+
+
+
+                            21.09.2015
+
+
+                          Holger Machens
+
+
+                     https://homac.cakelab.org/
+
+
+
+
+
+DISCLAIMER: This software is still work in progress: see TODO.txt!
+
+
+
+Architecture Overview
+---------------------
+                                                        ________
+                                                       /        \
+-----------------         ==================          |\________/|
+| Update Server |         ||              ||          |          |
+|               |   HTTP  ||    LitW/R    ||          |  Local   |
+|   (Package    |<--------||   Launcher   ||--------->| Package  |
+|  Repository)  |         ||              ||          |Repository|
+-----------------         ==================           \________/
+                             /    |    \
+         -  --  --  --  --  -           --  --  --  --  --  -
+         |                        |                         |
+ ----------------          ---------------           ---------------
+ |              |          |             |           |             |
+ |  Minecraft   | installs |  Minecraft  |           |    Forge    |
+ |  Bootstrap   |--------->|   Launcher  |           |  Installer  |
+ |              |          |             |           |             |
+ ----------------          ---------------           ---------------
+                                  |
+                                  |                  ---------------
+                                  |     installs     |             |
+                                  ------------------>|  Minecraft  |
+                                         starts      |   Client    |
+                                                     |             |
+                                                     ---------------
+
+
+
+
+Purpose of the launcher is to install and update the different variants 
+(Basic/Hungry) of LitW/R and all its prerequisites and start the 
+Minecraft client to run a LitW/R game.
+
+
+The Update Server provides information about available versions and 
+required packages. Information will be downloaded on demand and stored 
+in the local repository. The content of the local repository will be 
+updated by the launcher each time the update server provides changes.
+
+The installation of a LitW/R variant in a certain version requires 
+knowledge about all prerequisite of that version and variant, such 
+as which software packages are required in which version, and where 
+those packages can be downloaded. This information is kept in a 
+Package Repository. The Package Repository is maintained on a 
+dedicated Update Server and required information is downloaded by 
+the launcher on demand into a local repository. 
+
+Once the local repository is filled with all required information 
+for an installation, the installation procedure can be triggered 
+by the user. It will start with downloading the required packages into 
+the repository. Downloaded packages in the local repository will be 
+reused in later installations which require the same packages if 
+they are still available.
+
+The Minecraft Bootstrap (Minecraft.jar) is used to install the 
+Minecraft Launcher. The LitW/R will download the latest bootstrap
+from the official download server and run it to receive the latest
+minecraft launcher.
+
+The Minecraft Launcher is employed to install required versions of
+the Minecraft Client and start the Minecraft Client in order to run
+a LitW/R game profile.
+
+The Forge Installer is needed to install Forge.
+
+
+Relevant Files and Directories
+------------------------------
+
+LitW/R Launcher Bootstrap Path: This is the place where 
+   the user has placed the launcher he has origianlly downloaded 
+   from us. Since this can be anywhere (even in a 
+   place where we don't have write access) we won't 
+   store any other files in this location. 
+
+LitW/R Launcher Config Directory ($HOME/.litwrl): 
+   This is the place where the launcher puts everything:
+   Configs, downloaded packages modded game directories
+   and per default a fresh Minecraft installation too.
+
+Minecraft Working Directory: By default, LitW/R will 
+   create its own Minecraft Working Directory in 
+   $HOME/.litwrl/minecraft to prevent compatibility 
+   issues with other stuff that might be installed in 
+   the users Minecraft installation. But the launcher 
+   will use authentication information of the original
+   Minecraft installation if available.
+
+Game Directory: Each variant of LitW/R (Basic and Hungry) 
+   is associated with its own launcher profile and separate 
+   game directory. Game directories will be placed in 
+   $HOME/.litwrl/games. The game directory contains:
+   - mods required by LitW/R
+   - configs
+   - shaderpacks
+   etc.
+
+Launcher Execution Procedure
+----------------------------
+- Start GUI
+- Check for launcher update
+- If update available then update and restart
+- Read and validate/fix configuration
+- Check for interrupted installation and
+  finish remaining tasks if required.
+- Update local repository if required
+- Set default/last selected LitW/R variant
+  and finish initialisation of GUI.
+- Check installation status of the selected 
+  variant. If variant is not installed
+  set button to "Install" otherwise "Play".
+- if user pressed button then either install or
+  play, according to the installation status
+  of the selected variant (and version).
+
+
+Installation Procedure Outline
+------------------------------
+- Fetch installation parameters from config page.
+- Fetch package description from local repository.
+- Fetch all required download and installation tasks
+  and store them persistently in task db.
+- Run all tasks until no more tasks are available.
+  The order of tasks will be as follows:
+  - Download all required files/installers in local repository.
+  - Run Minecraft bootstrap to install minecraft launcher
+    if not present.
+  - Install Minecraft version if required.
+  - Create a profile named "Life in the Woods Renaissance 
+    Client ${variant}" associated with a separate game 
+    directory, if not existing.
+  - Install Forge ${version} in Minecraft working directory,
+    if required.
+  - Associate LitW profile with forge modded client.
+  - Install LitW/R mods and configs in game directory.
+
+
+Each LitW/R variant will be installed as a separate profile 
+with its own game directory.
+
+Each LitW/R variant has its own installer (internally) which
+knows about the installation procedure required. Changes to 
+the installation procedure require an update of the launcher.
+
+Required software packages will be received from their 
+respective download locations. Since download locations 
+can change, the launcher will first fetch the list of
+required packages from the repository.
+
+Each LitW/R variant has its own list of required 
+packages (with versions). Minor updates (e.g. version 
+updates of packages) can be handled that way. Those lists
+will be hosted on the update server, too and downloaded 
+by the launcher if necessary.
+
+The following states of a given version of a software package exist:
+- Downloaded: Package has been successfully downloaded
+- Installed: Package has been successfully installed to certain LitW/R installation
+
+To keep track of installed packages the launcher will maintain
+a database with entries for each version of a mod available.
+
+To keep track of the status of a package in regards to a 
+certain installation of LitW/R a config file will be placed 
+in the game directory of the LitW/R variant which primarily tells 
+which LitW/R is installed successfully in this place. 
+Path of this config file is 
+
+  $gamedir/config/litwr-launcher.cfg.
+
+Example contents of this file:
+
+	{
+	  "variant": "Basic", 
+	  "type": "Client", 
+	  "version": "1.0.0"
+	}
+
+
+
+Installation Recovery
+---------------------
+
+If an installation was interrupted either by the user or
+through a system crash, the launcher will remember the 
+tasks of this formerly started installation and finish them
+before he starts to do anything else. 
+This is important to provide a reliable installation status
+in every case. An interrupted Minecraft or Forge installation
+cannot be detected or recovered otherwise and the user ends up
+with a corrupted installation of LitW/R or its own Minecraft
+in the worst case (in case he/she selected it in the 
+config page).
+
+
+Bootstrap and Update of the Launcher
+------------------------------------
+The LitW/R launcher (litwrl.jar), which the user originally 
+downloaded from us and which he/she uses to start the launcher 
+is responsible to bootstrap into the latest version of the 
+launcher, locally available. Therefore, it searches the local 
+repository for the latest version and then boots into it 
+(handing over control to the new process). If no such version 
+is available it creates an entry in the repository and fulfils 
+the role as a launcher itself.
+
+Once the latest locally available version of the launcher 
+was started it will check for an update of itself by contacting 
+the Update Server. In case of an available update it will 
+fetch the new version, boot into that new launcher and shutdown
+itself. If there was any problem during the update (Update 
+Server down or corrupted downloads) then the already active 
+launcher will switch to offline mode and proceed without updating. 
+In offline, the user can still play installed LitW/R variants 
+but the installation and update features will not be available. 
+The launcher keeps trying to fix this issue on each subsequent 
+start by making new update attempts.
+
+Additionally, as every installation or update, even the update 
+of the launcher itself is protected against interruption and 
+system crashes by storing the update attempt in the task db.
+
+
+
+Package Repository
+------------------
+
+READ SECTION "UPDATE SERVER" BEFORE TOUCHING THE REPOSITORY!
+
+The Package Repository (either on update server or locally) 
+consists of a set of folders and files. A Package Repository 
+on the Update Server may contain folders and files as
+depicted in the following example:
+
+	repository/revision
+	repository/launcher/versions.json
+	repository/launcher/0.0.1/package.json
+	repository/launcher/0.0.1/litwrl.jar
+	repository/launcher/0.0.2/package.json
+	repository/launcher/0.0.2/litwrl.jar
+	repository/client/basic/versions.json
+	repository/client/basic/1.0.0/package.json
+	repository/client/basic/1.0.1/package.json
+	repository/client/hunger/versions.json
+	repository/client/hunger/1.0.0/package.json
+	repository/client/hunger/1.0.1/package.json
+	repository/thirdparty/minecraft/bootstrap/05/package.json
+	repository/thirdparty/minecraft/client/1.6.4/package.json
+	repository/thirdparty/forge/9.11.1-1345/package.json
+
+	etc.
+
+Character format of all files is UTF-8 always!
+
+The local repository has the same structure as the repository 
+on server side but contains only those files needed
+for a particular installation. This includes all software 
+package files downloaded by the launcher in order to install
+this particular version of the mod-pack. Downloaded packages
+will always reside in its version specific folder next to 
+its package.json file (the package descriptor).
+
+The repository on server side must not contain any thirdparty
+software packages. Those will be downloaded from their 
+respective official download locations by the launcher on 
+request of the user.
+
+
+Folders and files in either repository have the following 
+function:
+
+repository: This is the root folder of the repository. On the
+          Update Server this folder can be placed anywhere 
+          properly. The launcher must have the URL
+          pointing to that folder on server side in its 
+          configuration.
+          The local repository resides always in
+          
+              $HOME/.litwrl/repository.
+          
+
+revision: This file contains an integer number which
+          has two purposes:
+          1. It represents the revision of the repository. 
+             The launcher fetches this file first, to 
+             check if there are any changes in the 
+             repository on the update server by comparing
+             it to its local copy of the revision file.
+          2. It indicates whether the repository on the
+             Update Server is getting updated. If the 
+             revision is odd, it indicates that the repository
+             update server is currently getting updated.
+             In this case the launcher will not try to 
+             fetch anything from the update server to 
+             prevent inconsistencies in the local repository.
+             If the revision is even, it means that the 
+             repository on server side is consistent and
+             available.
+
+Folders below root: Each folder below the repository root 
+         ("repository/") depicts the path (repository location)
+         of a specific software package. For example
+         "client/basic" depicts the path to all versions of 
+         the LitW/R mod-pack in for Minecraft Clients in game
+         variant Basic. Below that path are the version specific
+         package folders, each with named with its version number. 
+          
+vesions.json: Those files contain information of the available 
+         versions of a specific software package and a reference
+         on the latest version.
+         
+         Example:
+         
+         versions.json:
+         {
+            "latest": 1, // is a reference on the 2. available
+            "available": [
+                "launcher/0.0.1",
+                "launcher/0.0.2"
+            ]
+         }
+
+package.json: Those files reside inside a packages version specific
+        folder. It contains information about this specific version
+        of the software package, such as its human readable name,
+        its file name (once downloaded), this files md5 checksum, the
+        URL to download the actual file, its location (folder) inside
+        the repository, its version number and repository locations 
+        of other packages required in order to install this package.
+        
+        Example for a mod-pack:
+
+		{
+		  "filename": "LifeInTheWoodsRenaissanceClientBasic.zip", 
+		  "name": "Life in the Woods Renaissance Client Basic", 
+		  "checksum": "20829d24e6f2ede2bdbd008b31bc5b4c", 
+		  "downloadUrl": "http://lifeinthewoods.ca/LifeInTheWoodsRenaissanceClientBasic.zip",
+		  "location": "client/basic/1.0.0", 
+		  "version": "1.0.0", 
+		  "required": [
+		    "thirdparty/forge/1.7.10-10.13.2.1230"
+		  ]
+		}
+		
+		Example for thirdparty packages:
+
+		{
+		  "filename": "forge-1.7.10-10.13.2.1230-installer.jar", 
+		  "name": "Forge", 
+		  "checksum": "e6ee2496de939c8070d18f95fe4bc6dd", 
+		  "downloadUrl": "http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.7.10-10.13.2.1230/forge-1.7.10-10.13.2.1230-installer.jar", 
+		  "location": "thirdparty/forge/1.7.10-10.13.2.1230", 
+		  "version": "1.7.10-10.13.2.1230"
+		  "required": [
+		    "thirdparty/minecraft/client/1.7.10"
+		  ]
+		}
+
+
+Update Server
+=============
+
+
+
+API and Security
+----------------
+
+The update server consist simply of any HTTP server which has access 
+to the repository path. In other words, the repository is just a folder
+on the HTTP server. Thus, the repository provides a simple 
+Web Services API based on HTTP requests to certain files of the 
+repository. The Web Services API supports HTTP GET requests only 
+(no PUT or POST). Thus, there is no server-side functionality required
+other than already provided by the HTTP server (no CGI, ASP, Application
+Server or Servlet Container!). This is the highest level of security 
+possible for the server side (assuming that the HTTP server implementation
+is kept up-to-date).
+
+Thus, the  Web Service interface of the Update Server consists of the 
+paths to files inside the repository and all files (responses) except the 
+revision file (which is just an unsigned integer) are JSON conform. There 
+is nothing more to tell about it. 
+
+Client side security is important to prevent man in the middle attacks.
+The easiest way to prevent those is to use HTTPS. The server has to be
+configured to support HTTPS and downloads URLs should point to HTTPS
+addresses if available. A higher level of security can be reached by
+using server certificates which have to be known to the launcher. But 
+it is not expected that somebody spends such effort for an attack 
+because the user base will not be that large. Thus, HTTPS without 
+registered certificates is considered to be enough.
+
+
+
+Modifications to the Repository
+-------------------------------
+
+First of all: Set-up a test environment on the server to test your
+modifications before you apply them to the productive repository. 
+Setup of a test environment is described in Section "Test Environment".
+
+
+General Modification Procedure
+- - - - - - - - - - - - - - - - 
+Until we have appropriate server administration tools, this 
+here is the most important part for server administration!
+
+
+
+	*****************************************************
+	!!!  IMPORTANT:  STRICTLY FOLLOW THIS PROCEDURE   !!!
+	*****************************************************
+	
+	1. Increment revision number by one to lock the server!
+	2. Do all necessary modifications UNTIL the repository is CONSISTENT!
+	3. Increment revision number by one AGAIN to unlock the server!
+
+
+
+Every detail of those three steps is important and will be
+explained now.
+
+First, if you do not lock the server before modifying the 
+repository, clients can fetch inconsistent states while you 
+are still changing entries! Those clients will then possibly 
+make inconsistent installations resulting in all kinds of 
+inexplicable errors that can't be solved without 
+un-installing and re-installing everything.
+
+When locked you have enough time to make sure that the 
+modified repository will be in a consistent state before
+you finally publish it. As mentioned above, I recommend to 
+use a test environment, though.
+
+While the server is locked launchers will notice it as soon
+as they try to fetch information from the repository. They 
+will present a note to the user that he/she should try again 
+later and proceed in offline mode. Those users, that already 
+have installed LitW/R, can still play the game. So, nothing 
+to worry about.
+
+When the modification is done, the revision number has to be 
+incremented again to indicate that a new revision is available 
+and the lock has been removed. If you do forget to unlock the server,
+no client will get aware of your modifications!
+
+
+There are two different kinds of modifications:
+
+1. Update of package descriptors (package.json)
+2. Adding new versions of a package.
+
+
+Modification of Package Descriptors:
+- - - - - - - - - - - - - - - - - - 
+Assuming the server has been locked, there are a few cases which allow
+to modify properties of the package descriptor of a software package 
+only. All other modifications require to issue a new version number 
+to the package!
+
+- Modification of downloadUrls: If just the downloadUrl of a package 
+  has changed then it is safe to just enter the new URL and unlock the
+  server.
+
+- Modification of checksums: If the software package has changed but no
+  new version number was issued by its author, and the new package has
+  been tested to be good with all other packages depending on it, then
+  it is safe to just enter the new checksum and unlock the server.
+  
+- Modifying the Name of a Package: The name of a package is just 
+  there to show it the user. It has no functional purpose. Thus, it
+  is always safe to change the name.
+  
+All other modifications require a version increment of the affected 
+package (see below).
+
+
+Adding Packages and new Versions of Packages:
+- - - - - - - - - - - - - - - - - - - - - - -
+
+Each software package has its own folder with sub-folders for each version
+of that software package. If you add entirely new software, you have
+to create its main package folder first. Let's say we add a new variant of
+LitW/R which is called Ultra. Then we could create new folders
+
+  repository/client/ultra
+
+as main package folder and
+
+  repository/client/ultra/1.0.0
+  
+as a version specific folder of that package. Inside those folders you put
+a version.json file and a package.json file as described below.
+
+Each new version of a package is added by adding a new version specific path
+inside the package specific folder. For example if the LitW/R client Ultra
+gets updated from 1.0.0 to 1.0.1, a new folder 
+
+  repository/client/ultra/1.0.1
+  
+has to be added.
+Inside this folder a new package descriptor (package.json) is needed.
+
+  repository/client/ultra/1.0.1/package.json
+  
+The package descriptor has to have the form as described in 
+Section "Package Repository".
+
+The new version gets available only, if it is added to the versions.json
+file in the package folder. In our example, it will be:
+
+  repository/client/ultra/versions.json
+
+Modification of the versions.json file involves:
+
+  adding the version specific location (i.e. client/hungry/1.0.1 as in our
+  example) to the list of available versions and incrementing the property 
+  "latest" by one (i.e. setting it to the position of the new version in 
+  the list of versions -1 .. yes, it starts by 0).
+
+If (and only if) the new version has dependencies on other packages 
+not yet available in the repository, then those packages have to be added 
+as well but in the same revision update!
+
+
+Modification of package dependencies:
+-------------------------------------
+This type of modification will always require a version update of the 
+package or the clients won't consider the upgrade of the package (at 
+least not in the current version of the launcher).
+
+Package dependencies consist of references to other packages inside the
+repository. References consist of the path to the version specific package
+folder relative to the repository root. This path is called repository 
+location and is the same on server- and on client-side. Package dependencies
+go in the property "required". There is no specific sorting order for
+dependencies and you can add as much dependencies as you want as long as
+the launcher implements an upgrade procedure which knows what to do with
+it and you have tested the launcher on it.
+
+That said: the current version of the launcher does not, but I'm looking
+forward to implement a generic upgrade procedure to handle minor updates.
+  
+
+Revocation of Out-Dated Packages
+--------------------------------
+
+To get rid of older versions of packages you have to make sure
+first that there is no package left in the repository which 
+requires that version of the package, obviously. 
+
+If you are sure to do so, then lock the server ... and do that:
+
+To revoke a package version you have to remove the version specific folder
+and remove the version from the list of available version in the packages
+versions.json file. 
+
+To revoke all versions of a package at once and thereby revoke the software 
+package entirely you can simply remove the main package folder.
+
+Don't forget to increment the revision again afterwards.
+
+
+Test Environment
+----------------
+
+Testing changes is very important as I figured during development. Most 
+prominent errors are:
+
+- WRONG CHARACTER FORMAT (has to be UTF-8)
+- WRONG or MISSING CHECKSUM (I used md5sum)
+- PROPERTY 'LATEST' IN VERSIONS FILE INCORRECT
+- CASE SENSITIVITY OF PROPERTIES IGNORED
+
+All those errors can be easily found by testing in a test environment. 
+There are server tools planned to make the job easier but for now you 
+should always test your modifications before publishing.
+
+That said, I recommend to setup the test environment on the same server
+as the productive repository or at least a similar machine, with the 
+same default language and character settings - who knows what happens.
+
+The test environment of the update server is just a copy of the productive
+repository. You can even leave the downloadUrls of packages the same,
+if those files actually exist in the repository of the productive 
+environment.
+
+Once you have created the copy you can set the property "updateURL" in the 
+launchers config file ($HOME/.litwrl/litwrl.cfg) to point to the root
+folder of the repository in your test environment. Assuming you have 
+setup a test environment on your local machine the entry might be 
+something like
+
+   "updateURL": "http://127.0.0.1:8080/repository", 
+
+
+When you transfer the changes to the productive environment you have to do
+two things:
+
+0. TAKE YOUR TIME!
+1. remove the revision file from the repository in your test environment
+2. adjust all URLs which point to the test env. to point to the productive env.
+3. lock the server (increment revision to be odd)
+4. copy the new repository content to the productive repository (e.g. use rsync)
+5. unlock the server and publish new revision (increment revision again)
+
+That's it.
+

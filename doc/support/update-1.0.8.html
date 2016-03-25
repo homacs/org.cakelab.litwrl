@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>LitWR Launcher - Technical Support - Mod-Pack Update 1.0.8</title>
+		<!-- standard meta data -->
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="author" content="Holger Machens">
+		<meta name="date" content="${system.datetime}">
+		<!-- meta data for search engines -->
+		<meta name="description" content="${project.description}">
+		<meta name="keywords" lang="en" content="${project.keywords}">
+		<!-- meta name="robots" content="noindex,nofollow"-->
+	</head>
+	<body>
+		<h1 style="text-align: center"><a href="../index.html">Life in the Woods Renaissance</a></h1>
+		<h2 style="text-align: center">Mod-Pack Update 1.0.8</h2>
+		<p style="text-align: center">28/02/2016</p>
+		<br/>
+		<p>This update focuses on improvements/fixes in respect to shaders 
+			and minor bug-fixes to secret buildings. The update process requires a
+			removal of existing mods and configurations. Those who made changes to 
+			folders <code>mods</code> and <code>config</code> will have to create
+			backups or make notes before they upgrade. Existing save games and 
+			other game settings will be unaffected from the update.
+		</p>
+		<h3>Fixed Bug in Shader Patching Feature</h3>
+		<p>
+			First of all, the shader patching feature was introduced to enable the
+			shader to handle generated rivers properly. Rivers contain new water 
+			block types which are unknown to the shader usually. Thus, with Sildurs
+			permission, we added a function in our helper mod, which modifies the 
+			shader to support those new block types. 
+		</p>
+		<p>
+			Unfortunately, this function ran in two different obstacles on Windows
+			systems and then scrambled the shader instead of patching it. This is
+			now fixed and additionally the function was improved to be able to 
+			successfully revert the shader to its original state in case anything
+			goes wrong.
+		</p>
+		<h3>Updates of OptiFine and ShaderModCore</h3>
+		<p>Overall shader performance suffered from outdated versions of 
+			OptiFine and ShaderModCore. Thus, this update also brings the new 
+			versions of both. When upgrading you will be prompted to download
+			the new versions through your browser (same way as before).
+		</p>
+		<h3>Turn off Multi-Core Chunk Loading!</h3>
+		<p>We noticed that <code>Multi-Core Chunk Loading</code> 
+			(see Minecraft <code>Video Settings</code>) causes flickering.
+			Flickering vanishes when you switch between different chunk
+			loading modes and you can even return to multi-core but it 
+			always comes back when you restart Minecraft.</p>
+		<p>
+			We thought the update of OptiFine and ShaderModCore will also fix 
+			the flickering issue, but unfortunately it doesn't. Based on various bug
+			reports, we have received, we now believe that there
+			is is an incompatibility between OptiFine and the Forge 
+			version required by LitWR, which can even cause more sever 
+			issues like crashes due to inconsistencies in Mincraft's 
+			rendering sub-system, corruption during world generation 
+			and even in save games. Thus, we would like to ask everybody 
+			to turn off <code>Multi-Core</code> <code>Chunk Loading</code> in 
+			<code>Video Settings</code>, but we didn't want to force it 
+			because it is still a hypothesis.
+		</p>
+		<h3>Fixes and Changes to Secrets</h3>
+		<p>These changes are related to buildings injected in the ruins 
+			spawning system. Those changes have no effect on already generated 
+			(existing) ruins in saved games. Obviously, we can't give more 
+			details on that	without spoiling secrets.
+		</p>
+		<h3>Another Update Planned</h3>
+		<p>
+			Phedran plans another update which brings at least three recently
+			updated mods with new content, some bug fixes, and improvements to 
+			some game mechanics. (Those changes are not related to crickets! 
+			BTW.: Reading some documentation about gardening might help with 
+			crickets ;)
+		</p>
+		<p>This next update will take some time, because we may have to update forge
+			as well and then we will have to test everything together and decide
+			if we can provide save game upgrades easily or have to find other 
+			solutions. So, do not expected it to soon.
+		</p>
+	</body>
+
+</html>

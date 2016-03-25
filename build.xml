@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="deployall" name="Create launcher packages and deploy to respective web folders">
+    <!--ANT 1.7 is required                                        -->
+	
+	<target name="init">
+		<property name="launcher.version" value="1.2.10"/>
+		
+		<property name="web" value="../LitWRRepository"/>
+		<property name="repository" value="${web}/repository"/>
+		<property name="package.name" value="LifeInTheWoodsRenaissanceLauncher"/>
+        <property name="workdir" value="${java.io.tmpdir}/${package.name}"/>
+		<property name="jarfile" value="${workdir}/litwrl.jar"/>
+		<property name="zipfile" value="${web}/downloads/${package.name}.zip"/>
+		<delete failonerror="false" includeEmptyDirs="true">
+			<fileset dir="${workdir}"/>
+			<fileset file="${zipfile}"/>
+		</delete>
+        <mkdir dir="${workdir}"/>
+	</target>
+	
+    <target name="create_run_jar" depends="init">
+        <jar destfile="${jarfile}" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="org.cakelab.litwrl.Boot"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="./bin"/>
+            <fileset dir="../OpenMCL/bin"/>
+            <fileset dir="../org.cakelab.json/bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="./libs/JTattoo-1.6.11.jar"/>
+        </jar>
+    </target>
+	
+	<target name="deployjar" depends="create_run_jar">
+		<copy file="${jarfile}" todir="${repository}/launcher/${launcher.version}"/>
+		<echo message="ATTENTION: YOU HAVE TO ADJUST package.json and versions.json in ${repository}/launcher/${launcher.version}"/>
+	</target>
+	
+	<target name="package" depends="create_run_jar">
+		<copy todir="${workdir}">
+			<fileset dir="./install" casesensitive="yes">
+				<include name="**"/>
+			</fileset>
+			<fileset dir="./doc">
+				<include name="**"/>
+				<exclude name="TODO/**/*"/>
+				<exclude name="TODO*"/>
+				<exclude name="*.html"/>
+				<exclude name="offline-news"/>
+				<exclude name="offline-news/**/*"/>
+				<exclude name="support"/>
+				<exclude name="support/**/*"/>
+			</fileset>
+		</copy>
+		
+		<zip destfile="${zipfile}">
+			<zipfileset dir="${workdir}">
+				<include name="**"/>
+				<exclude name="**/**/*.sh"/>
+				<exclude name="**/**/*.command"/>
+				<exclude name="**/**/*.jar"/>
+			</zipfileset>
+			<zipfileset dir="${workdir}" filemode="755">
+				<include name="**/**/*.sh"/>
+				<include name="**/**/*.command"/>
+				<include name="**/**/*.jar"/>
+			</zipfileset>
+		</zip>
+	</target>
+	<target name="deployall" depends="package, deployjar"/>
+</project>

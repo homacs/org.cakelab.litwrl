@@ -1,0 +1,72 @@
+
+
+
+CHECK LIST FOR REPOSITORY AND LAUNCHER UPGRADES
+===============================================
+
+
+     To be tested before deployment!
+
+
+Versions are
+- previous (the version currently available to players)
+- current (the new version of the launcher to be deployed)
+- next (binary is the same as current but with a higher version number)
+
+
+
+========= CIRITCAL PART ==========
+
+Test Bootstrap
+--------------
+1. Bootstrap from previous version into current
+2. Bootstrap from current to next
+
+
+Test Launcher Updates
+---------------------
+1. Previous version -> current version
+2. Current version -> next version
+
+
+Repository Integrity
+--------------------
+Required tool not yet available
+
+
+
+Test Repository Updates
+-----------------------
+1. Run current launcher once
+2. Increment repository revision
+3. Run current again
+4. Check if repository updates
+
+
+
+
+
+======= NON-CRITICAL PART =========
+
+
+Test Game Installation
+----------------------
+
+! Installation test always requires a test run of the game.
+
+1. Complete install of Basic and Hungry with Shaders
+2. With existing Minecraft
+3. With existing Forge
+4. With existing game
+
+
+Test Game Upgrades
+------------------
+1. Previous version -> current version
+2. Current version -> next version
+
+
+
+
+
+

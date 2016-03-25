@@ -1,0 +1,176 @@
+
+
+
+
+     LIFE IN THE WOODS RENAISSANCE LAUNCHER
+
+              INSTALLATION PACKAGE
+
+
+
+					V 1.2.5
+				   29.01.2016
+
+
+			     Holger Machens
+
+
+
+
+
+This is the install package of the Life in the Woods 
+Renaissance Launcher.
+
+This package contains the platform independent jar
+of the launcher and installation scripts for each
+supported platform.
+
+For further details refer to the launcher's User Manual
+
+   http://homac.cakelab.org/projects/litwrl/manual/
+
+
+
+To install the launcher you have to
+
+  0. have Java 7 or higher installed
+  1. unzip this package
+  2. execute installation script to create shortcut
+  3. copy shortcut to desktop (or anywhere else)
+
+Details below.
+
+
+
+0. INSTALL JAVA
+===============
+In order to run Minecraft (and Life in the Woods 
+Renaissance) you need "Oracle" Java SE 7 (aka Java 1.7) 
+or higher (higher is better). When downloading chose either
+the JDK or JRE package.
+
+Download Java here:
+
+  http://www.oracle.com/technetwork/java/javase/downloads/index.html
+ 
+Respective here (if above link does not work):
+
+  http://java.oracle.com/
+
+ 
+Windows users get an installer.
+
+Easiest way for Ubuntu/Debian users are the WEB UPD8 PPA packages, see:
+ http://www.webupd8.org/2012/01/install-oracle-java-jdk-7-in-ubuntu-via.html
+
+
+
+1. UNZIP THE PACKAGE
+====================
+
+In order to install the launcher you have to unzip
+this package. Unzip the contents of the zip file to
+a location where you want to install the launcher.
+
+
+a. Windows & Mac
+----------------
+	On Windows and Mac just drag and drop the contents of the package 
+	to a location on your file system where you would like the
+	launcher to be installed.
+
+b. Linux
+--------
+In most linux distributions a double click on the package will open an
+archiver application and you can drag and drop the contents on your file
+system. 
+
+If this does not work then open a shell and execute the commands:
+
+	sudo apt-get install zip
+	unzip <package>
+
+
+
+2. INSTALL SCRIPTS
+==================
+The installation scripts just create a desktop shortcut
+in the unzipped folder. The shortcut is
+necessary to reliably start the launcher with Java 7 or 
+higher. 
+
+Usually, a double click on
+
+	<your-platform>/install[.bat|.command|.sh]
+
+should do the trick. Otherwise look below.
+
+
+
+
+a. WINDOWS
+----------
+
+Double click on 
+
+    windows\install.bat
+
+
+!If nothing happens, then open the command prompt and execute 
+the commands
+
+    cd <path-to-the-folder-you-have-unzipped>
+    windows\install.bat
+
+
+
+
+b: MAC OS
+---------
+
+Double click on and follow the instructions given in the terminal window.
+
+	mac/install.command
+
+
+	
+If nothing happens then follow these steps:
+	1. open a shell (terminal window)
+	2. navigate to the folder you have unzipped (i.e.: cd <unzipped folder>)
+	3. type and execute the command: 
+		> bash
+		> . mac/install.command
+	
+
+
+c. Linux
+--------
+
+Double click on
+
+	install-ubuntu.sh
+	
+
+	
+If nothing happens, then open a shell and execute the 
+commands:
+
+	> /bin/bash
+	> cd <path-to-the-folder-you-have-unzipped>
+	> . install-ubuntu.sh
+
+
+
+3. SHORTCUT ON DESKTOP
+======================
+A shortcut (i.e. App Bundle in case of MacOS) has been created on
+your Desktop by the installation script.
+
+The shortcut (Bundle) can be copied/moved to any location in your 
+file system (or you can leave it on your desktop).
+
+However, on Windows and Linux, you have absolute paths. If you move 
+the unzipped folder to a new location or you have updated Java, you 
+have to run the install script again to 
+create a new shortcut.
+

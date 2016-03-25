@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>LitWR Launcher - Technical Support - FAQ</title>
+		<!-- standard meta data -->
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="author" content="Holger Machens">
+		<meta name="date" content="${system.datetime}">
+		<!-- meta data for search engines -->
+		<meta name="description" content="${project.description}">
+		<meta name="keywords" lang="en" content="${project.keywords}">
+		<!-- meta name="robots" content="noindex,nofollow"-->
+	</head>
+	<body>
+		<h1 style="text-align: center"><a href="../index.html">Life in the Woods Renaissance Launcher</a></h1>
+		<h2 style="text-align: center">Frequently Asked Questions</h2>
+		<p style="text-align: center">last updated: ${system.date}</p>
+		<br/>
+	<dl>
+		<dt id="0018">Game Crashes Instantly After Start (Game ended with bad state (exit code 1))</dt>
+		<dd>Use the installation script for your system which comes
+			with the downloaded zip file. It will check if 
+			you have the correct Java version for your system and 
+			tell you which one you need. It is in particular important 
+			to have <b>Java 64bit</b> for <b>64bit systems</b> and 
+			<b>Java 32bit</b> for <b>32bit systems</b>.
+			Refer to the <a href="../manual/index.html#Installation">manual</a> 
+			for detailed installation instructions.
+		</dd>
+		<dt id="0003">Flickering Chunks (with and without shaders) on NVIDEA Graphics Cards</dt>
+		<dd>Issue is caused by multi-core chunk loading which is not supported by some NVIDEA cards.
+			We also believe that multi-core chunk loading causes crashes and inconsistent save games.
+			<br/>Working solutions found so far:<br/>
+			<ol>
+			<li>Update graphics card driver.</li>
+			<li>Adjustment of NVidea settings (not Minecraft):
+			<ul>
+				<li>turn <code>Threaded Optimization</code> or <code>OpenGL Optimization</code> off and</li>
+				<li>turn <code>Vertical Sync</code> to on.</li>
+			</ul>
+			See also <a href="http://optifine.net/faq">OptiFine FAQs</a>.
+			</li>
+			<li>If (1) and (2) are not satisfying, go in <code>Options -> Video Settings</code> and set <code>Chunk Loading</code> to either <code>Default</code> or <code>Smooth</code>. 
+			This is a reliable solution because it solves the root cause but that reduces FPS, too.</li>
+			</ol>
+		</dd>
+		<dt id="0006">I cannot find the folders <code>saves</code>, <code>screenshots</code> etc.</dt>
+		<dd>The LitWR launcher creates a separate installation of Minecraft and
+			all required mods in <code>&lt;your-home-folder&gt;/.litwrl</code>.
+			This folder contains subfolders:
+			<ul>
+			<li><code>games</code>
+				<ul>
+				<li>LitWR.Basic</li>
+				<li>LitWR.Hunger</li>
+				</ul>
+			</li>
+			<li>etc. ..</li>
+			</ul>
+			Depending on which LitWR variant you are playing (<em>Basic</em> or <em>Hungry</em>) 
+			you will find all those folders in these two directories.
+		</dd>
+		<dt id="0009">See-through on Different Objects with Shaders Enabled</dt>
+		<dd>This is a confirmed bug for ATI graphics cards with Sildurs shaders 
+		    in version 1.13. 
+			<br/>Current solution: Download and install a different shader 
+			(e.g. <a href="http://adf.ly/1K0UX6">Sildur's Medium v1.08</a>).
+		</dd>
+		<dt id="0013">Game Crashes with "NullPointerException" or "Ticking Memory .."</dt>
+		<dd>Originally, it is a memory issue (meaning the JVM doesn't get
+			enough memory or can't free memory fast enough).
+			The issue is most probably caused by the world generator - at least it occurs
+			always during chunk loading. The launcher maximises the memory
+			size given to Minecraft according to the memory size of your system
+			to minimise the possibility of this issue to occur, but it still happens occasionally.
+			There is no way we could fix it but you can significantly reduce 
+			the probability of this issue by using the following workarounds. 
+			<br/>
+			Workarounds (multiple choices):<br/>
+			<ul>
+			<li>Close other applications which consume lots of memory
+			(this improves memory availability especially during start).</li>
+			<li>When you experience significant lag, then wait until the world around you
+				has been generated properly (especially in creative mode when flying over
+				the world).</li>
+			<li>Reduce <code>Video Settings -> Render Distance</code> to 12 or lower.</li>
+			<li>Reduce <code>Video Settings -> Fog Start</code>.</li>
+			</ul>
+		</dd>
+		<dt id="0015">Can't change the games folder on config tab</dt>
+		<dd>This feature is simply not yet supported by the launcher. 
+		If you really need it then use the original Minecraft launcher.
+		If you want to use the files which have already been installed by the LitWR launcher,
+		then follow these steps:
+		<ol>
+		<li>Copy the folder <code>&lt;your-home-dir&gt;/.litwrl/games</code> to the new location where you want your profiles to be stored.</li>
+		<li>Open the command prompt.</li>
+		<li>Start the Minecraft launcher with the following command:
+			<code>java -jar &lt;your-home-dir&gt;/.litwrl/repository/thirdparty/minecraft/bootstrap/05/Minecraft.jar --workDir &lt;minecraft-dir&gt;</code>, where <code>&lt;minecraft-dir&gt;</code> stands for the minecraft working directory used by the launcher. By default this is <code>&lt;your-home-dir&gt;/.litwrl/minecraft</code> 
+			but you might have changed it in the config tab of the launcher.</li>
+		<li>In the running minecraft launcher navigate to the profile edit tab and adjust the working directory for each existing profile.</li>
+		<li>Launch in any of the profiles with the Minecraft launcher as usual.</li>
+		</ol>
+		<p>If you follow this procedure, it is recommended to create a desktop shortcut with the command given in (3) since you will need it to start the Minecraft launcher for LitWR from now on.</p>
+		</dd>
+		<dt id="0016">I have to relogin each time I switch from a different Minecraft installation</dt>
+		<dd>The launcher can share the Minecraft directory with your usuall Minecraft installation. 
+			In this case you will not have to relogin when you switch between Life in 
+			the Woods Renaissance and your usual Minecraft installation (see also Section <a href="http://homac.cakelab.org/projects/litwrl/manual/index.html#Configuration">Configuration</a> in the user manual).<br/>
+		</dd>
+		<dt id="0021">How can I switch between different Mojang accounts?</dt>
+		<dd>The launcher does not support switching between different accounts. 
+			The easiest way to realise it is to create another user account in 
+			your operating system.
+		</dd> 
+		<dt id="0017">How Can I Restart the Installation?</dt>
+		<dd>Remove the launchers local cache (repository).<br/> 
+			It is located in your home directory:<br/>
+			<b>Windows:</b><br/>
+			<code>
+				C:\Users\&lt;your-login&gt;\.litwrl\repository
+			</code>
+			<br/><b>MacOS:</b><br/>
+			<code>
+				/Users/&lt;your-login&gt;/.litwrl/repository
+			</code>
+			<br/><b>Linux:</b><br/>
+			<code>
+				/home/&lt;your-login&gt;/.litwrl/repository
+			</code>
+		</dd>
+		<dt>XY does not work, can I install manually?</dt>
+		<dd>
+			Go ahead: <a href="install.html">this is a not yet finished guide</a> 		
+		</dd>
+	</dl>
+	</body>
+
+</html>

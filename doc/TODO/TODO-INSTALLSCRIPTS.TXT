@@ -1,0 +1,58 @@
+
+Generally
+----------
+select latest javaw.exe/java.exe
+	consider arch type (32bit/64bit)
+	consider vendor
+
+unset JAVA_HOME
+
+
+
+MAC OS
+======
+
+TASKS:
+
+write a run.command which 
+	determine java executable
+	starts launcher
+
+write install script, which does
+	compile run.scpt which calls run.command
+	create a shortcut/link with target run.scpt
+
+---
+
+create a shell run.command script which runs in terminal
+
+use #!/bin/bash
+save as .command
+uname -p
+use /usr/libexec/java_home (https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/java_home.1.html)
+
+To run a shell script without terminal do:
+   osacompile -e 'do shell script "cd ~; echo aaa > temp.txt"' -o ~/name_of_script.scpt
+
+https://gist.github.com/mathiasbynens/674099
+
+Note: XOS manual comes after iOS on this page
+https://developer.apple.com/library/mac/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html#//apple_ref/doc/uid/10000123i-CH101-SW19
+
+
+WINDOWS
+=======
+
+TASKS:
+
+Write run.js which does
+	determine java executable
+	starts launcher
+
+Write install script which does
+	create shortcut with target: cscript run.js
+	
+---
+
+To run a script without terminal do
+  cscript script.js

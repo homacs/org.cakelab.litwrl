@@ -1,0 +1,65 @@
+@charset "utf-8";
+
+
+* {
+    background-color: #f3f4eb;
+}
+
+body {
+    margin: 10;
+    margin-bottom: 10;
+    padding: 0;
+    border: none;
+    font-family: helvetica, arial, sans-serif;
+    color: #4c3a2c;
+}
+
+img.middle {
+    vertical-align: middle;
+}
+
+img.bottom {
+    vertical-align: bottom;
+}
+
+p {
+	text-align: justify;
+}
+
+pre {
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+}
+
+
+
+dl {
+    margin-top: 1em;
+}
+
+dt {
+    font-weight: bold;
+    margin-top: 1cm;
+    margin-bottom: .25em;
+	font-size:100%; 
+}
+
+dd {
+	font-size:100%; 
+	margin-left:0;
+}
+
+
+h2 {
+    margin-top: 3cm;
+}
+/* unfortuantely you cannot specify 
+   rules for the different states of a link. Thus, just one rule for 'a' */
+a { color:#4c3a2c; }
+
+
+
+pre { font-family:Courier New,Courier; font-size:13px; color:black; }
+
+code,kbd,tt { font-size:13px; font-family:Courier New,Courier; color:darkred; }
+

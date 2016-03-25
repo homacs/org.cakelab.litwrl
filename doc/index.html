@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+     "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>${project.title}</title>
+		<!-- standard meta data -->
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="author" content="Holger Machens">
+		<meta name="date" content="${system.datetime}">
+		<!-- meta data for search engines -->
+		<meta name="description" content="${project.description}">
+		<meta name="keywords" lang="en" content="${project.keywords}">
+		<!-- meta name="robots" content="noindex,nofollow"-->
+	</head>
+	<body>
+		<h1 style="text-align: center">${project.title}</h1>
+		<p style="text-align: center">${project.description}</p>
+		<p style="text-align: center">(free and open source)</p>
+		<p style="text-align: center">Version ${project.version}<br/></p> 
+		<p style="text-align: center">${system.date}</p>
+		<p style="text-align: center"><a href="${project.downloads.source}">source code</a></p>
+		<p style="text-align: center"><a href="manual/">user manual</a></p>
+		<p style="text-align: center"><a href="support/">support</a></p>
+
+		<br/>
+		<p>This is the developer's page of the Launcher for Life in the Woods Renaissance.
+		For the official release versions of the mod-pack and the launcher binary 
+		please visit the <a href="http://lifeinthewoods.ca">Life in the Woods Renaissance</a> web-site.
+		</p>
+		
+		<p>The Life in the Woods Renaissance Launcher is based on <a href="http://homac.cakelab.org/projects/omcl">Open MCL</a>.</p>
+	
+		<h2>Prerequisites for Developers</h2>
+		<ul>
+		<li><a href="http://java.oracle.com">Java SE 1.8</a></li>
+		<li><a href="http://homac.cakelab.org/projects/omcl">Open MCL</a></li>
+		<li><a href="http://homac.cakelab.org/projects/org.cakelab.json">org.cakelab.json</a></li>
+		<li><a href="http://www.jtattoo.net/Contact.html">JTattoo 1.6.11</a></li>
+		</ul>
+
+		<h2>Change Log</h2>
+		<ul>
+		<li>17.03.2016: Launcher v1.2.10 [r957]
+			<ul>
+			<li>Fix: All fixes from 1.2.9
+			<li>Fix: overflow in random update server selection</li>
+			<li>Fix: Wrong installation procedure for DynamicLights mod
+			</ul>
+		</li>
+		<li>01.03.2016: Launcher v1.2.9 [r941] (available through <a href="http://lifeinthewoods.ca/downloads.html">manual download</a> only)
+			<ul>
+			<li>Fix: Number format issue (caused by another application)</li>
+			<li>Fix: incorrect utf8 escape sequences interpretation (caused issues with JVM arguments in launcher profiles)</li>
+			<li>Mod: No more pre-selection of OpenGL related settings (those are too system specific to find proper ones)
+			<li>Add: Use manually downloaded launcher if version number is greater</li>
+			</ul>
+		</li>
+		<li>28.02.2016: Launcher v1.2.8 and <a href="support/update-1.0.8.html">Mod-Pack v1.0.8</a>
+			<ul>
+			<li>Launcher v1.2.8 [r927]
+				<ul>
+				<li>Mod: Improved check for JDK Win32ShellFolder bug</li>
+				<li>Mod: Java check now non-restrictive</li>
+				<li>Add: Reminder to tell user that upgrade will resets mods and configs</li>
+				<li>Mod: No more multi-core chunk loading as default</li>
+				<li>Fix: Launcher crashing if no Minecraft profile available</li>
+				<li>Fix: Config pane content not resizing</li>
+				</ul>
+			</li>
+			<li>Mod-Pack v1.0.8 [r926]
+				<ul>
+				<li>Fix: Some secret buildings broken.</li>
+				<li>Fix: Shader patching not working on Windows with long file names in path.
+				</ul>
+			</li>
+			</ul>
+		</li>
+		<li>22.02.2016: v1.2.6 [r908]: Improved connectivity and support for German umlaute
+			<ul>
+			<li>Fix: Issue with special characters such as German umlaute</li>
+			<li>Fix: non-restrictive java check</li>
+			<li>Fix: config pane resizing</li>
+			<li>Add: load balancing</li>
+			<li>Mod: increased connect timeout</li>
+			<li>Fix: corrupted package descriptors due to interrupted download</li>
+			</ul>
+		</li>
+		</ul>
+		
+	</body>
+
+</html>
