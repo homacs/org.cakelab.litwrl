@@ -5,12 +5,17 @@
 	<target name="init">
 		<property name="launcher.version" value="1.2.10"/>
 		
-		<property name="web" value="../LitWRRepository"/>
+		<property name="repos" value="../../../.."/>
+		<property name="web" value="${repos}/LitWRRepository"/>
+		<property name="omcl" value="${repos}/OpenMCL"/>
+		<property name="json" value="${repos}/org.cakelab.json"/>
+		
 		<property name="repository" value="${web}/repository"/>
 		<property name="package.name" value="LifeInTheWoodsRenaissanceLauncher"/>
         <property name="workdir" value="${java.io.tmpdir}/${package.name}"/>
 		<property name="jarfile" value="${workdir}/litwrl.jar"/>
 		<property name="zipfile" value="${web}/downloads/${package.name}.zip"/>
+		
 		<delete failonerror="false" includeEmptyDirs="true">
 			<fileset dir="${workdir}"/>
 			<fileset file="${zipfile}"/>
@@ -25,8 +30,8 @@
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="./bin"/>
-            <fileset dir="../OpenMCL/bin"/>
-            <fileset dir="../org.cakelab.json/bin"/>
+            <fileset dir="${omcl}/bin"/>
+            <fileset dir="${json}/bin"/>
             <zipfileset excludes="META-INF/*.SF" src="./libs/JTattoo-1.6.11.jar"/>
         </jar>
     </target>
