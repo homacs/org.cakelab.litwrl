@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 
 import javax.swing.BorderFactory;
@@ -504,16 +505,9 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		
 	}
 
-
-
-
-
-
 	private boolean validateContent() {
-		return validateWorkDir(workingDir.getSelectedFile());
+		return workingDir.getInputVerifier().verify(workingDir);
 	}
-
-
 
 	public boolean hasValidContent() {
 		return validContent;
@@ -552,29 +546,26 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		if (FileSystem.isChildOf(wd, gamedir.getSelectedFile())) {
 			workingDir.setErrorMessage("The working directory cannot be located inside the game directory.");
 			valid = false;
-		}
-		
-		if (valid && !FileSystem.hasAccessibleParent(wd)) {
+		} else if (valid && !FileSystem.hasAccessibleParent(wd)) {
 			valid = false;
 			workingDir.setErrorMessage("Selected working directory cannot be created\nor does not allow to store files in it.");
-		}
-		
-		try {
-			if (valid && wd.exists() && Files.isSameFile(wd.toPath(), FileSystem.getUserHome().toPath())) {
-				valid = false;
-				workingDir.setErrorMessage("Don't do this!\nYou probably meant '" + new File(FileSystem.getUserHome(), ".minecraft").toString() + "'");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			valid = false;
-		}
-		
-		if (valid && wd.exists() && new File(wd, MinecraftClient.SUBDIR_MODS).exists()) {
+		} else if (valid && wd.exists() && new File(wd, MinecraftClient.SUBDIR_MODS).exists()) {
 			valid = false;
 			workingDir.setErrorMessage("This minecraft installation already contains mods.\nYou need to choose another directory.");
+		} else {
+			try {
+				if (valid && wd.exists() && Files.isSameFile(wd.toPath(), FileSystem.getUserHome().toPath())) {
+					valid = false;
+					workingDir.setErrorMessage("Don't do this!\nYou probably meant '" + new File(FileSystem.getUserHome(), ".minecraft").toString() + "'");
+				}
+			} catch (AccessDeniedException e) {
+				workingDir.setErrorMessage("Can't use chosen directory: access denied");
+				valid = false;
+			} catch (IOException e) {
+				workingDir.setErrorMessage("Can't use chosen directory: '" + e.getLocalizedMessage() + "'");
+				valid = false;
+			}
 		}
-		
-		
 		return valid;
 	}
 	

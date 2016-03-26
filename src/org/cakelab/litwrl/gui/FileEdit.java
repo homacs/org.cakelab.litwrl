@@ -128,7 +128,6 @@ public class FileEdit extends JPanel implements ActionListener, DelayedNotificat
 
 	public void init(String initialFolder, final FileVerifier verifier, boolean files) {
 		folder.setText(initialFolder);
-		previousFile = initialFolder;
 		if (!files) {
 			selectionMode = JFileChooser.DIRECTORIES_ONLY;
 		} else {
@@ -138,7 +137,7 @@ public class FileEdit extends JPanel implements ActionListener, DelayedNotificat
 			@Override
 			public boolean verify(JComponent input) {
 				try {
-					boolean result = true;
+					boolean result = !errorLabel.isVisible();
 					if (!folder.getText().equals(previousFile)) {
 						previousFile = folder.getText();
 						result = verifier.verify(FileEdit.this);
@@ -146,6 +145,9 @@ public class FileEdit extends JPanel implements ActionListener, DelayedNotificat
 					}
 					return result;
 				} catch (Throwable t) {
+					Log.error("received exception while validating directory " + folder.getText(), t);
+					setErrorMessage(t.getMessage());
+					setInvalid(true);
 					return false;
 				}
 			}
