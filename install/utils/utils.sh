@@ -239,7 +239,7 @@ function search_java_home () {
 	# 
 	# select the best
 	#
-	current_version="1.7.0"
+	current_version="1.8.0"
 	cat "${list}" | sort | while read exe ; do
 		if [ "${previous}" == "${exe}" ] || ! [ -x "${exe}" ] ; then
 			# ignore duplicates
@@ -286,9 +286,9 @@ function find_java () {
 		return
 	fi
 	if ${HAVE_LIBEXEC} ; then
-		log "exec: java_home --failfast --version \"1.7+\" --arch \"${ARCH}\""
+		log "exec: java_home --failfast --version \"1.8+\" --arch \"${ARCH}\""
 		
-		JAVA_HOME=`java_home --failfast --version "1.7+" --arch "${ARCH}"`
+		JAVA_HOME=`java_home --failfast --version "1.8+" --arch "${ARCH}"`
 		JAVA="${JAVA_HOME}/bin/java"
 	else
 		search_java_home

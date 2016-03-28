@@ -39,7 +39,7 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 	private static final String DEFAULT_BOOSTRAP_LOCATION = "thirdparty/minecraft/bootstrap/05";
 	protected MinecraftBootstrap minecraftBootstrap;
 	protected MinecraftClient minecraftClient;
-	protected Forge forge;
+	protected SetupService forge;
 	protected File configDir;
 	protected File configFile;
 	protected File modsDir;

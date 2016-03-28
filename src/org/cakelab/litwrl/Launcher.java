@@ -55,9 +55,9 @@ import org.cakelab.omcl.utils.log.LogFileListener;
 public class Launcher {
 
 	/** Version of the running launcher */
-	public static final String LAUNCHER_VERSION = "1.2.10";
+	public static final String LAUNCHER_VERSION = "1.3.0";
 	/** maximum litwr version we can install with this launcher */
-	private static final String MAX_LITWR_VERSION = "1.1.0";
+	private static final String MAX_LITWR_VERSION = "1.2.0";
 
 	/** URL displayed to the user in case we can't upgrade. */
 	private static final String LAUNCHER_UPDATE_URL = "http://lifeinthewoods.ca/litwr/downloads/LifeInTheWoodsRenaissanceLauncher.zip";

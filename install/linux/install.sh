@@ -59,7 +59,8 @@ cat > "$TARGET/$APP_NAME.desktop" <<EOF
 Version=1.0
 Type=Application
 Name=$APP_NAME
-Comment="Starts the launcher of $APP_NAME"
+Categories=Game;
+Comment=Starts the launcher of $APP_NAME
 Exec=$TARGET/utils/utils.sh --run "$TARGET/litwrl.jar"
 Icon=$TARGET/utils/appicon.png
 Path=$TARGET

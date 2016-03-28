@@ -39,10 +39,10 @@ public class Main {
 	}
 	
 	private static void checkJava() {
-		String errorPrefix ="The launcher requires Oracle Java SE v1.7 or higher.<br/>";
+		String errorPrefix ="The launcher requires Oracle Java SE v1.8 or higher.<br/>";
 		String downloadSuggestion = "<br/><p>Please locate an appropriate Java installation<br/>"
 				+ "on your system or download it from:</p><br/>"
-				+ "http://java.oracle.com";
+				+ "<a href=\"http://java.oracle.com\">http://java.oracle.com/</a>";
 		String userhome = System.getProperty("user.home");
 		System.out.println("user.home: "+ userhome);
 		String vendor = System.getProperty("java.vendor");
@@ -53,7 +53,7 @@ public class Main {
 		System.out.println("version: " + version);
 		Version v = VersionStd.decode(version);
 		
-		Version required = new VersionStd((byte)1,(byte)7,(byte)0);
+		Version required = new VersionStd((byte)1,(byte)8,(byte)0);
 		boolean hasBug = false;
 		try {
 			new JFileChooser();
@@ -62,7 +62,6 @@ public class Main {
 					+ "containing special characters like yours.<br/><br/>"
 					+ "Use Oracle Java SE 1.8 <b>JRE</b> instead.";
 			hasBug = true;
-			required = new VersionStd((byte)1,(byte)8,(byte)0);
 			System.err.println("version has JDK bug");
 		}
 
