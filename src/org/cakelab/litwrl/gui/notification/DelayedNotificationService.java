@@ -18,7 +18,7 @@ public abstract class DelayedNotificationService  implements ActionListener {
 	private Timer timer;
 	private DelayedNotificationReceiver receiver;
 	private JComponent component;
-	private boolean enabled;
+	private volatile boolean enabled;
 	private int ms;
 	private long nextTime;
 
@@ -26,7 +26,7 @@ public abstract class DelayedNotificationService  implements ActionListener {
 		this.receiver = receiver;
 		this.component = component;
 		this.ms = ms;
-		this.enabled = true;
+		this.enabled = false;
 		this.nextTime = Long.MAX_VALUE;
 		this.timer = new Timer(ms, this);
 	}

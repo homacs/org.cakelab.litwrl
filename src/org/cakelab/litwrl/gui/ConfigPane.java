@@ -109,7 +109,8 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		
 		validContent = validateContent();
 
-		new JTextAreaChangeNotificationService(this, javaArgs, 500);
+		JTextAreaChangeNotificationService notificationService = new JTextAreaChangeNotificationService(this, javaArgs, 500);
+		notificationService.setEnabled(true);
 	}
 
 	
@@ -438,7 +439,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 			return "-Xmx1G -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:-UseAdaptiveSizePolicy -Xmn128M";
 		} else {
 			// try to get 4G, 2G is good, 1G is minimum
-			int heapMemory = Math.min((int)(((float)totalMB)*3.0/4.0), 4096);
+			int heapMemory = Math.min((int)(((float)totalMB)*3.0/4.0), 2048);
 			if (heapMemory < 1024) {
 				// We assume that this is an error of the JMX implementation
 				// and just set it to the minimum values.

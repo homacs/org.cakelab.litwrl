@@ -158,7 +158,6 @@ public class FileEdit extends JPanel implements ActionListener, DelayedNotificat
 
 	@Override
 	public void setInputVerifier(InputVerifier inputVerifier) {
-		notificationService.setEnabled(inputVerifier != null);
 		folder.setInputVerifier(inputVerifier);
 		super.setInputVerifier(inputVerifier);
 	}
@@ -194,7 +193,7 @@ public class FileEdit extends JPanel implements ActionListener, DelayedNotificat
 		}
 	}
 
-	private void setInvalid(boolean invalid) {
+	void setInvalid(boolean invalid) {
 		if (invalid) {
 			folder.setForeground(Color.red);
 			showErrorIcon();
@@ -232,7 +231,8 @@ public class FileEdit extends JPanel implements ActionListener, DelayedNotificat
 
 	@Override
 	public void delayedNotification(JComponent component) {
-		getInputVerifier().verify(this);
+		InputVerifier verifier = getInputVerifier();
+		if (verifier != null) verifier.verify(this);
 	}
 
 	public void setErrorMessage(String error) {

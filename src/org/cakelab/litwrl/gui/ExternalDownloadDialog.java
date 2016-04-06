@@ -54,6 +54,7 @@ public class ExternalDownloadDialog extends JDialog implements IExternalDownload
 
 
 	@Override
+	synchronized
 	public void init(String packageName, String filename, URL _url,
 			String checksum) {
 		this.url = _url;
@@ -61,7 +62,6 @@ public class ExternalDownloadDialog extends JDialog implements IExternalDownload
 		this.checksum = checksum;
 		this.downloadFolder = Launcher.INSTANCE.getDownloadFolder();
 		this.timer = new Timer(500, this);
-		this.timer.start();
 		
 		JPanel panel = new JPanel();
 		GroupLayout layout = new GroupLayout(panel);
@@ -174,7 +174,12 @@ public class ExternalDownloadDialog extends JDialog implements IExternalDownload
 
 
 
+	/**
+	 * This event processing method has to be synchronised 
+	 * to protect from concurrent access through timer thread.
+	 */
 	@Override
+	synchronized 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(downloadButton)) {
 			showWarning(false);
@@ -186,11 +191,12 @@ public class ExternalDownloadDialog extends JDialog implements IExternalDownload
 			showWarning(true);
 		} else if (e.getSource().equals(timer)) {
 			File selected = new File(downloadFolder, filename);
-			if (selected.exists() && Md5Sum.check(selected, checksum)) {
+			if (selected.exists() && selected.isFile() && Md5Sum.check(selected, checksum)) {
 				result = true;
 				timer.stop();
 				file.setInputVerifier(null);
 				file.setSelectedFile(selected.getAbsolutePath());
+				file.setInvalid(false);
 				Launcher.INSTANCE.updateDownloadFolder(selected.getParent());
 				toFront();
 				JOptionPane.showMessageDialog(this, "Found it - thank you!", Launcher.APPLICATION_NAME, JOptionPane.INFORMATION_MESSAGE);
@@ -204,6 +210,8 @@ public class ExternalDownloadDialog extends JDialog implements IExternalDownload
 	public void setVisible(boolean visible) {
 		if (!visible) {
 			timer.stop();
+		} else {
+			timer.start();
 		}
 		super.setVisible(visible);
 	}
@@ -214,17 +222,25 @@ public class ExternalDownloadDialog extends JDialog implements IExternalDownload
 		Log.info("user selected a file");
 		result = true;
 		File selected = file.getSelectedFile();
-		if (!Md5Sum.check(selected, checksum)) {
+		String errorMessage = null;
+		if (checksum == null || checksum.length() == 0 || !Md5Sum.check(selected, checksum)) {
 			if (!selected.getName().equals(filename)) {
-				result = showChecksumMismatchDialog("Checksum check failed and file has different name.");
+				errorMessage = "Checksum check failed or file has different name.";
+			} else if (checksum != null && checksum.length() > 0){
+				errorMessage = "Checksum check failed.";
+			}
+			if (errorMessage != null) {
+				result = showChecksumMismatchDialog(errorMessage);
 			} else {
-				result = showChecksumMismatchDialog("Checksum check failed.");
+				result = true;
 			}
 		}
 		if (result) {
 			Launcher.INSTANCE.updateDownloadFolder(selected.getParent());
 			timer.stop();
 			setVisible(false);
+		} else {
+			f.setErrorMessage(errorMessage);
 		}
 		return result;
 	}
@@ -239,14 +255,18 @@ public class ExternalDownloadDialog extends JDialog implements IExternalDownload
 				+ "this message and use the downloaded file.";
 
 		
-		JButton retry = OptionalPane.createButton("Retry");
+		JButton retry = OptionalPane.createButton("Cancel");
 		JButton ignore = OptionalPane.createButton("Ignore");
 
+		JPanel buttons = new JPanel();
+		buttons.add(retry);
+		buttons.add(ignore);
+		
 		final OptionalPane pane = new OptionalPane((JFrame)this.getParent(), 
 				errorMessage, 
 				Launcher.APPLICATION_NAME, 
 				OptionalPane.BARE_OPTION, 
-				JOptionPane.WARNING_MESSAGE, new JComponent[]{retry, ignore});
+				JOptionPane.WARNING_MESSAGE, new JComponent[]{buttons});
 		
 		retry.addActionListener(new ActionListener() {
 			@Override
