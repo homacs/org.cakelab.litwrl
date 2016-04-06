@@ -611,6 +611,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		workingDir.setEditable(configurable);
 		javaArgs.setEditable(configurable);
 		shader.setEnabled(configurable);
+		resetButton.setEnabled(configurable);
 	}
 
 
