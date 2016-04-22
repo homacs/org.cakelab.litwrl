@@ -55,7 +55,7 @@ import org.cakelab.omcl.utils.log.LogFileListener;
 public class Launcher {
 
 	/** Version of the running launcher */
-	public static final String LAUNCHER_VERSION = "1.3.2";
+	public static final String LAUNCHER_VERSION = "1.3.3";
 	/** maximum litwr version we can install with this launcher */
 	private static final String MAX_LITWR_VERSION = "1.2.0";
 
@@ -340,7 +340,7 @@ public class Launcher {
 			}
 		} catch (JSONCodecException e1) {
 			e = e1;
-			reason = "Server not available or we have lost connection.\nPlease retry later.";
+			reason = "Inconsistencies on server side.\nPlease report the issues so it gets fixed.\nRefer to http://homac.cakelab.org/projects/litwrl/support/report.html";
 		} catch (ServerLockedException e1) {
 			e = e1;
 			reason = "Server is currently getting updated.\nPlease retry later.";
@@ -349,17 +349,18 @@ public class Launcher {
 			reason = "Server not available or we have lost connection.\nPlease retry later.";
 		} catch (IOException e1) {
 			e = e1;
-			reason = "Local repository contains inconsistencies.\nRefer to http://homac.cakelab.org/projects/litwrl/support/ to fix it.";
+			reason = "Issues with file access or inconsistencies in local repository.\nRefer to http://homac.cakelab.org/projects/litwrl/support/ to get help.";
 		} catch (Throwable e1) {
 			e = e1;
-			reason = "Local repository contains inconsistencies.\nRefer to http://homac.cakelab.org/projects/litwrl/support/ to fix it.";
+			reason = "Internal error '"+ e.getClass().getSimpleName() + "'\nRefer to http://homac.cakelab.org/projects/litwrl/support/ to get help.";
 		}
 		
 		if (e != null) {
-			gui.showWarning("Launcher initialisation failed!", 
+			String title = "Local repository initialisation failed!";
+			Log.warn(title + "\n" + reason, e);
+			gui.showWarning(title, 
 					"\n\n" + reason + "\n\n"
-					+ "You won't be able to install or update Life in the\n"
-					+ "Woods Renaissance now, but you can retry later.");
+					+ "You won't be able to install or update.");
 			canInstall = false;
 		}
 	}
@@ -372,7 +373,6 @@ public class Launcher {
 		}
 
 		final UpdateServerPool pool = new UpdateServerPool(config.getUpdateURL(), config.getServerPool());
-		
 		
 		Thread connectPrimary = new Thread("connectPrimary"){
 			public void run() {
@@ -407,7 +407,7 @@ public class Launcher {
 			updateServer = secondaryUpdateServer;
 			Log.info("using update server " + updateServer.getUrl());
 		} else {
-			Log.error("failed to connect to an update server. Fallback to offline mode.");
+			Log.warn("failed to connect to an update server. Fallback to offline mode.");
 			gui.showWarning("No update server available.", 
 					"Either update servers are currently down or you are currently offline.\n\n"
 					+ "You can retry later or proceed in offline mode.");
@@ -443,7 +443,6 @@ public class Launcher {
 
 	private void tryLauncherUpdate(Config config) {
 		if (config.isOffline() || updateServer.isOffline()) return;
-		boolean failed = false;
 		try {
 			Log.info("looking for launcher update");
 			PackageDescriptor descriptor = getPackageDescriptor();
@@ -460,29 +459,26 @@ public class Launcher {
 				setupService.scheduleInstalls(taskman, false);
 				
 				if (!taskman.runToCompletion(true, gui)) {
-					failed  = true;
+					throw new Throwable("error executing launcher update tasks. See log for details.");
 				}
 			} else {
 				Log.info("launcher up-to-date");
 			}
 		} catch (Throwable e) {
 			Log.error("Error during launcher update:", e);
+			canInstall = false;
 			if (e instanceof SocketTimeoutException 
 					|| e instanceof TransportException 
-					|| e instanceof ServerLockedException) {
-				canInstall = false;
+					|| e instanceof ServerLockedException) 
+			{
 				gui.showError("Update server not available!", 
 						"Please retry later.\n");
-				return;
+			} else {
+				gui.showError("Launcher update failed for mysterious reasons!",
+						"Please download the new launcher from \n"
+						+ Launcher.LAUNCHER_UPDATE_URL
+						+ "to be able to update to newer mod-pack versions.");
 			}
-			failed = true;
-		}
-		if (failed) {
-			canInstall = false;
-			gui.showError("Automatic update of the launcher failed!", 
-					"Please download the new launcher at \n"
-					+ Launcher.LAUNCHER_UPDATE_URL
-					+ "to be able to update to newer mod-pack versions.");
 		}
 	}
 
