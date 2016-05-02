@@ -223,7 +223,12 @@ public class ExternalDownloadDialog extends JDialog implements IExternalDownload
 		result = true;
 		File selected = file.getSelectedFile();
 		String errorMessage = null;
-		if (checksum == null || checksum.length() == 0 || !Md5Sum.check(selected, checksum)) {
+		if (!selected.exists()) {
+			errorMessage = "File or directory does not exist";
+			result = false;
+		} else if (!selected.isFile()) {
+			result = true;
+		} else if (checksum == null || checksum.length() == 0 || !Md5Sum.check(selected, checksum)) {
 			if (!selected.getName().equals(filename)) {
 				errorMessage = "Checksum check failed or file has different name.";
 			} else if (checksum != null && checksum.length() > 0){

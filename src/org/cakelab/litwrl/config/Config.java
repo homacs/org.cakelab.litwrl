@@ -5,8 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 import org.cakelab.json.codec.JSONCodec;
+import org.cakelab.json.codec.JSONCodecConfiguration;
 import org.cakelab.json.codec.JSONCodecException;
 import org.cakelab.litwrl.Launcher;
 import org.cakelab.omcl.config.GameConfig;
@@ -16,6 +18,8 @@ import org.cakelab.omcl.update.UpdateServerPool;
 import org.cakelab.omcl.utils.log.Log;
 
 public class Config {
+	private static JSONCodecConfiguration jsonConfig = new JSONCodecConfiguration(Charset.defaultCharset(), true, true);
+
 	/** Path of config file */
 	private transient File file;
 	private static final String CONFIG_FILE = "litwrl.cfg";
@@ -96,7 +100,7 @@ public class Config {
 	public static Config load(File dir) {
 		Config config = new Config(dir);
 		try {
-			JSONCodec codec = new JSONCodec(true, true);
+			JSONCodec codec = new JSONCodec(jsonConfig);
 			InputStream in = new FileInputStream(config.file);
 			config = (Config) codec.decodeObject(in, config);
 			in.close();
@@ -114,7 +118,7 @@ public class Config {
 		if (canSave) {
 			try {
 				
-				JSONCodec codec = new JSONCodec(true, true);
+				JSONCodec codec = new JSONCodec(jsonConfig);
 				FileOutputStream out = new FileOutputStream(this.file);
 				codec.encodeObject(this, out);
 				out.close();

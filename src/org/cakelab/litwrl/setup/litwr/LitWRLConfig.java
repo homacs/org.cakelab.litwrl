@@ -4,13 +4,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import org.cakelab.json.codec.JSONCodec;
+import org.cakelab.json.codec.JSONCodecConfiguration;
 import org.cakelab.json.codec.JSONCodecException;
 import org.cakelab.litwrl.config.Variants;
 import org.cakelab.omcl.config.GameTypes;
 
 public class LitWRLConfig {
+	private static JSONCodecConfiguration jsonConfig = new JSONCodecConfiguration(Charset.defaultCharset(), true, true);
 
 	public static final String CONFIG_FILE = "litwr-launcher.cfg";
 
@@ -28,7 +31,7 @@ public class LitWRLConfig {
 	}
 
 	public static LitWRLConfig load(File configFile) throws IOException, JSONCodecException {
-		JSONCodec codec = new JSONCodec(true, true);
+		JSONCodec codec = new JSONCodec(jsonConfig);
 		if (configFile.exists()) {
 			LitWRLConfig config = new LitWRLConfig();
 			FileInputStream in = new FileInputStream(configFile);
@@ -41,7 +44,7 @@ public class LitWRLConfig {
 	}
 	
 	public void save(File configFile) throws IOException, JSONCodecException {
-		JSONCodec codec = new JSONCodec(true, true);
+		JSONCodec codec = new JSONCodec(jsonConfig);
 		
 		FileOutputStream out = new FileOutputStream(configFile);
 		codec.encodeObject(this, out);
