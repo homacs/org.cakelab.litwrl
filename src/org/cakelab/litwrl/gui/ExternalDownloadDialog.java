@@ -62,7 +62,7 @@ public class ExternalDownloadDialog extends JDialog implements IExternalDownload
 		this.checksum = checksum;
 		this.downloadFolder = Launcher.INSTANCE.getDownloadFolder();
 		this.timer = new Timer(500, this);
-		
+
 		JPanel panel = new JPanel();
 		GroupLayout layout = new GroupLayout(panel);
 		layout.setAutoCreateGaps(true);
@@ -143,7 +143,7 @@ public class ExternalDownloadDialog extends JDialog implements IExternalDownload
 		setModal(true);
 
 
-		result = false;	
+		result = false;
 	}
 
 	private void addRow(JComponent label) {
