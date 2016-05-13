@@ -101,6 +101,51 @@ public class Shaders {
 	}
 
 
+	public String getNameOfUpgrade(String shaderPackFileName) {
+
+		if (shaderPackFileName.equals(SHADER_NONE) || shaderPackFileName.equals(SHADER_INTERNAL)) {
+			return shaderPackFileName;
+		}
+		int matchLen = 0;
+		String bestMatch = null;
+		int minMatchLen = ((shaderPackFileName.length() -4) - "Vx.x.x".length());
+		for (int i = 0; i < available.size(); i++) {
+			PackageDescriptor shader = available.get(i);
+			int n = stringMatchLength(shader.filename.replace(".zip", ""), shaderPackFileName.replace(".zip", ""));
+			if (n > matchLen && n > minMatchLen) {
+				bestMatch = shader.name;
+				matchLen = n;
+				if (n == shaderPackFileName.length()) {
+					// still the same shader
+					return bestMatch;
+				}
+			}
+		}
+		if (bestMatch == null) throw new IllegalArgumentException();
+		return bestMatch;
+	}
+
+	private int stringMatchLength(String s1, String s2) {
+		int i = 0, j = 0;
+		int len = 0;
+		while (i < s1.length() && j < s2.length()
+				&& s1.charAt(i) == s2.charAt(j)) 
+		{
+			len++;
+			j++;
+			i++;
+		}
+		i = s1.length()-1;
+		j = s2.length()-1;
+		while (i >= 0 && j >= 0
+			&& s1.charAt(i) == s2.charAt(j)) 
+		{
+			len++;
+			j--;
+			i--;
+		}
+		return len;
+	}
 
 
 
@@ -199,6 +244,7 @@ public class Shaders {
 			// not installed: ignore
 		}
 	}
+
 
 
 

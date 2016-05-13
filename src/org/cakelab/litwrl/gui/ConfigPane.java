@@ -366,6 +366,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		
 		String latestVersion = Launcher.INSTANCE.getLatestLitWRVersion(selectedGameType, selectedVariant);
 		if (latestVersion == null) latestVersion = "0.0.0";
+		boolean willUpgrade = false;
 		if (litwrlcfg == null) {
 			version.setText(latestVersion);
 		} else {
@@ -373,6 +374,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 			VersionStd current = VersionStd.decode(litwrlcfg.getVersion());
 			if (latest.isGreaterThan(current)) {
 				version.setText(latest.toString());
+				willUpgrade  = true;
 			} else {
 				version.setText(current.toString());
 			}
@@ -417,13 +419,18 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 			try {
 				OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
 				String shaderPackFileName = optionsShaders.getShaderPack();
-				try { 
-					setSelectedShader(selectedShaderSet.getNameOf(shaderPackFileName));
+				String shaderName;
+				try {
+					if (willUpgrade) {
+						shaderName = selectedShaderSet.getNameOfUpgrade(shaderPackFileName);
+					} else {
+						shaderName = selectedShaderSet.getNameOf(shaderPackFileName);
+					}
 				} catch (IllegalArgumentException e) {
-					String shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
+					shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
 					shader.addItem(shaderName);
-					setSelectedShader(shaderName);
 				}
+				setSelectedShader(shaderName);
 			} catch (IOException e) {
 				setSelectedShader(Shaders.SHADER_NONE);
 			}

@@ -227,7 +227,8 @@ public class ExternalDownloadDialog extends JDialog implements IExternalDownload
 			errorMessage = "File or directory does not exist";
 			result = false;
 		} else if (!selected.isFile()) {
-			result = true;
+			Launcher.INSTANCE.updateDownloadFolder(selected.getAbsolutePath());
+			return true;
 		} else if (checksum == null || checksum.length() == 0 || !Md5Sum.check(selected, checksum)) {
 			if (!selected.getName().equals(filename)) {
 				errorMessage = "Checksum check failed or file has different name.";
