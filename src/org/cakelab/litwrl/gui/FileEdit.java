@@ -183,7 +183,6 @@ public class FileEdit extends JPanel implements ActionListener, DelayedNotificat
 						Log.warn("Folder selection dialog returned error code.");
 					case JFileChooser.CANCEL_OPTION:
 						break;
-						
 					}
 				}
 				

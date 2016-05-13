@@ -56,6 +56,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 	private JTextField version;
 	private JTextField profile;
 	private FileEdit gamedir;
+	private UserSelector userSelector;
 	private VariantSelector variantSelector;
 	private JTextArea javaArgs;
 	
@@ -129,6 +130,13 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		
 
 		JLabel label;
+		
+		label = new JLabel("User:");
+		userSelector = new UserSelector();
+		addRow(label, userSelector,   "Here you can switch between your\n"
+									+ "Minecraft accounts. Select\n"
+									+ "`login on next start`\n"
+									+ "if you want to add another account.");
 		
 		label = new JLabel("Working directory:");
 		workingDir = FileEdit.create("Select a Minecraft Working Directory");
@@ -310,10 +318,6 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 			loadWorkDir();
 		}
 		
-		if (profileExists) {
-			gamedir.init(createDefaultGamePath(), this, false);
-		}
-		
 		javaArgs.setText(trimJavaArgs(getOptimizedJavaArgs()));
 		
 		setSelectedShader(Shaders.SHADER_NONE);
@@ -326,12 +330,15 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 	protected void loadWorkDir() {
 		setProcessActions(false);
 		try {
+			launcherProfiles = null;
 			launcherProfiles = LauncherProfiles.load(new File(workingDir.getSelectedFile(), LauncherProfiles.PROFILES_FILE));
 			this.profileExists = true;
 		} catch (IOException | JSONException | JSONCodecException e) {
 			this.profileExists = false;
 		}
 
+		userSelector.init(launcherProfiles);
+		
 		selectedGameConfig = config.getGameConfig(selectedGameType, selectedVariant);
 		if (selectedGameConfig == null) {
 			selectedGameConfig = config.addGameConfig(selectedGameType, selectedVariant);
@@ -473,9 +480,6 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		return args != null ? args.replaceAll("" + Regex.utf_whitespace_class + Regex.utf_whitespace_class + "*", " ").trim() : "";
 	}
 
-
-
-
 	private String createDefaultGamePath() {
 		return new File(Launcher.INSTANCE.getConfigDir(), Launcher.INSTANCE.getDefaultGameSubDir(selectedGameConfig)).toString();
 	}
@@ -583,12 +587,12 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		if (folderEdit.equals(workingDir)) {
 			File wd = workingDir.getSelectedFile();
 			boolean isValid = validateWorkDir(wd);
-			
 			if (isValid) {
 				config.setWorkDir(wd.toString());
 				checkModified();
 				loadWorkDir();
 			} else {
+				userSelector.init(null);
 				setValidContent(false);
 				return false;
 			}
@@ -619,6 +623,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		javaArgs.setEditable(configurable);
 		shader.setEnabled(configurable);
 		resetButton.setEnabled(configurable);
+		userSelector.setEnabled(configurable);
 	}
 
 
