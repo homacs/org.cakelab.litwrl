@@ -53,7 +53,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 	private static final long serialVersionUID = 1L;
 
 	private JTextField variant;
-	private JTextField version;
+	private VersionField version;
 	private JTextField profile;
 	private FileEdit gamedir;
 	private UserSelector userSelector;
@@ -99,6 +99,8 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		this.variantSelector = variantSelector;
 		variantSelector.addActionListener(this);
 
+		this.version.init(config);
+		
 		String workDir = config.getWorkDir();
 		if (workDir == null) {
 			workDir = Launcher.INSTANCE.getDefaultWorkDir();
@@ -151,10 +153,12 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		variant.setEditable(false);
 		addRow(label, variant, "This is the variant of Life in the Woods Renaissance\nyou selected in the lower right corner of the window.");
 
+		
+		
 		label = new JLabel("Version:");
-		version = new JTextField(1);
-		version.setEditable(false);
-		addRow(label, version, "This is the current version of\nLife in the Woods Renaissance.");
+		version = new VersionField(this);
+		version.setEnabled(false);
+		addRow(label, version, "This shows the version of the\nLife in the Woods Renaissance mod-pack that is\ninstalled or will be installed.");
 		
 		label = new JLabel("Profile:");
 		profile = new JTextField(1);
@@ -271,11 +275,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 	
 	private void setSelectedShader(String selectedItem) {
 		if (selectedShader != selectedItem) {
-			selectedShader = selectedItem;
-			setProcessActions(false);
-			shader.setSelectedItem(selectedItem);
-			setProcessActions(true);
-			
+			boolean isUnknown = false;
 			try {
 				String filename;
 				try {
@@ -283,15 +283,27 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 						filename = selectedShaderSet.getFilenameOf(selectedItem);
 					} else {
 						filename = Shaders.getUnknownShaderFileName(selectedItem);
+						isUnknown = true;
 					}
 				} catch (IllegalArgumentException e) {
 					filename = Shaders.getUnknownShaderFileName(selectedItem);
+					isUnknown = true;
 				}
+				
+				if (isUnknown && !Shaders.isInstalled(filename, gamedir.getSelectedFile())) {
+					selectedItem = Shaders.SHADER_NONE;
+				}
+				
 				Shaders.setShaderOptions(filename, gamedir.getSelectedFile());
 			} catch (IOException e) {
 				// nevermind
 			}
-			
+
+			selectedShader = selectedItem;
+			setProcessActions(false);
+			shader.setSelectedItem(selectedItem);
+			setProcessActions(true);
+
 			modified = true;
 		}
 		SwingUtilities.invokeLater(new Runnable() {
@@ -302,6 +314,10 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 			}
 			
 		});
+	}
+
+	public void updatedVersionField() {
+		loadWorkDir();
 	}
 
 	private void setDefaults() {
@@ -374,16 +390,21 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		String latestVersion = Launcher.INSTANCE.getLatestLitWRVersion(selectedGameType, selectedVariant);
 		if (latestVersion == null) latestVersion = "0.0.0";
 		boolean willUpgrade = false;
+		
 		if (litwrlcfg == null) {
-			version.setText(latestVersion);
+			version.setVersion(latestVersion);
 		} else {
-			VersionStd latest = VersionStd.decode(latestVersion);
-			VersionStd current = VersionStd.decode(litwrlcfg.getVersion());
-			if (latest.isGreaterThan(current)) {
-				version.setText(latest.toString());
-				willUpgrade  = true;
+			if (version.isKeepVersion()) {
+				version.setVersion(litwrlcfg.getVersion());
 			} else {
-				version.setText(current.toString());
+				VersionStd latest = VersionStd.decode(latestVersion);
+				VersionStd current = VersionStd.decode(litwrlcfg.getVersion());
+				if (latest.isGreaterThan(current)) {
+					version.setVersion(latest.toString());
+					willUpgrade  = true;
+				} else {
+					version.setVersion(current.toString());
+				}
 			}
 		}
 
@@ -401,7 +422,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		//
 		shader.removeAllItems();
 		try {
-			selectedShaderSet = Launcher.INSTANCE.getLitWRShaders(selectedGameType, selectedVariant, version.getText());
+			selectedShaderSet = Launcher.INSTANCE.getLitWRShaders(selectedGameType, selectedVariant, version.getVersion());
 		} catch (Throwable e) {
 			// repository inconsistent
 			selectedShaderSet = null;
@@ -414,7 +435,11 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 				OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
 				String shaderPackFileName = optionsShaders.getShaderPack();
 				String shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
-				shader.addItem(shaderName);
+				if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
+					shader.addItem(shaderName);
+				} else {
+					shaderName = Shaders.SHADER_NONE;
+				}
 				setSelectedShader(shaderName);
 			} catch (IOException e) {
 				setSelectedShader(Shaders.SHADER_NONE);
@@ -435,7 +460,11 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 					}
 				} catch (IllegalArgumentException e) {
 					shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
-					shader.addItem(shaderName);
+					if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
+						shader.addItem(shaderName);
+					} else {
+						shaderName = Shaders.SHADER_NONE;
+					}
 				}
 				setSelectedShader(shaderName);
 			} catch (IOException e) {
@@ -605,7 +634,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		LitWRSetupParams setup = new LitWRSetupParams(selectedGameConfig, 
 				new File(config.getWorkDir()), 
 				gamedir.getSelectedFile(), 
-				version.getText(), 
+				version.getVersion(), 
 				selectedGameType, 
 				config.getSelectedVariant(), 
 				trimJavaArgs(javaArgs.getText()), 
@@ -624,6 +653,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		shader.setEnabled(configurable);
 		resetButton.setEnabled(configurable);
 		userSelector.setEnabled(configurable);
+		version.setEnabled(configurable);
 	}
 
 

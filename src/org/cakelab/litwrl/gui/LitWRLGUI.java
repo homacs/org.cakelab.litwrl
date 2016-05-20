@@ -333,12 +333,15 @@ public class LitWRLGUI extends PluginAdapter implements TaskMonitor {
 		String message = "<html>"
 				+ "<h2 align=\"center\">Upgrade will Reset Configs and Mods!</h2>"
 				+ "<p>"
+				+ "<b>Note:</b> If you want to keep the version you have currently<br/>"
+				+ "installed, then hit <b>Cancel</b>, go to the config tab and tick<br/>"
+				+ "the radio button behind the version field.<br/>"
+				+ "<br/>"
 				+ "In order to upgrade to a new version of the mod-pack the<br/>"
 				+ "launcher will first remove everything from the sub-folders<br/>"
 				+ "<code>mods</code> and <code>config</code> in your game folder.<br/>"
 				+ "<br/>"
-				+ "Hit <b>Cancel</b> if you've made changes to those folders and<br/>"
-				+ "want to do some backups first. Otherwise just click <b>OK</b><br/>"
+				+ "Hit <b>Cancel</b> if you don't want to upgrade now. Otherwise click <b>OK</b><br/>"
 				+ "to proceed.</p>"
 				+ "</html>";
 		checkbox.setSelected(config.isDontShowUpgradeWarning());

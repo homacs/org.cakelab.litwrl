@@ -16,7 +16,4 @@ public class LifeInTheWoodsClientBasic extends LifeInTheWoodsClient {
 		super.init();
 	}
 
-	
-	
-
 }

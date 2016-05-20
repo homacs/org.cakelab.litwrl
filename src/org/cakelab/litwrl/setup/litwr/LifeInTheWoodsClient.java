@@ -110,6 +110,7 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 				
 				Shaders shaders = new Shaders(metaShaders, repository);
 				pd = shaders.getPackageDescriptor(setupParams.shader);
+				if (pd == null) pd = shaders.migrateUnknownShader(setupParams.gamedir, setupParams.shader);
 				shader = shaders.getSetupService(setupParams, pd, repository);
 				shader.init();
 				

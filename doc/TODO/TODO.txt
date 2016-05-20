@@ -6,6 +6,9 @@ Launcher
 ** IMPORTANT TOPICS **
 
 ==    MODPACK    ==
++ add: new OptiFine
++ add: new Bibliocraft
++ fix: PMP Salves issue
 + mod: adapt ruins to new block IDs!
 + fix: Ruins bug with file loading
 + fix: can't plant rice as intended by harvestcraft

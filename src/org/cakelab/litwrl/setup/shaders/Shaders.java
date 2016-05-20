@@ -18,7 +18,6 @@ public class Shaders {
 	public static final String SHADER_INTERNAL = "(internal)";
 	private ArrayList<PackageDescriptor> available;
 	
-	
 	public Shaders(PackageDescriptor shadersMetaPackageDescriptor, Repository repository) throws Exception {
 		available = new ArrayList<PackageDescriptor>(shadersMetaPackageDescriptor.optional.length);
 
@@ -93,10 +92,6 @@ public class Shaders {
 			}
 		}
 		
-		if (shader == null) {
-			Log.info("found user added shader '" + shaderName + "'");
-			shader = migrateUnknownShader(shaderName);
-		}
 		return shader;
 	}
 
@@ -149,8 +144,11 @@ public class Shaders {
 
 
 
-	private PackageDescriptor migrateUnknownShader(String shaderName) {
-		PackageDescriptor shader = new PackageDescriptor(shaderName, "0", getUnknownShaderFileName(shaderName), getUnknownShaderLocation(shaderName), "");
+	public PackageDescriptor migrateUnknownShader(File gamedir, String shaderName) {
+		String filename = getUnknownShaderFileName(shaderName);
+		if (!isInstalled(filename, gamedir)) return getPackageDescriptor(Shaders.SHADER_NONE);
+		
+		PackageDescriptor shader = new PackageDescriptor(shaderName, "0", filename, getUnknownShaderLocation(shaderName), "");
 		available.add(shader);
 		return shader;
 	}
@@ -243,6 +241,12 @@ public class Shaders {
 		} catch (IOException e) {
 			// not installed: ignore
 		}
+	}
+
+
+
+	public static boolean isInstalled(String filename, File gamedir) {
+		return new File(new File(gamedir, "shaderpacks"), filename).exists();
 	}
 
 

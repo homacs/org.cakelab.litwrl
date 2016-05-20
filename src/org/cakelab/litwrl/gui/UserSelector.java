@@ -177,6 +177,11 @@ public class UserSelector extends JPanel implements ActionListener {
 		super.setToolTipText(text);
 	}
 
-	
+	@Override
+	public void setEnabled(boolean enabled) {
+		userList.setEnabled(enabled);
+		super.setEnabled(enabled);
+	}
+
 
 }
