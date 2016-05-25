@@ -1,4 +1,4 @@
-package org.cakelab.litwrl.gui;
+package org.cakelab.litwrl.gui.tabs.config;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,9 +30,12 @@ import org.cakelab.json.codec.JSONCodecException;
 import org.cakelab.litwrl.Launcher;
 import org.cakelab.litwrl.config.Config;
 import org.cakelab.litwrl.config.Variants;
-import org.cakelab.litwrl.gui.FileEdit.FileVerifier;
+import org.cakelab.litwrl.gui.MainWindow;
 import org.cakelab.litwrl.gui.footer.VariantSelector;
-import org.cakelab.litwrl.gui.notification.JTextAreaChangeNotificationService;
+import org.cakelab.litwrl.gui.utils.FileEdit;
+import org.cakelab.litwrl.gui.utils.GUIUtils;
+import org.cakelab.litwrl.gui.utils.FileEdit.FileVerifier;
+import org.cakelab.litwrl.gui.utils.notification.JTextAreaChangeNotificationService;
 import org.cakelab.litwrl.setup.LitWRSetupParams;
 import org.cakelab.litwrl.setup.litwr.LitWRLConfig;
 import org.cakelab.litwrl.setup.shaders.Shaders;
@@ -47,13 +50,13 @@ import org.cakelab.omcl.utils.OS;
 import org.cakelab.omcl.utils.Regex;
 import org.cakelab.omcl.utils.log.Log;
 
-public class ConfigPane extends JPanel implements ActionListener, FileVerifier, org.cakelab.litwrl.gui.notification.DelayedNotificationReceiver {
+public class ConfigPane extends JPanel implements ActionListener, FileVerifier, org.cakelab.litwrl.gui.utils.notification.DelayedNotificationReceiver {
 	static final boolean DETAILS_FEATURE = false;
 
 	private static final long serialVersionUID = 1L;
 
 	private JTextField variant;
-	private VersionField version;
+	private VersionSelectorField version;
 	private JTextField profile;
 	private FileEdit gamedir;
 	private UserSelector userSelector;
@@ -156,7 +159,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		
 		
 		label = new JLabel("Version:");
-		version = new VersionField(this);
+		version = new VersionSelectorField(this);
 		version.setEnabled(false);
 		addRow(label, version, "This shows the version of the\nLife in the Woods Renaissance mod-pack that is\ninstalled or will be installed.");
 		
@@ -343,7 +346,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 	
 	
 	
-	protected void loadWorkDir() {
+	public void loadWorkDir() {
 		setProcessActions(false);
 		try {
 			launcherProfiles = null;

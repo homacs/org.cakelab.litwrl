@@ -1,4 +1,4 @@
-package org.cakelab.litwrl.gui;
+package org.cakelab.litwrl.gui.utils;
 
 import java.awt.Color;
 

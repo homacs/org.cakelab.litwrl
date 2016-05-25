@@ -1,4 +1,4 @@
-package org.cakelab.litwrl.gui;
+package org.cakelab.litwrl.gui.tabs.credits;
 
 import java.awt.Dimension;
 import java.io.File;

@@ -1,4 +1,4 @@
-package org.cakelab.litwrl.gui;
+package org.cakelab.litwrl.gui.tabs.config;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

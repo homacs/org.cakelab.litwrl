@@ -1,4 +1,4 @@
-package org.cakelab.litwrl.gui;
+package org.cakelab.litwrl.gui.footer;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -10,7 +10,9 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import org.cakelab.litwrl.gui.footer.VariantSelector;
+import org.cakelab.litwrl.gui.GameStatus;
+import org.cakelab.litwrl.gui.MainWindow;
+import org.cakelab.litwrl.gui.utils.GUIUtils;
 import org.cakelab.omcl.taskman.RunnableTask;
 
 public class FooterPanel extends JPanel implements ActionListener {

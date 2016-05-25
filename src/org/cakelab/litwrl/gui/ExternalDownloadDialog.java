@@ -22,7 +22,9 @@ import javax.swing.Timer;
 
 import org.cakelab.litwrl.Launcher;
 import org.cakelab.litwrl.config.Config;
-import org.cakelab.litwrl.gui.FileEdit.FileVerifier;
+import org.cakelab.litwrl.gui.utils.FileEdit;
+import org.cakelab.litwrl.gui.utils.OptionalPane;
+import org.cakelab.litwrl.gui.utils.FileEdit.FileVerifier;
 import org.cakelab.omcl.gui.ExternalBrowser;
 import org.cakelab.omcl.gui.IExternalDownloadDialog;
 import org.cakelab.omcl.utils.Md5Sum;

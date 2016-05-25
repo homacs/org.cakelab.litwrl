@@ -11,6 +11,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.cakelab.litwrl.Launcher;
 import org.cakelab.litwrl.config.Config;
 import org.cakelab.litwrl.config.Variants;
+import org.cakelab.litwrl.gui.utils.OptionalPane;
 import org.cakelab.litwrl.setup.LitWRSetupParams;
 import org.cakelab.omcl.gui.GUI;
 import org.cakelab.omcl.gui.IExternalDownloadDialog;

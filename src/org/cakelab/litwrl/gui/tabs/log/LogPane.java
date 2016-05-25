@@ -1,8 +1,9 @@
-package org.cakelab.litwrl.gui;
+package org.cakelab.litwrl.gui.tabs.log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.cakelab.litwrl.gui.utils.TextScrollPane;
 import org.cakelab.omcl.utils.log.Log;
 import org.cakelab.omcl.utils.log.LogListener;
 

@@ -1,4 +1,4 @@
-package org.cakelab.litwrl.gui;
+package org.cakelab.litwrl.gui.header;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import org.cakelab.litwrl.gui.resources.GUIResources;
+import org.cakelab.litwrl.gui.utils.GUIUtils;
 import org.cakelab.omcl.gui.ExternalBrowser;
 import org.cakelab.omcl.utils.log.Log;
 

@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import org.cakelab.litwrl.gui.GUIUtils;
+import org.cakelab.litwrl.gui.utils.GUIUtils;
 
 
 public class GUIResources {

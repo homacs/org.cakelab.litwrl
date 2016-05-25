@@ -1,4 +1,4 @@
-package org.cakelab.litwrl.gui;
+package org.cakelab.litwrl.gui.utils;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -21,9 +21,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import org.cakelab.litwrl.gui.notification.DelayedNotificationReceiver;
-import org.cakelab.litwrl.gui.notification.JTextFieldChangeNotificationService;
 import org.cakelab.litwrl.gui.resources.GUIResources;
+import org.cakelab.litwrl.gui.utils.notification.DelayedNotificationReceiver;
+import org.cakelab.litwrl.gui.utils.notification.JTextFieldChangeNotificationService;
 import org.cakelab.omcl.utils.log.Log;
 
 public class FileEdit extends JPanel implements ActionListener, DelayedNotificationReceiver {
@@ -192,7 +192,7 @@ public class FileEdit extends JPanel implements ActionListener, DelayedNotificat
 		}
 	}
 
-	void setInvalid(boolean invalid) {
+	public void setInvalid(boolean invalid) {
 		if (invalid) {
 			folder.setForeground(Color.red);
 			showErrorIcon();

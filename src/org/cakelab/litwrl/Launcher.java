@@ -18,7 +18,7 @@ import org.cakelab.json.codec.JSONCodecException;
 import org.cakelab.litwrl.config.Config;
 import org.cakelab.litwrl.config.Variants;
 import org.cakelab.litwrl.gui.LitWRLGUI;
-import org.cakelab.litwrl.gui.OptionalPane;
+import org.cakelab.litwrl.gui.utils.OptionalPane;
 import org.cakelab.litwrl.repository.LitWRLRepository;
 import org.cakelab.litwrl.setup.LitWRSetupParams;
 import org.cakelab.litwrl.setup.SetupControl;

@@ -13,8 +13,17 @@ import javax.swing.SwingUtilities;
 import org.cakelab.litwrl.Launcher;
 import org.cakelab.litwrl.config.Config;
 import org.cakelab.litwrl.config.Variants;
+import org.cakelab.litwrl.gui.footer.FooterPanel;
 import org.cakelab.litwrl.gui.footer.VariantSelector;
+import org.cakelab.litwrl.gui.header.HeaderPanel;
 import org.cakelab.litwrl.gui.resources.GUIResources;
+import org.cakelab.litwrl.gui.tabs.config.ConfigPane;
+import org.cakelab.litwrl.gui.tabs.credits.CreditsPane;
+import org.cakelab.litwrl.gui.tabs.help.GuidePane;
+import org.cakelab.litwrl.gui.tabs.log.LogPane;
+import org.cakelab.litwrl.gui.tabs.news.NewsfeedPane;
+import org.cakelab.litwrl.gui.utils.GUIUtils;
+import org.cakelab.litwrl.gui.utils.TextScrollPane;
 import org.cakelab.litwrl.setup.LitWRSetupParams;
 import org.cakelab.omcl.setup.SetupStatus;
 import org.cakelab.omcl.taskman.RunnableTask;
@@ -26,7 +35,7 @@ public class MainWindow extends JFrame implements WindowListener{
 	private static final String TAB_GAME_LOG = "Game Log";
 
 	
-	static MainWindow INSTANCE = null;
+	public static MainWindow INSTANCE = null;
 
 	
 	private LitWRLGUI gui;

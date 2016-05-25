@@ -86,8 +86,6 @@ public class Config {
 		return modified;
 	}
 
-
-
 	public void validate() {
 		if (!validateSelectedVariant(selectedVariant)) {
 			setSelectedVariant(Variants.BASIC);

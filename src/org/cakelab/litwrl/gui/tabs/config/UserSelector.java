@@ -1,4 +1,4 @@
-package org.cakelab.litwrl.gui;
+package org.cakelab.litwrl.gui.tabs.config;
 
 import java.awt.Component;
 import java.awt.Font;

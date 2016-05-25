@@ -1,4 +1,4 @@
-package org.cakelab.litwrl.gui;
+package org.cakelab.litwrl.gui.tabs.config;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -13,6 +13,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import org.cakelab.litwrl.gui.utils.GUIUtils;
 
 @SuppressWarnings("serial")
 public class ConfigDetailsPanel extends JPanel implements ActionListener {

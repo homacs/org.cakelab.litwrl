@@ -1,4 +1,4 @@
-package org.cakelab.litwrl.gui.notification;
+package org.cakelab.litwrl.gui.utils.notification;
 
 import javax.swing.JComponent;
 
