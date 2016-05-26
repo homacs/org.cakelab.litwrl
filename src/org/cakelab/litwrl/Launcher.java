@@ -545,6 +545,11 @@ public class Launcher {
 		return STANDARD_PROFILE_PREFIX + "." + gameConfigName;
 	}
 
+	public Versions getLitWRVersions(GameTypes type,
+			Variants variant) {
+		return repository.getLocalLitWRVersions(type, variant);
+	}
+
 	public String getLatestLitWRVersion(GameTypes type, Variants variant) {
 		Versions versions = repository.getLocalLitWRVersions(type, variant);
 		if (versions == null) {

@@ -33,8 +33,8 @@ import org.cakelab.litwrl.config.Variants;
 import org.cakelab.litwrl.gui.MainWindow;
 import org.cakelab.litwrl.gui.footer.VariantSelector;
 import org.cakelab.litwrl.gui.utils.FileEdit;
-import org.cakelab.litwrl.gui.utils.GUIUtils;
 import org.cakelab.litwrl.gui.utils.FileEdit.FileVerifier;
+import org.cakelab.litwrl.gui.utils.GUIUtils;
 import org.cakelab.litwrl.gui.utils.notification.JTextAreaChangeNotificationService;
 import org.cakelab.litwrl.setup.LitWRSetupParams;
 import org.cakelab.litwrl.setup.litwr.LitWRLConfig;
@@ -42,7 +42,7 @@ import org.cakelab.litwrl.setup.shaders.Shaders;
 import org.cakelab.litwrl.setup.shadersmod.OptionsShaders;
 import org.cakelab.omcl.config.GameConfig;
 import org.cakelab.omcl.config.GameTypes;
-import org.cakelab.omcl.setup.VersionStd;
+import org.cakelab.omcl.repository.Versions;
 import org.cakelab.omcl.setup.minecraft.LauncherProfiles;
 import org.cakelab.omcl.setup.minecraft.MinecraftClient;
 import org.cakelab.omcl.utils.FileSystem;
@@ -64,7 +64,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 	private JTextArea javaArgs;
 	
 	private Config config;
-	private GameTypes selectedGameType = GameTypes.CLIENT;
+	private static final GameTypes selectedGameType = GameTypes.CLIENT;
 	private GameConfig selectedGameConfig;
 	private FileEdit workingDir;
 	private LauncherProfiles launcherProfiles;
@@ -102,7 +102,10 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		this.variantSelector = variantSelector;
 		variantSelector.addActionListener(this);
 
-		this.version.init(config);
+		// TODO: Support different versions for different variants.
+		Versions versions = Launcher.INSTANCE.getLitWRVersions(GameTypes.CLIENT, variantSelector.getSelectedVariant());
+		
+		this.version.init(config, versions.getAvailableVersionStrings());
 		
 		String workDir = config.getWorkDir();
 		if (workDir == null) {
@@ -363,6 +366,8 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 			selectedGameConfig = config.addGameConfig(selectedGameType, selectedVariant);
 		}
 
+		
+		
 		String profileName = selectedGameConfig.getProfileName();
 		profile.setText(profileName);
 
@@ -390,27 +395,16 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		}
 		
 		
-		String latestVersion = Launcher.INSTANCE.getLatestLitWRVersion(selectedGameType, selectedVariant);
-		if (latestVersion == null) latestVersion = "0.0.0";
 		boolean willUpgrade = false;
 		
-		if (litwrlcfg == null) {
-			version.setVersion(latestVersion);
-		} else {
-			if (version.isKeepVersion()) {
-				version.setVersion(litwrlcfg.getVersion());
-			} else {
-				VersionStd latest = VersionStd.decode(latestVersion);
-				VersionStd current = VersionStd.decode(litwrlcfg.getVersion());
-				if (latest.isGreaterThan(current)) {
-					version.setVersion(latest.toString());
-					willUpgrade  = true;
-				} else {
-					version.setVersion(current.toString());
-				}
-			}
-		}
-
+		String latestLitWRVersion = Launcher.INSTANCE.getLatestLitWRVersion(selectedGameType, selectedVariant);
+		if (latestLitWRVersion == null) latestLitWRVersion = "0.0.0";
+		version.setLatestVersion(latestLitWRVersion);
+		version.setInstalledVersion( (litwrlcfg != null) ? litwrlcfg.getVersion() : null);
+		version.update();
+		
+		
+		willUpgrade = version.isVersionUpgrade();
 
 		if (profileExists) {
 			String args = launcherProfiles.getJavaArgs(selectedGameConfig.getProfileName());

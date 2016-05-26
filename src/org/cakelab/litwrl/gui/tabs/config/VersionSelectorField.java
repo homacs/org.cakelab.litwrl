@@ -4,26 +4,30 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import org.cakelab.litwrl.config.Config;
+import org.cakelab.omcl.utils.log.Log;
 
 @SuppressWarnings("serial")
 public class VersionSelectorField extends JPanel implements ActionListener {
 	private SequentialGroup horizontalGroup;
 	private ParallelGroup verticalGroup;
-	private JTextField version;
+	private VersionSelector version;
 	private JRadioButton keepButton;
 	private Config config;
 	private ConfigPane configPane;
+	private String latest;
+	private String installed;
+	private boolean processActions;
 	public VersionSelectorField(ConfigPane configPane) {
+		setOpaque(true);
 		this.configPane = configPane;
 		GroupLayout layout = new GroupLayout(this);
 		layout.setAutoCreateGaps(true);
@@ -34,9 +38,10 @@ public class VersionSelectorField extends JPanel implements ActionListener {
 		setLayout(layout);
 
 		
-		version = new JTextField(1);
+		version = new VersionSelector();
 		version.setEditable(false);
 		addRow(version);
+		version.addActionListener(this);
 
 		keepButton = new JRadioButton("Keep");
 		keepButton.setEnabled(false);
@@ -60,51 +65,102 @@ public class VersionSelectorField extends JPanel implements ActionListener {
 		super.setToolTipText(text);
 	}
 
-	public void setEnabled(boolean editable) {
-		keepButton.setEnabled(editable);
+	public void setEnabled(boolean configurable) {
+		keepButton.setEnabled(configurable);
+		version.setEnabled(installed == null && configurable);
 	}
 
-	public void init(Config config) {
+	public void init(Config config, String[] versions) {
+		processActions = false;
 		this.config = config;
-		if (isKeepVersion()) {
-			keepButton.setSelected(true);
-		} else {
-			keepButton.setSelected(false);
-		}
+		String keepLitwrVer = config.getKeepLitWRVersion();
+		keepButton.setSelected(keepLitwrVer != null && keepLitwrVer.length() > 0);
+		version.init(versions);
+		processActions = true;
 	}
 
-	public void setVersion(String latestVersion) {
-		version.setText(latestVersion);
+	public void setVersion(String version) {
+		processActions = false;
+		this.version.setVersion(version);
+		processActions = true;
 	}
 
 	public boolean isKeepVersion() {
-		String keepLitwrVer = config.getKeepLitWRVersion();
-		return keepLitwrVer != null && keepLitwrVer.length() > 0;
+		return keepButton.isSelected();
 	}
 
 	public String getVersion() {
-		return version.getText();
+		return version.getVersion();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if (!processActions) return;
+		
 		if (e.getSource() == keepButton) {
-			if (keepButton.isSelected()) {
-				config.setKeepLitWRVersion(version.getText());
+			if (isKeepVersion()) {
+				if (installed != null) version.setVersion(installed);
+				config.setKeepLitWRVersion(version.getVersion());
 			} else {
+				if (installed != null) version.setVersion(latest);
 				config.setKeepLitWRVersion(null);
 			}
 			config.save();
-			SwingUtilities.invokeLater(new Runnable() {
-
-				@Override
-				public void run() {
-					configPane.updatedVersionField();
-				}
-				
-			});
+			
+			sendUpdateNotification();
+		} else if (e.getSource() == version) {
+			String v = version.getVersion();
+			if (isKeepVersion()) config.setKeepLitWRVersion(v);
+			else if (!v.equals(latest)) {
+				processActions = false;
+				keepButton.setSelected(true);
+				processActions = true;
+				config.setKeepLitWRVersion(v);
+			}
+			config.save();
+			
+			sendUpdateNotification();
 		}
 	}
 
+	private void sendUpdateNotification() {
+		if (!processActions) return;
+		
+		Log.warn("send update ..", new Exception("test"));
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				configPane.updatedVersionField();
+			}
+			
+		});
+	}
+
+	public void setLatestVersion(String latest) {
+		this.latest = latest;
+	}
+
+	public void setInstalledVersion(String installed) {
+		this.installed = installed;
+	}
+
+	public void update() {
+		processActions = false;
+		if (this.isKeepVersion()) {
+			if (installed != null) {
+				version.setVersion(installed);
+			}
+		} else {
+			version.setVersion(latest);
+		}
+		setEnabled(keepButton.isEnabled());
+		processActions = true;
+	}
+
+	public boolean isVersionUpgrade() {
+		return !version.getVersion().equals(installed) ;
+	}
+
+	
 
 }
