@@ -86,7 +86,7 @@ public class MainWindow extends JFrame implements WindowListener{
 
 		
 		newsfeed = NewsfeedPane.create();
-		configPane = ConfigPane.create();
+		configPane = new ConfigPane();
 		logPane = LogPane.create();
 		logPane.init();
 
@@ -150,7 +150,7 @@ public class MainWindow extends JFrame implements WindowListener{
 
 
 	public void finishInitialisation() {
-		configPane.loadWorkDir();
+		configPane.updatedWorkDir();
 		configPane.setConfigurable(true);
 		footer.setConfigurable(true);
 		updateSetupStatus();

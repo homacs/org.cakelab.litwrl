@@ -10,25 +10,27 @@ import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.SwingUtilities;
 
 import org.cakelab.litwrl.config.Config;
-import org.cakelab.omcl.utils.log.Log;
 
 @SuppressWarnings("serial")
-public class VersionSelectorField extends JPanel implements ActionListener {
+public class VersionSelectorField extends JPanel implements UIConfigField, ActionListener {
 	private SequentialGroup horizontalGroup;
 	private ParallelGroup verticalGroup;
 	private VersionSelector version;
 	private JRadioButton keepButton;
 	private Config config;
-	private ConfigPane configPane;
 	private String latest;
 	private String installed;
 	private boolean processActions;
-	public VersionSelectorField(ConfigPane configPane) {
+	
+	private UIConfigFieldService updateService;
+	
+	
+	public VersionSelectorField(ConfigPaneUIElements configPaneUIElements) {
+		updateService = new UIConfigFieldService(this);
+		addConfigUpdateListener(configPaneUIElements);
 		setOpaque(true);
-		this.configPane = configPane;
 		GroupLayout layout = new GroupLayout(this);
 		layout.setAutoCreateGaps(true);
 		
@@ -63,11 +65,6 @@ public class VersionSelectorField extends JPanel implements ActionListener {
 		version.setToolTipText(text);
 		keepButton.setToolTipText("<html>If this tick is set, the launcher<br/>will not update the mod-pack.</html>");
 		super.setToolTipText(text);
-	}
-
-	public void setEnabled(boolean configurable) {
-		keepButton.setEnabled(configurable);
-		version.setEnabled(installed == null && configurable);
 	}
 
 	public void init(Config config, String[] versions) {
@@ -125,15 +122,7 @@ public class VersionSelectorField extends JPanel implements ActionListener {
 
 	private void sendUpdateNotification() {
 		if (!processActions) return;
-		
-		Log.warn("send update ..", new Exception("test"));
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				configPane.updatedVersionField();
-			}
-			
-		});
+		updateService.forwardConfigUpdate();
 	}
 
 	public void setLatestVersion(String latest) {
@@ -153,7 +142,7 @@ public class VersionSelectorField extends JPanel implements ActionListener {
 		} else {
 			version.setVersion(latest);
 		}
-		setEnabled(keepButton.isEnabled());
+		setConfigurable(keepButton.isEnabled());
 		processActions = true;
 	}
 
@@ -161,6 +150,25 @@ public class VersionSelectorField extends JPanel implements ActionListener {
 		return !version.getVersion().equals(installed) ;
 	}
 
-	
+	@Override
+	public void setConfigurable(boolean configurable) {
+		keepButton.setEnabled(configurable);
+		version.setEnabled(installed == null && configurable);
+	}
+
+	@Override
+	public boolean isConfigurable() {
+		return keepButton.isEnabled();
+	}
+
+	@Override
+	public void addConfigUpdateListener(ConfigUpdateListener listener) {
+		updateService.addConfigUpdateListener(listener);
+	}
+
+	@Override
+	public void removeConfigUpdateListener(ConfigUpdateListener listener) {
+		updateService.removeConfigUpdateListener(listener);
+	}
 
 }

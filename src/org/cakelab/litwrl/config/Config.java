@@ -45,8 +45,6 @@ public class Config {
 	private boolean dontShowUpgradeWarning = false;
 	private String keepLitWRVersion = null;
 	
-	
-
 	public Config(File dir) {
 		this.file = new File(dir, CONFIG_FILE);
 	}

@@ -34,6 +34,7 @@ public class Main {
 		// Bootstrap into latest available launcher if not already running
 		launchCurrent();
 		
+		// if this is not the bootstrapping process then proceed with initialisation of the launcher
 		Launcher launcher = Launcher.create();
 		launcher.run();
 	}

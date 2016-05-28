@@ -1,28 +1,13 @@
 package org.cakelab.litwrl.gui.tabs.config;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import org.cakelab.json.JSONException;
@@ -33,8 +18,6 @@ import org.cakelab.litwrl.config.Variants;
 import org.cakelab.litwrl.gui.MainWindow;
 import org.cakelab.litwrl.gui.footer.VariantSelector;
 import org.cakelab.litwrl.gui.utils.FileEdit;
-import org.cakelab.litwrl.gui.utils.FileEdit.FileVerifier;
-import org.cakelab.litwrl.gui.utils.GUIUtils;
 import org.cakelab.litwrl.gui.utils.notification.JTextAreaChangeNotificationService;
 import org.cakelab.litwrl.setup.LitWRSetupParams;
 import org.cakelab.litwrl.setup.litwr.LitWRLConfig;
@@ -50,56 +33,50 @@ import org.cakelab.omcl.utils.OS;
 import org.cakelab.omcl.utils.Regex;
 import org.cakelab.omcl.utils.log.Log;
 
-public class ConfigPane extends JPanel implements ActionListener, FileVerifier, org.cakelab.litwrl.gui.utils.notification.DelayedNotificationReceiver {
-	static final boolean DETAILS_FEATURE = false;
-
-	private static final long serialVersionUID = 1L;
-
-	private JTextField variant;
-	private VersionSelectorField version;
-	private JTextField profile;
-	private FileEdit gamedir;
-	private UserSelector userSelector;
-	private VariantSelector variantSelector;
-	private JTextArea javaArgs;
+@SuppressWarnings("serial")
+public class ConfigPane extends ConfigPaneUIElements {
 	
 	private Config config;
+	
+	/** user selected game type (always client) */
 	private static final GameTypes selectedGameType = GameTypes.CLIENT;
+
+	/** user selected game variant */
+	private Variants selectedVariant;
+
+	/** litwr game config based on type and variant. */
 	private GameConfig selectedGameConfig;
-	private FileEdit workingDir;
+	
+	/** launcher profiles based on workdir. Contains profile selected based on gameconfig.*/
 	private LauncherProfiles launcherProfiles;
 	private boolean profileExists;
-
+	
+	/** litwr installation config based on gamedir */
 	private LitWRLConfig litwrlcfg;
-	private Variants selectedVariant;
-	private GroupLayout layout;
-	private ParallelGroup labelsColumn;
-	private ParallelGroup valuesColumn;
-	private SequentialGroup rows;
-	private MainWindow window;
-	private JComboBox<String> shader;
+	
+	/** Selected set of shaders based on litwr game config and version */
 	private Shaders selectedShaderSet;
 	private String selectedShader;
 	
 	private boolean validContent = false;
 	private boolean modified = false;
-	private boolean processActions;
-	private JButton resetButton;
-	private JPanel spacer;
-	private JPanel configArea;
-	private ConfigDetailsPanel detailsPanel;
+	/** enables/disables processing of action notifications and controls execution 
+	 * of post update tasks such as launcher status update and saving of modifications.
+	 * 0 == enabled, not null == disabled */
+	private int updating = 0;
 
+	private MainWindow window;
 
-	
-	public static ConfigPane create() {
-		ConfigPane pane = new ConfigPane();
-		return pane;
+	public ConfigPane() {
+		// all basic UI elements initialisation is performed in our base class.
 	}
 
 	public void init(MainWindow window, Config config, VariantSelector variantSelector) {
 		this.window = window;
 		this.config = config;
 		this.variantSelector = variantSelector;
+		
+		beginUpdateSection();
 		variantSelector.addActionListener(this);
 
 		// TODO: Support different versions for different variants.
@@ -114,172 +91,40 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		}
 		workingDir.init(workDir, this, false);
 		
-		setSelectedVariant(config.getSelectedVariant());
+		updatedVariant(config.getSelectedVariant());
 		
 		validContent = validateContent();
 
 		JTextAreaChangeNotificationService notificationService = new JTextAreaChangeNotificationService(this, javaArgs, 500);
 		notificationService.setEnabled(true);
+		endUpdateSection();
 	}
 
-	
-	private ConfigPane() {
-		configArea = new JPanel();
-		
-		layout = new GroupLayout(configArea);
-		configArea.setLayout(layout);
-		layout.setAutoCreateGaps(true);
-		layout.setAutoCreateContainerGaps(true);
-
-		labelsColumn = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-		valuesColumn = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-
-		rows = layout.createSequentialGroup();
-		
-
-		JLabel label;
-		
-		label = new JLabel("User:");
-		userSelector = new UserSelector();
-		addRow(label, userSelector,   "Here you can switch between your\n"
-									+ "Minecraft accounts. Select\n"
-									+ "`login on next start`\n"
-									+ "if you want to add another account.");
-		
-		label = new JLabel("Working directory:");
-		workingDir = FileEdit.create("Select a Minecraft Working Directory");
-		workingDir.setEditable(false);
-		addRow(label, workingDir, "This is the minecraft working directory.\n"
-				+ "You can choose your existing minecraft\n"
-				+ "installation or a separate one.\n\n"
-				+ "<em>We recommend to use a separate one.</em>");
-
-		label = new JLabel("Variant:");
-		variant = new JTextField(1);
-		variant.setEditable(false);
-		addRow(label, variant, "This is the variant of Life in the Woods Renaissance\nyou selected in the lower right corner of the window.");
-
-		
-		
-		label = new JLabel("Version:");
-		version = new VersionSelectorField(this);
-		version.setEnabled(false);
-		addRow(label, version, "This shows the version of the\nLife in the Woods Renaissance mod-pack that is\ninstalled or will be installed.");
-		
-		label = new JLabel("Profile:");
-		profile = new JTextField(1);
-		profile.setEditable(false);
-		addRow(label, profile, "This is the name of the Minecraft launcher\n"
-				+ "profile to be used for the selected variant.");
-		
-		label = new JLabel("Game directory:");
-		gamedir = FileEdit.create("Select a Game Directory");
-		gamedir.setEditable(false);
-		addRow(label, gamedir, "This is the game directory for the selected\n"
-				+ "Life in the Woods Renaissance variant.");
-
-		label = new JLabel("JVM arguments:");
-		javaArgs = new JTextArea(2,0);
-		javaArgs.setLineWrap(true);
-		javaArgs.setWrapStyleWord(true);
-		javaArgs.setBorder(BorderFactory.createLineBorder(Color.gray));
-		javaArgs.setEditable(false);
-		addRow(label, javaArgs, "These are the command line arguments for\nthe Java VM running the Minecraft client.");
-		
-		
-		addShadersSection();
-
-		addDetailsSection();
-		
-		addResetSection();
-		
-		
-		layout.setHorizontalGroup(layout.createSequentialGroup()
-				.addGroup(labelsColumn)
-				.addGroup(valuesColumn));
-
-		layout.setVerticalGroup(rows);
-
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		add(configArea);
-		
-		spacer = new JPanel();
-		Dimension dim = new Dimension(0,3000);
-		spacer.setPreferredSize(dim);
-		add(spacer);
-	}
-	
-	private void addDetailsSection() {
-		if (DETAILS_FEATURE) {
-			JLabel label = new JLabel("Details");
-			detailsPanel = new ConfigDetailsPanel();
-			addRow(label, detailsPanel, "Allows to configure the details of visual enhancements.");
-		}
-	}
-
-
-
-	private void addResetSection() {
-		JLabel label = new JLabel();
-		JPanel resetPanel = new JPanel();
-		resetButton = new JButton("Reset");
-		resetButton.setToolTipText("<html>This button resets all settings<br/>to their default values.</html>");
-		Dimension buttonSize = new Dimension(100, 30);
-		resetButton.setPreferredSize(buttonSize);
-		resetButton.addActionListener(this);
-		FlowLayout resetLayout = new FlowLayout(FlowLayout.RIGHT, 0, 10);
-		resetPanel.setLayout(resetLayout);
-		resetPanel.add(new JLabel());
-		resetPanel.add(resetButton);
-		addRow(label, resetPanel, null);
-	}
-
-
-
-	private void addShadersSection() {
-		JLabel label = new JLabel("Shader:");
-		
-		shader = new JComboBox<String>();
-		selectedShader = Shaders.SHADER_NONE;
-		shader.addItem(selectedShader);
-		shader.setEditable(false);
-		shader.setEnabled(false);
-		shader.addActionListener(this);
-		
-		addRow(label, shader, 
-				"This option allows you to use shader packs.\n"
-				+ "You can select a shader pack to be installed\n"
-				+ "and used when you start the game.\n"
-				+ "\n"
-				+ "Please note, that this requires you to download\n"
-				+ "certain files manually. But don't worry, we will\n"
-				+ "guide you to the right pages to do so.");
-	}
-
-	
-
-	private void addRow(JComponent label, JComponent value, String tooltip) {
-		if (tooltip != null) {
-			tooltip = GUIUtils.createMultilineTooltip(tooltip);
-			label.setToolTipText(tooltip);
-			value.setToolTipText(tooltip);
-		}
-		labelsColumn.addComponent(label);
-		valuesColumn.addComponent(value, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
-		rows.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(label)
-				.addComponent(value));
-	}
-
-	private void setSelectedVariant(Variants selectedVariant) {
+	private void updatedVariant(Variants selectedVariant) {
+		beginUpdateSection();
 		this.selectedVariant = selectedVariant;
 		config.setSelectedVariant(selectedVariant);
 		variant.setText(selectedVariant.toString());
-		loadWorkDir();
-		checkModified();
+		loadGameConfig(selectedVariant);
+
+		endUpdateSection();
 	}
 	
+	private void loadGameConfig(Variants selectedVariant) {
+		beginUpdateSection();
+		selectedGameConfig = config.getGameConfig(selectedGameType, selectedVariant);
+		if (selectedGameConfig == null) {
+			selectedGameConfig = config.addGameConfig(selectedGameType, selectedVariant);
+		}
+
+		profile.setText(selectedGameConfig.getProfileName());
+
+		updatedWorkDir();
+		endUpdateSection();
+	}
+
 	private void setSelectedShader(String selectedItem) {
+		beginUpdateSection();
 		if (selectedShader != selectedItem) {
 			boolean isUnknown = false;
 			try {
@@ -306,9 +151,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 			}
 
 			selectedShader = selectedItem;
-			setProcessActions(false);
 			shader.setSelectedItem(selectedItem);
-			setProcessActions(true);
 
 			modified = true;
 		}
@@ -320,10 +163,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 			}
 			
 		});
-	}
-
-	public void updatedVersionField() {
-		loadWorkDir();
+		endUpdateSection();
 	}
 
 	private void setDefaults() {
@@ -337,7 +177,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		String workDir = Launcher.INSTANCE.getDefaultWorkDir();
 		if (!workDir.equals(workingDir.getSelectedFile().getAbsolutePath())) {
 			config.setWorkDir(workDir);
-			loadWorkDir();
+			updatedWorkDir();
 		}
 		
 		javaArgs.setText(trimJavaArgs(getOptimizedJavaArgs()));
@@ -346,65 +186,31 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		checkModified();
 	}
 
-	
-	
-	
-	public void loadWorkDir() {
-		setProcessActions(false);
+	public void updatedWorkDir() {
+		beginUpdateSection();
 		try {
-			launcherProfiles = null;
 			launcherProfiles = LauncherProfiles.load(new File(workingDir.getSelectedFile(), LauncherProfiles.PROFILES_FILE));
-			this.profileExists = true;
 		} catch (IOException | JSONException | JSONCodecException e) {
-			this.profileExists = false;
+			launcherProfiles = null;
 		}
 
 		userSelector.init(launcherProfiles);
-		
-		selectedGameConfig = config.getGameConfig(selectedGameType, selectedVariant);
-		if (selectedGameConfig == null) {
-			selectedGameConfig = config.addGameConfig(selectedGameType, selectedVariant);
-		}
 
 		
-		
-		String profileName = selectedGameConfig.getProfileName();
-		profile.setText(profileName);
-
-		if (profileExists) {
-			profileExists = launcherProfiles.exists(profileName);
+		profileExists = false;
+		if (launcherProfiles != null) {
+			profileExists = launcherProfiles.exists(profile.getText());
 			if (profileExists) {
-				launcherProfiles.setSelectProfile(profileName);
+				launcherProfiles.setSelectProfile(profile.getText());
 			}
 		}
 		
-		
 		if (profileExists) {
-			String dir = launcherProfiles.getGameDir(profileName);
+			String dir = launcherProfiles.getGameDir(profile.getText());
 			gamedir.init(dir, this, false);
 		} else {
 			gamedir.init(createDefaultGamePath(), this, false);
 		}
-		
-		
-		litwrlcfg = null;
-		try {
-			litwrlcfg = LitWRLConfig.loadFromGameDir(gamedir.getSelectedFile());
-		} catch (IOException | JSONCodecException e) {
-			// nevermind .. we'll fix it below
-		}
-		
-		
-		boolean willUpgrade = false;
-		
-		String latestLitWRVersion = Launcher.INSTANCE.getLatestLitWRVersion(selectedGameType, selectedVariant);
-		if (latestLitWRVersion == null) latestLitWRVersion = "0.0.0";
-		version.setLatestVersion(latestLitWRVersion);
-		version.setInstalledVersion( (litwrlcfg != null) ? litwrlcfg.getVersion() : null);
-		version.update();
-		
-		
-		willUpgrade = version.isVersionUpgrade();
 
 		if (profileExists) {
 			String args = launcherProfiles.getJavaArgs(selectedGameConfig.getProfileName());
@@ -412,8 +218,36 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		} else {
 			javaArgs.setText(trimJavaArgs(getOptimizedJavaArgs()));
 		}
+		
+		updatedGameDir();
+		endUpdateSection();
+	}
+	
+	void updatedGameDir() {
+		beginUpdateSection();
+		litwrlcfg = null;
+		try {
+			litwrlcfg = LitWRLConfig.loadFromGameDir(gamedir.getSelectedFile());
+		} catch (IOException | JSONCodecException e) {
+			// nevermind .. we'll fix it below
+		}
+		
+		String latestLitWRVersion = Launcher.INSTANCE.getLatestLitWRVersion(selectedGameType, selectedVariant);
+		if (latestLitWRVersion == null) latestLitWRVersion = "0.0.0";
+		version.setLatestVersion(latestLitWRVersion);
+		version.setInstalledVersion( (litwrlcfg != null) ? litwrlcfg.getVersion() : null);
+		version.update();
+		updatedVersion();
+
+		endUpdateSection();
+	}
 
 
+
+	private void updatedVersion() {
+		beginUpdateSection();
+		
+		boolean willUpgrade = version.isVersionUpgrade();
 		//
 		// shaders
 		//
@@ -468,10 +302,8 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 				setSelectedShader(Shaders.SHADER_NONE);
 			}
 		}
-		setProcessActions(true);
+		endUpdateSection();
 	}
-
-
 
 	private String getOptimizedJavaArgs() {
 		long totalMB = OS.getTotalAvailabMemorySize()/1024/1024;
@@ -567,7 +399,7 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 		
 		if (e.getSource().equals(variantSelector)) {
 			if (e.getActionCommand().equals("comboBoxChanged")) {
-				setSelectedVariant(variantSelector.getSelectedVariant());
+				updatedVariant(variantSelector.getSelectedVariant());
 			}
 		} else if (e.getSource().equals(shader)) {
 			setSelectedShader((String) shader.getSelectedItem());
@@ -577,35 +409,76 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 	}
 
 
+	@Override
+	public void updatedUIConfigField(UIConfigField field) {
+		if (field == version) {
+			updatedVersion();
+		}
+	}
+
+
+	@Override
+	public void delayedNotification(JComponent component) {
+		beginUpdateSection();
+		if (component.equals(javaArgs)) {
+			if (profileExists) {
+				String args = trimJavaArgs(javaArgs.getText());
+				launcherProfiles.setJavaArgs(this.selectedGameConfig.getProfileName(), args);
+			}
+		}
+		endUpdateSection();
+	}
 
 	private boolean validateWorkDir(File wd) {
-		boolean valid = true;
 		
 		if (FileSystem.isChildOf(wd, gamedir.getSelectedFile())) {
 			workingDir.setErrorMessage("The working directory cannot be located inside the game directory.");
-			valid = false;
-		} else if (valid && !FileSystem.hasAccessibleParent(wd)) {
-			valid = false;
+			return false;
+		} else if (!FileSystem.hasAccessibleParent(wd)) {
 			workingDir.setErrorMessage("Selected working directory cannot be created\nor does not allow to store files in it.");
-		} else if (valid && wd.exists() && new File(wd, MinecraftClient.SUBDIR_MODS).exists()) {
-			valid = false;
+			return false;
+		} else if (wd.exists() && new File(wd, MinecraftClient.SUBDIR_MODS).exists()) {
 			workingDir.setErrorMessage("This minecraft installation already contains mods.\nYou need to choose another directory.");
+			return false;
 		} else {
 			try {
-				if (valid && wd.exists() && Files.isSameFile(wd.toPath(), FileSystem.getUserHome().toPath())) {
-					valid = false;
+				if (wd.exists() && Files.isSameFile(wd.toPath(), FileSystem.getUserHome().toPath())) {
 					workingDir.setErrorMessage("Don't do this!\nYou probably meant '" + new File(FileSystem.getUserHome(), ".minecraft").toString() + "'");
 				}
 			} catch (AccessDeniedException e) {
 				workingDir.setErrorMessage("Can't use chosen directory: access denied");
-				valid = false;
+				return false;
 			} catch (IOException e) {
 				workingDir.setErrorMessage("Can't use chosen directory: '" + e.getLocalizedMessage() + "'");
-				valid = false;
+				return false;
 			}
 		}
-		return valid;
+		return true;
 	}
+	
+	private boolean validateGameDir(File gd) {
+		if (FileSystem.isChildOf(gd, workingDir.getSelectedFile())) {
+			gamedir.setErrorMessage("Game directory should not be located inside the Minecraft folder.");
+			return false;
+		} else if (!FileSystem.hasAccessibleParent(gd)) {
+			workingDir.setErrorMessage("Selected working directory cannot be created\nor does not allow to store files in it.");
+			return false;
+		} else {
+			try {
+				if (gd.exists() && Files.isSameFile(gd.toPath(), FileSystem.getUserHome().toPath())) {
+					workingDir.setErrorMessage("Don't do this. You probably meant '" + new File(FileSystem.getUserHome(), "games").toString() + "'");
+				}
+			} catch (AccessDeniedException e) {
+				workingDir.setErrorMessage("Can't use chosen directory: access denied");
+				return false;
+			} catch (IOException e) {
+				workingDir.setErrorMessage("Can't use chosen directory: '" + e.getLocalizedMessage() + "'");
+				return false;
+			}
+		}
+		return true;
+	}
+
 	
 
 	@Override
@@ -615,16 +488,28 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 			boolean isValid = validateWorkDir(wd);
 			if (isValid) {
 				config.setWorkDir(wd.toString());
-				checkModified();
-				loadWorkDir();
+				updatedWorkDir();
 			} else {
 				userSelector.init(null);
+				setValidContent(false);
+				return false;
+			}
+		} else if (folderEdit.equals(gamedir)) {
+			File gd = gamedir.getSelectedFile();
+			boolean isValid = validateGameDir(gd);
+			if (isValid) {
+				if (profileExists) {
+					launcherProfiles.setGameDir(profile.getText(), gd);
+				}
+				updatedGameDir();
+			} else {
 				setValidContent(false);
 				return false;
 			}
 		}
 		return true;
 	}
+
 
 
 	public LitWRSetupParams getSetupParams() {
@@ -643,37 +528,33 @@ public class ConfigPane extends JPanel implements ActionListener, FileVerifier, 
 
 	public void setConfigurable(boolean configurable) {
 		if (configurable) {
-			loadWorkDir();
+			updatedWorkDir();
 		}
 		workingDir.setEditable(configurable);
+		gamedir.setEditable(configurable);
 		javaArgs.setEditable(configurable);
 		shader.setEnabled(configurable);
 		resetButton.setEnabled(configurable);
 		userSelector.setEnabled(configurable);
-		version.setEnabled(configurable);
-	}
-
-
-
-	@Override
-	public void delayedNotification(JComponent component) {
-		if (component.equals(javaArgs)) {
-			if (profileExists) {
-				String args = trimJavaArgs(javaArgs.getText());
-				launcherProfiles.setJavaArgs(this.selectedGameConfig.getProfileName(), args);
-				checkModified();
-			}
-		}
+		version.setConfigurable(configurable);
 	}
 
 	private boolean isProcessActions() {
-		return processActions;
+		return (updating == 0);
 	}
 
-	private void setProcessActions(boolean processActions) {
-		this.processActions = processActions;
-
-		if (DETAILS_FEATURE) detailsPanel.setProcessActions(processActions);
+	void beginUpdateSection() {
+		this.updating += 1;
+		if (DETAILS_FEATURE) detailsPanel.setProcessActions(this.updating == 0);
+	}
+	
+	void endUpdateSection() {
+		this.updating -= 1;
+		assert(this.updating >= 0);
+		if (DETAILS_FEATURE) detailsPanel.setProcessActions(this.updating == 0);
+		if (isProcessActions()) {
+			checkModified();
+		}
 	}
 
 }

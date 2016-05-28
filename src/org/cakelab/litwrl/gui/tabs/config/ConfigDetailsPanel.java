@@ -13,9 +13,14 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
 import org.cakelab.litwrl.gui.utils.GUIUtils;
 
+
+/** This class is for future purposes (not yet active).
+ * 
+ */
 @SuppressWarnings("serial")
 public class ConfigDetailsPanel extends JPanel implements ActionListener {
 	private GroupLayout layout;
@@ -31,7 +36,7 @@ public class ConfigDetailsPanel extends JPanel implements ActionListener {
 
 	public ConfigDetailsPanel () {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		
+		this.setBorder(new TitledBorder("Video Options"));
 		showHideButton = new JButton("Show");
 		Dimension buttonSize = new Dimension(100, 30);
 		showHideButton.setPreferredSize(buttonSize);
