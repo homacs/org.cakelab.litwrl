@@ -19,7 +19,6 @@ public class VersionSelectorField extends JPanel implements UIConfigField, Actio
 	private ParallelGroup verticalGroup;
 	private VersionSelector version;
 	private JRadioButton keepButton;
-	private Config config;
 	private String latest;
 	private String installed;
 	private boolean processActions;
@@ -69,9 +68,7 @@ public class VersionSelectorField extends JPanel implements UIConfigField, Actio
 
 	public void init(Config config, String[] versions) {
 		processActions = false;
-		this.config = config;
-		String keepLitwrVer = config.getKeepLitWRVersion();
-		keepButton.setSelected(keepLitwrVer != null && keepLitwrVer.length() > 0);
+		keepButton.setSelected(false);
 		version.init(versions);
 		processActions = true;
 	}
@@ -97,24 +94,20 @@ public class VersionSelectorField extends JPanel implements UIConfigField, Actio
 		if (e.getSource() == keepButton) {
 			if (isKeepVersion()) {
 				if (installed != null) version.setVersion(installed);
-				config.setKeepLitWRVersion(version.getVersion());
 			} else {
 				if (installed != null) version.setVersion(latest);
-				config.setKeepLitWRVersion(null);
 			}
-			config.save();
 			
 			sendUpdateNotification();
 		} else if (e.getSource() == version) {
 			String v = version.getVersion();
-			if (isKeepVersion()) config.setKeepLitWRVersion(v);
-			else if (!v.equals(latest)) {
+			if (isKeepVersion()) {
+				
+			} else if (!v.equals(latest)) {
 				processActions = false;
 				keepButton.setSelected(true);
 				processActions = true;
-				config.setKeepLitWRVersion(v);
 			}
-			config.save();
 			
 			sendUpdateNotification();
 		}
@@ -131,6 +124,10 @@ public class VersionSelectorField extends JPanel implements UIConfigField, Actio
 
 	public void setInstalledVersion(String installed) {
 		this.installed = installed;
+	}
+	
+	public void setKeepVersion(boolean keep) {
+		keepButton.setSelected(keep);
 	}
 
 	public void update() {

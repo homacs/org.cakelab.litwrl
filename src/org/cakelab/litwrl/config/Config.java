@@ -43,7 +43,6 @@ public class Config {
 	private boolean dontShowShaderHint = false;
 	private boolean dontShowAdWarning = false;
 	private boolean dontShowUpgradeWarning = false;
-	private String keepLitWRVersion = null;
 	
 	public Config(File dir) {
 		this.file = new File(dir, CONFIG_FILE);
@@ -248,19 +247,5 @@ public class Config {
 	public boolean isDontShowUpgradeWarning() {
 		return dontShowUpgradeWarning;
 	}
-
-	public String getKeepLitWRVersion() {
-		return keepLitWRVersion;
-	}
-
-	public void setKeepLitWRVersion(String version) {
-		if (version == keepLitWRVersion) {
-			return;
-		} else if (version == null || keepLitWRVersion == null || !version.equals(keepLitWRVersion)) {
-			keepLitWRVersion = version;
-			modified = true;
-		}
-	}
-	
 
 }

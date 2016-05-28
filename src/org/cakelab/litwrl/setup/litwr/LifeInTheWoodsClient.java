@@ -263,7 +263,7 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 			if (OS.isMac()) {
 				taskman.addSingleTask(new Delete("installing mod-pack", new File(setupParams.gamedir, MinecraftClient.SUBDIR_MODS + File.separator + "Waila-1.5.10_1.7.10.jar").getAbsolutePath()));
 			}
-			taskman.addSingleTask(new FinishLitWRLSetup(new LitWRLConfig(setupParams.version, setupParams.type, litwrlParams.variant), configFile));
+			taskman.addSingleTask(new FinishLitWRLSetup(new LitWRLConfig(setupParams.version, setupParams.type, litwrlParams.variant, litwrlParams.keepVersion), configFile));
 		}
 
 	}
@@ -293,7 +293,7 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 		if (OS.isMac()) {
 			taskman.addSingleTask(new Delete("upgrading mod-pack", new File(setupParams.gamedir, MinecraftClient.SUBDIR_MODS + File.separator + "Waila-1.5.10_1.7.10.jar").getAbsolutePath()));
 		}
-		taskman.addSingleTask(new FinishLitWRLSetup(new LitWRLConfig(setupParams.version, setupParams.type, litwrlParams.variant), configFile));
+		taskman.addSingleTask(new FinishLitWRLSetup(new LitWRLConfig(setupParams.version, setupParams.type, litwrlParams.variant, litwrlParams.keepVersion), configFile));
 	}
 
 

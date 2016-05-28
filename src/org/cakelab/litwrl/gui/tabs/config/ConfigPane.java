@@ -236,6 +236,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 		if (latestLitWRVersion == null) latestLitWRVersion = "0.0.0";
 		version.setLatestVersion(latestLitWRVersion);
 		version.setInstalledVersion( (litwrlcfg != null) ? litwrlcfg.getVersion() : null);
+		version.setKeepVersion((litwrlcfg != null) ? litwrlcfg.isKeepVersion() : false);
 		version.update();
 		updatedVersion();
 
@@ -248,8 +249,13 @@ public class ConfigPane extends ConfigPaneUIElements {
 		beginUpdateSection();
 		
 		boolean willUpgrade = version.isVersionUpgrade();
+		
+		if (!willUpgrade && litwrlcfg != null) {
+			litwrlcfg.setKeepVersion(version.isKeepVersion());
+		}
+		
 		//
-		// shaders
+		// refresh set of shaders for the given version
 		//
 		shader.removeAllItems();
 		try {
@@ -366,7 +372,14 @@ public class ConfigPane extends ConfigPaneUIElements {
 					Log.error("saving profile failed", e);
 				}
 			}
-		}		
+			if (litwrlcfg != null && litwrlcfg.isModified()) {
+				try {
+					litwrlcfg.save();
+				} catch (IOException | JSONCodecException e) {
+					Log.error("saving litwrl config");
+				}
+			}
+		}
 		
 		if (needsStatusUpdate || modified) {
 			window.updateSetupStatus();
@@ -517,6 +530,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 				new File(config.getWorkDir()), 
 				gamedir.getSelectedFile(), 
 				version.getVersion(), 
+				version.isKeepVersion(),
 				selectedGameType, 
 				config.getSelectedVariant(), 
 				trimJavaArgs(javaArgs.getText()), 

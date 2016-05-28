@@ -8,7 +8,6 @@ import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -22,27 +21,20 @@ import org.cakelab.litwrl.gui.utils.GUIUtils;
  * 
  */
 @SuppressWarnings("serial")
-public class ConfigDetailsPanel extends JPanel implements ActionListener {
+public class ConfigOptionalPanel extends JPanel implements ActionListener {
 	private GroupLayout layout;
 	private ParallelGroup labelsColumn;
 	private ParallelGroup valuesColumn;
 	private SequentialGroup rows;
 	private JPanel configArea;
-	private JButton showHideButton;
 	private JCheckBox shadersModButton;
 	private JCheckBox optifineButton;
 	private JCheckBox dynamicLights;
 	private boolean processActions;
 
-	public ConfigDetailsPanel () {
+	public ConfigOptionalPanel () {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		this.setBorder(new TitledBorder("Video Options"));
-		showHideButton = new JButton("Show");
-		Dimension buttonSize = new Dimension(100, 30);
-		showHideButton.setPreferredSize(buttonSize);
-		showHideButton.addActionListener(this);
-		add(showHideButton);
-		
+		this.setBorder(new TitledBorder("Optional Addons"));
 		
 		addConfigArea();
 		
@@ -106,11 +98,6 @@ public class ConfigDetailsPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (!processActions) return;
-		
-		if (e.getSource().equals(showHideButton)) {
-			showHideButton.setText(configArea.isVisible()?"Show":"Hide");
-			configArea.setVisible(!configArea.isVisible());
-		}
 		
 	}
 

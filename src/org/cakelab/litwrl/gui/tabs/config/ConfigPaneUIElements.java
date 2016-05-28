@@ -25,6 +25,7 @@ import org.cakelab.litwrl.gui.utils.GUIUtils;
 import org.cakelab.litwrl.gui.utils.notification.DelayedNotificationReceiver;
 
 public abstract class ConfigPaneUIElements extends JPanel implements ActionListener, FileVerifier, DelayedNotificationReceiver, ConfigUpdateListener {
+	// TODO: remove when done
 	static final boolean DETAILS_FEATURE = false;
 
 	private static final long serialVersionUID = 1L;
@@ -40,7 +41,7 @@ public abstract class ConfigPaneUIElements extends JPanel implements ActionListe
 	protected JTextArea javaArgs;
 	protected JComboBox<String> shader;
 	protected JButton resetButton;
-	protected ConfigDetailsPanel detailsPanel;
+	protected ConfigOptionalPanel detailsPanel;
 
 	private GroupLayout layout;
 	private ParallelGroup labelsColumn;
@@ -138,7 +139,7 @@ public abstract class ConfigPaneUIElements extends JPanel implements ActionListe
 	private void addDetailsSection() {
 		if (DETAILS_FEATURE) {
 			JLabel label = new JLabel("Details");
-			detailsPanel = new ConfigDetailsPanel();
+			detailsPanel = new ConfigOptionalPanel();
 			addRow(label, detailsPanel, "Allows to configure the details of visual enhancements.");
 		}
 	}
