@@ -1,6 +1,5 @@
 package org.cakelab.litwrl.gui.tabs.config;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -56,11 +55,6 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 		
 		addConfigArea();
 		
-
-		JPanel spacer = new JPanel();
-		Dimension dim = new Dimension(0,3000);
-		spacer.setPreferredSize(dim);
-		add(spacer);
 	}
 
 	private void addRow(JComponent label, JComponent value, String tooltip) {
@@ -69,11 +63,11 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 			label.setToolTipText(tooltip);
 			value.setToolTipText(tooltip);
 		}
-		labelsColumn.addComponent(label);
+		labelsColumn.addComponent(label, 0, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
 		valuesColumn.addComponent(value, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
 		verticalGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(label)
-				.addComponent(value));
+				.addComponent(label, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(value, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
 	}
 
 

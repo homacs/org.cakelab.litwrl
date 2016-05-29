@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
@@ -15,8 +14,10 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 
 import org.cakelab.litwrl.gui.footer.VariantSelector;
 import org.cakelab.litwrl.gui.utils.FileEdit;
@@ -25,9 +26,9 @@ import org.cakelab.litwrl.gui.utils.GUIUtils;
 import org.cakelab.litwrl.gui.utils.notification.DelayedNotificationReceiver;
 
 @SuppressWarnings("serial")
-public abstract class ConfigPaneUIElements extends JPanel implements ActionListener, FileVerifier, DelayedNotificationReceiver, ConfigUpdateListener {
+public abstract class ConfigPaneUIElements extends JScrollPane implements ActionListener, FileVerifier, DelayedNotificationReceiver, ConfigUpdateListener {
 	// TODO: remove when done
-	static final boolean OPTIONAL_ADDONS_FEATURE = false;
+	static final boolean OPTIONAL_ADDONS_FEATURE = true;
 
 	protected VariantSelector variantSelector;
 
@@ -45,7 +46,6 @@ public abstract class ConfigPaneUIElements extends JPanel implements ActionListe
 	private GroupLayout layout;
 	private ParallelGroup horizontalGroup;
 	private SequentialGroup verticalGroup;
-	private JPanel spacer;
 	private JPanel mainSection;
 
 	private ParallelGroup labelColumn;
@@ -65,7 +65,7 @@ public abstract class ConfigPaneUIElements extends JPanel implements ActionListe
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 
-		horizontalGroup = layout.createParallelGroup();
+		horizontalGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
 		verticalGroup = layout.createSequentialGroup();
 		
 		beginLayoutSubSection();
@@ -134,20 +134,20 @@ public abstract class ConfigPaneUIElements extends JPanel implements ActionListe
 
 		layout.setVerticalGroup(verticalGroup);
 
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		add(mainSection);
-		
-		spacer = new JPanel();
-		Dimension dim = new Dimension(0,3000);
-		spacer.setPreferredSize(dim);
-		add(spacer);
+		JScrollPane scroll = this;
+		scroll.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+		mainSection.setPreferredSize(mainSection.getPreferredSize());
+		scroll.setViewportView(mainSection);
 	}
 	
 
 	private void beginLayoutSubSection() {
 		verticalSubSectionGroup = layout.createSequentialGroup();
-		labelColumn = layout.createParallelGroup();
-		valueColumn = layout.createParallelGroup();
+		labelColumn = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+		valueColumn = layout.createParallelGroup(GroupLayout.Alignment.TRAILING);
 		horizontalSubSectionGroup = layout.createSequentialGroup();
 	}
 
@@ -170,11 +170,11 @@ public abstract class ConfigPaneUIElements extends JPanel implements ActionListe
 			value.setToolTipText(tooltip);
 		}
 		
-		labelColumn.addComponent(label);
-		valueColumn.addComponent(value);
-		verticalSubSectionGroup.addGroup(layout.createParallelGroup()
-                    .addComponent(label)
-                    .addComponent(value));
+		labelColumn.addComponent(label, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE);
+		valueColumn.addComponent(value, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
+		verticalSubSectionGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(label, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(value, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
 	}
 	
 	private void addSection(JComponent label, JComponent value, String tooltip) {
