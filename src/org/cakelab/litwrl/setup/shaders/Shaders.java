@@ -13,12 +13,15 @@ import org.cakelab.omcl.setup.minecraft.Options;
 import org.cakelab.omcl.utils.log.Log;
 
 
-public class Shaders {
+public class Shaders<I> {
 	public static final String SHADER_NONE = "(none)";
 	public static final String SHADER_INTERNAL = "(internal)";
-	private ArrayList<PackageDescriptor> available;
 	
-	public Shaders(PackageDescriptor shadersMetaPackageDescriptor, Repository repository) throws Exception {
+	private ArrayList<PackageDescriptor> available;
+	private I identifier;
+	
+	public Shaders(I identifier, PackageDescriptor shadersMetaPackageDescriptor, Repository repository) throws Exception {
+		this.identifier = identifier;
 		available = new ArrayList<PackageDescriptor>(shadersMetaPackageDescriptor.optional.length);
 
 		for (String option : shadersMetaPackageDescriptor.optional) {
@@ -28,7 +31,9 @@ public class Shaders {
 		}
 	}
 
-	
+	public I getIdentifier() {
+		return identifier;
+	}
 
 	public synchronized String[] getAvailableShaders() {
 		String[] result = new String[2 + available.size()];

@@ -55,7 +55,7 @@ import org.cakelab.omcl.utils.log.LogFileListener;
 public class Launcher {
 
 	/** Version of the running launcher */
-	public static final String LAUNCHER_VERSION = "1.3.4";
+	public static final String LAUNCHER_VERSION = "1.3.5";
 	/** maximum litwr version we can install with this launcher */
 	private static final String MAX_LITWR_VERSION = "1.2.0";
 
@@ -639,7 +639,7 @@ public class Launcher {
 	}
 	
 	
-	public Shaders getLitWRShaders(GameTypes type,
+	public Shaders<String> getLitWRShaders(GameTypes type,
 			Variants variant, String version) throws Exception {
 		try {
 			PackageDescriptor descriptor = repository.fetchLitWRDependencies(type, variant, version);
@@ -647,7 +647,7 @@ public class Launcher {
 			String location = descriptor.findOptionalDependency("meta/shaders");
 			PackageDescriptor metaShaders = repository.getLocalPackageDescriptorFromLocation(location);
 			
-			Shaders shaders = new Shaders(metaShaders, repository);
+			Shaders<String> shaders = new Shaders<String>(metaShaders.location, metaShaders, repository);
 			return shaders;
 
 		} catch (IllegalArgumentException e) {

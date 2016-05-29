@@ -55,7 +55,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 	private LitWRLConfig litwrlcfg;
 	
 	/** Selected set of shaders based on litwr game config and version */
-	private Shaders selectedShaderSet;
+	private Shaders<String> selectedShaderSet;
 	private String selectedShader;
 	
 	private boolean validContent = false;
@@ -78,7 +78,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 		
 		beginUpdateSection();
 		variantSelector.addActionListener(this);
-
+		
 		// TODO: Support different versions for different variants.
 		Versions versions = Launcher.INSTANCE.getLitWRVersions(GameTypes.CLIENT, variantSelector.getSelectedVariant());
 		
@@ -125,6 +125,9 @@ public class ConfigPane extends ConfigPaneUIElements {
 
 	private void setSelectedShader(String selectedItem) {
 		beginUpdateSection();
+		if (OPTIONAL_ADDONS_FEATURE) {
+			optionalAddons.setSelectedShader(selectedItem);
+		}
 		if (selectedShader != selectedItem) {
 			boolean isUnknown = false;
 			try {
@@ -167,7 +170,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 	}
 
 	private void setDefaults() {
-		
+		beginUpdateSection();
 		int answer = JOptionPane.showConfirmDialog(this, "This will reset all settings to their default values.", Launcher.APPLICATION_NAME + " - Question", JOptionPane.OK_CANCEL_OPTION);
 		
 		if (answer == JOptionPane.CLOSED_OPTION || answer == JOptionPane.CANCEL_OPTION) {
@@ -183,7 +186,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 		javaArgs.setText(trimJavaArgs(getOptimizedJavaArgs()));
 		
 		setSelectedShader(Shaders.SHADER_NONE);
-		checkModified();
+		endUpdateSection();
 	}
 
 	public void updatedWorkDir() {
@@ -254,58 +257,67 @@ public class ConfigPane extends ConfigPaneUIElements {
 			litwrlcfg.setKeepVersion(version.isKeepVersion());
 		}
 		
+		
+			
+		
 		//
 		// refresh set of shaders for the given version
 		//
-		shader.removeAllItems();
 		try {
 			selectedShaderSet = Launcher.INSTANCE.getLitWRShaders(selectedGameType, selectedVariant, version.getVersion());
 		} catch (Throwable e) {
 			// repository inconsistent
 			selectedShaderSet = null;
 		}
-		if (selectedShaderSet == null) {
-			// shaders not supported or local repository inconsistent
-			// Get into a safe state:
-			shader.addItem(Shaders.SHADER_NONE);
-			try {
-				OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
-				String shaderPackFileName = optionsShaders.getShaderPack();
-				String shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
-				if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
-					shader.addItem(shaderName);
-				} else {
-					shaderName = Shaders.SHADER_NONE;
-				}
-				setSelectedShader(shaderName);
-			} catch (IOException e) {
-				setSelectedShader(Shaders.SHADER_NONE);
-			}
+		
+		
+		if (OPTIONAL_ADDONS_FEATURE) {
+			optionalAddons.update(selectedShaderSet, gamedir, willUpgrade);
 		} else {
-			for (String s : selectedShaderSet.getAvailableShaders()) {
-				shader.addItem(s);
-			}
-			try {
-				OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
-				String shaderPackFileName = optionsShaders.getShaderPack();
-				String shaderName;
+			shader.removeAllItems();
+			if (selectedShaderSet == null) {
+				// shaders not supported or local repository inconsistent
+				// Get into a safe state:
+				shader.addItem(Shaders.SHADER_NONE);
 				try {
-					if (willUpgrade) {
-						shaderName = selectedShaderSet.getNameOfUpgrade(shaderPackFileName);
-					} else {
-						shaderName = selectedShaderSet.getNameOf(shaderPackFileName);
-					}
-				} catch (IllegalArgumentException e) {
-					shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
+					OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
+					String shaderPackFileName = optionsShaders.getShaderPack();
+					String shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
 					if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
 						shader.addItem(shaderName);
 					} else {
 						shaderName = Shaders.SHADER_NONE;
 					}
+					setSelectedShader(shaderName);
+				} catch (IOException e) {
+					setSelectedShader(Shaders.SHADER_NONE);
 				}
-				setSelectedShader(shaderName);
-			} catch (IOException e) {
-				setSelectedShader(Shaders.SHADER_NONE);
+			} else {
+				for (String s : selectedShaderSet.getAvailableShaders()) {
+					shader.addItem(s);
+				}
+				try {
+					OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
+					String shaderPackFileName = optionsShaders.getShaderPack();
+					String shaderName;
+					try {
+						if (willUpgrade) {
+							shaderName = selectedShaderSet.getNameOfUpgrade(shaderPackFileName);
+						} else {
+							shaderName = selectedShaderSet.getNameOf(shaderPackFileName);
+						}
+					} catch (IllegalArgumentException e) {
+						shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
+						if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
+							shader.addItem(shaderName);
+						} else {
+							shaderName = Shaders.SHADER_NONE;
+						}
+					}
+					setSelectedShader(shaderName);
+				} catch (IOException e) {
+					setSelectedShader(Shaders.SHADER_NONE);
+				}
 			}
 		}
 		endUpdateSection();
@@ -408,7 +420,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (!isProcessActions()) return;
+		if (isUpdating()) return;
 		
 		if (e.getSource().equals(variantSelector)) {
 			if (e.getActionCommand().equals("comboBoxChanged")) {
@@ -424,8 +436,13 @@ public class ConfigPane extends ConfigPaneUIElements {
 
 	@Override
 	public void updatedUIConfigField(UIConfigField field) {
+		Log.info("received config update");
 		if (field == version) {
 			updatedVersion();
+		} else if (field == optionalAddons) {
+			beginUpdateSection();
+			modified = true;
+			endUpdateSection();
 		}
 	}
 
@@ -526,15 +543,28 @@ public class ConfigPane extends ConfigPaneUIElements {
 
 
 	public LitWRSetupParams getSetupParams() {
-		LitWRSetupParams setup = new LitWRSetupParams(selectedGameConfig, 
-				new File(config.getWorkDir()), 
-				gamedir.getSelectedFile(), 
-				version.getVersion(), 
-				version.isKeepVersion(),
-				selectedGameType, 
-				config.getSelectedVariant(), 
-				trimJavaArgs(javaArgs.getText()), 
-				selectedShader);
+		LitWRSetupParams setup;
+		if (OPTIONAL_ADDONS_FEATURE) {
+			setup = new LitWRSetupParams(selectedGameConfig, 
+					new File(config.getWorkDir()), 
+					gamedir.getSelectedFile(), 
+					version.getVersion(), 
+					version.isKeepVersion(),
+					selectedGameType, 
+					config.getSelectedVariant(), 
+					trimJavaArgs(javaArgs.getText()), 
+					optionalAddons.getSelectedShader());
+		} else {
+			setup = new LitWRSetupParams(selectedGameConfig, 
+					new File(config.getWorkDir()), 
+					gamedir.getSelectedFile(), 
+					version.getVersion(), 
+					version.isKeepVersion(),
+					selectedGameType, 
+					config.getSelectedVariant(), 
+					trimJavaArgs(javaArgs.getText()), 
+					selectedShader);
+		}
 		return setup;
 	}
 
@@ -547,26 +577,30 @@ public class ConfigPane extends ConfigPaneUIElements {
 		workingDir.setEditable(configurable);
 		gamedir.setEditable(configurable);
 		javaArgs.setEditable(configurable);
-		shader.setEnabled(configurable);
 		resetButton.setEnabled(configurable);
 		userSelector.setEnabled(configurable);
 		version.setConfigurable(configurable);
+		if (OPTIONAL_ADDONS_FEATURE) {
+			optionalAddons.setConfigurable(configurable);
+		} else {
+			shader.setEnabled(configurable);
+		}
 	}
 
-	private boolean isProcessActions() {
-		return (updating == 0);
+	private boolean isUpdating() {
+		return (updating != 0);
 	}
 
 	void beginUpdateSection() {
 		this.updating += 1;
-		if (DETAILS_FEATURE) detailsPanel.setProcessActions(this.updating == 0);
+		if (OPTIONAL_ADDONS_FEATURE) optionalAddons.beginUpdateSection();
 	}
 	
 	void endUpdateSection() {
 		this.updating -= 1;
 		assert(this.updating >= 0);
-		if (DETAILS_FEATURE) detailsPanel.setProcessActions(this.updating == 0);
-		if (isProcessActions()) {
+		if (OPTIONAL_ADDONS_FEATURE) optionalAddons.endUpdateSection();
+		if (!isUpdating()) {
 			checkModified();
 		}
 	}

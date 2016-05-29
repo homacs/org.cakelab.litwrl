@@ -108,7 +108,7 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 				optifine = OptiFine.getSetupService(setupParams, pd, repository);
 				optifine.init();
 				
-				Shaders shaders = new Shaders(metaShaders, repository);
+				Shaders<String> shaders = new Shaders<String>(metaShaders.location, metaShaders, repository);
 				pd = shaders.getPackageDescriptor(setupParams.shader);
 				if (pd == null) pd = shaders.migrateUnknownShader(setupParams.gamedir, setupParams.shader);
 				shader = shaders.getSetupService(setupParams, pd, repository);

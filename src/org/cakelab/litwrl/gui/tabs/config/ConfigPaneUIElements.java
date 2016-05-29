@@ -24,11 +24,10 @@ import org.cakelab.litwrl.gui.utils.FileEdit.FileVerifier;
 import org.cakelab.litwrl.gui.utils.GUIUtils;
 import org.cakelab.litwrl.gui.utils.notification.DelayedNotificationReceiver;
 
+@SuppressWarnings("serial")
 public abstract class ConfigPaneUIElements extends JPanel implements ActionListener, FileVerifier, DelayedNotificationReceiver, ConfigUpdateListener {
 	// TODO: remove when done
-	static final boolean DETAILS_FEATURE = false;
-
-	private static final long serialVersionUID = 1L;
+	static final boolean OPTIONAL_ADDONS_FEATURE = false;
 
 	protected VariantSelector variantSelector;
 
@@ -41,29 +40,36 @@ public abstract class ConfigPaneUIElements extends JPanel implements ActionListe
 	protected JTextArea javaArgs;
 	protected JComboBox<String> shader;
 	protected JButton resetButton;
-	protected ConfigOptionalPanel detailsPanel;
+	protected ConfigOptionalAddons optionalAddons;
 
 	private GroupLayout layout;
-	private ParallelGroup labelsColumn;
-	private ParallelGroup valuesColumn;
-	private SequentialGroup rows;
+	private ParallelGroup horizontalGroup;
+	private SequentialGroup verticalGroup;
 	private JPanel spacer;
-	private JPanel panel;
+	private JPanel mainSection;
+
+	private ParallelGroup labelColumn;
+
+	private ParallelGroup valueColumn;
+
+	private SequentialGroup verticalSubSectionGroup;
+
+	private SequentialGroup horizontalSubSectionGroup;
+
 
 	
 	public ConfigPaneUIElements() {
-		panel = new JPanel();
-		layout = new GroupLayout(panel);
-		panel.setLayout(layout);
+		mainSection = new JPanel();
+		layout = new GroupLayout(mainSection);
+		mainSection.setLayout(layout);
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 
-		labelsColumn = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-		valuesColumn = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-
-		rows = layout.createSequentialGroup();
+		horizontalGroup = layout.createParallelGroup();
+		verticalGroup = layout.createSequentialGroup();
 		
-
+		beginLayoutSubSection();
+		
 		JLabel label;
 		
 		label = new JLabel("User:");
@@ -117,18 +123,19 @@ public abstract class ConfigPaneUIElements extends JPanel implements ActionListe
 		
 		addShadersSection();
 
-		addDetailsSection();
+		addOptionalAddonsSection();
 		
 		addResetSection();
 		
-		layout.setHorizontalGroup(layout.createSequentialGroup()
-				.addGroup(labelsColumn)
-				.addGroup(valuesColumn));
+		
+		endLayoutSubSection();
 
-		layout.setVerticalGroup(rows);
+		layout.setHorizontalGroup(horizontalGroup);
+
+		layout.setVerticalGroup(verticalGroup);
 
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		add(panel);
+		add(mainSection);
 		
 		spacer = new JPanel();
 		Dimension dim = new Dimension(0,3000);
@@ -136,11 +143,59 @@ public abstract class ConfigPaneUIElements extends JPanel implements ActionListe
 		add(spacer);
 	}
 	
-	private void addDetailsSection() {
-		if (DETAILS_FEATURE) {
-			JLabel label = new JLabel("Details");
-			detailsPanel = new ConfigOptionalPanel();
-			addRow(label, detailsPanel, "Allows to configure the details of visual enhancements.");
+
+	private void beginLayoutSubSection() {
+		verticalSubSectionGroup = layout.createSequentialGroup();
+		labelColumn = layout.createParallelGroup();
+		valueColumn = layout.createParallelGroup();
+		horizontalSubSectionGroup = layout.createSequentialGroup();
+	}
+
+	private void endLayoutSubSection() {
+		verticalGroup.addGroup(verticalSubSectionGroup);
+		verticalSubSectionGroup = null;
+		horizontalSubSectionGroup.addGroup(labelColumn);
+		horizontalSubSectionGroup.addGroup(valueColumn);
+		horizontalGroup.addGroup(horizontalSubSectionGroup);
+		horizontalSubSectionGroup = null;
+		labelColumn = null;
+		valueColumn = null;
+	}
+
+
+	private void addRow(JComponent label, JComponent value, String tooltip) {
+		if (tooltip != null) {
+			tooltip = GUIUtils.createMultilineTooltip(tooltip);
+			label.setToolTipText(tooltip);
+			value.setToolTipText(tooltip);
+		}
+		
+		labelColumn.addComponent(label);
+		valueColumn.addComponent(value);
+		verticalSubSectionGroup.addGroup(layout.createParallelGroup()
+                    .addComponent(label)
+                    .addComponent(value));
+	}
+	
+	private void addSection(JComponent label, JComponent value, String tooltip) {
+		if (tooltip != null) {
+			tooltip = GUIUtils.createMultilineTooltip(tooltip);
+			label.setToolTipText(tooltip);
+			value.setToolTipText(tooltip);
+		}
+		
+		endLayoutSubSection();
+		horizontalGroup.addComponent(value, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
+		verticalGroup.addComponent(value);
+		beginLayoutSubSection();
+	}
+	private void addOptionalAddonsSection() {
+		if (OPTIONAL_ADDONS_FEATURE) {
+			
+			JLabel label = new JLabel();
+			optionalAddons = new ConfigOptionalAddons(this);
+			addSection(label, optionalAddons, "Allows to add or remove recommended addons.");
+			
 		}
 	}
 
@@ -164,36 +219,22 @@ public abstract class ConfigPaneUIElements extends JPanel implements ActionListe
 
 
 	private void addShadersSection() {
-		JLabel label = new JLabel("Shader:");
-		
-		shader = new JComboBox<String>();
-		shader.setEditable(false);
-		shader.setEnabled(false);
-		shader.addActionListener(this);
-		
-		addRow(label, shader, 
-				"This option allows you to use shader packs.\n"
-				+ "You can select a shader pack to be installed\n"
-				+ "and used when you start the game.\n"
-				+ "\n"
-				+ "Please note, that this requires you to download\n"
-				+ "certain files manually. But don't worry, we will\n"
-				+ "guide you to the right pages to do so.");
-	}
-
-	
-
-	private void addRow(JComponent label, JComponent value, String tooltip) {
-		if (tooltip != null) {
-			tooltip = GUIUtils.createMultilineTooltip(tooltip);
-			label.setToolTipText(tooltip);
-			value.setToolTipText(tooltip);
+		if (!OPTIONAL_ADDONS_FEATURE) {
+			JLabel label = new JLabel("Shader:");
+			shader = new JComboBox<String>();
+			shader.setEditable(false);
+			shader.setEnabled(false);
+			shader.addActionListener(this);
+			
+			addRow(label, shader, 
+					"This option allows you to use shader packs.\n"
+					+ "You can select a shader pack to be installed\n"
+					+ "and used when you start the game.\n"
+					+ "\n"
+					+ "Please note, that this requires you to download\n"
+					+ "certain files manually. But don't worry, we will\n"
+					+ "guide you to the right pages to do so.");
 		}
-		labelsColumn.addComponent(label);
-		valuesColumn.addComponent(value, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
-		rows.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(label)
-				.addComponent(value));
 	}
 
 }
