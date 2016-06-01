@@ -2,21 +2,19 @@ package org.cakelab.litwrl.setup.optifine;
 
 import java.io.File;
 
+import org.cakelab.litwrl.setup.OptionalModSetupServiceBase;
 import org.cakelab.omcl.repository.PackageDescriptor;
 import org.cakelab.omcl.repository.Repository;
-import org.cakelab.omcl.setup.ModSetupServiceBase;
 import org.cakelab.omcl.setup.SetupParameters;
 import org.cakelab.omcl.setup.SetupService;
 import org.cakelab.omcl.setup.tasks.Delete;
 import org.cakelab.omcl.taskman.TaskManager;
 
 
-public class OptiFine extends ModSetupServiceBase {
+public class OptiFine extends OptionalModSetupServiceBase {
 
 	private static final String OFOPTIONS_FILENAME = "ofoptions.txt";
 	private File optionsfile;
-
-
 
 	protected OptiFine(SetupParameters setupParams, PackageDescriptor pd,
 			Repository repository) {
@@ -32,7 +30,7 @@ public class OptiFine extends ModSetupServiceBase {
 	
 	@Override
 	public void scheduleRemove(TaskManager taskman) throws Throwable {
-		if (isInstalled()) {
+		if (isBaseInstalled()) {
 			taskman.addSingleTask(new Delete("upgrading mod-pack", optionsfile.getAbsolutePath()));
 		}
 		super.scheduleRemove(taskman);
@@ -42,5 +40,10 @@ public class OptiFine extends ModSetupServiceBase {
 			PackageDescriptor pd, Repository repository) {
 		return new OptiFine(setupParams, pd, repository);
 	}
+
+	public static String getID() {
+		return "thirdparty/optifine";
+	}
+
 
 }

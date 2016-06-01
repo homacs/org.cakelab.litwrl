@@ -165,6 +165,7 @@ public class MainWindow extends JFrame implements WindowListener{
 			if (status == null) gameStatus = GameStatus.INCONSISTENT;
 			else if (status.hasUpgrade()) gameStatus = GameStatus.NEEDS_UPGRADE;
 			else if (!status.isInstalled()) gameStatus = GameStatus.NEEDS_INSTALL;
+			else if (status.hasModifications()) gameStatus = GameStatus.NEEDS_MODIFICATION;
 			
 			footer.setGameStatus(gameStatus); 
 			footer.setConfigurable(true && gameStatus != GameStatus.INCONSISTENT);
@@ -185,6 +186,14 @@ public class MainWindow extends JFrame implements WindowListener{
 	public void upgradeButtonPressed() {
 		LitWRSetupParams setup = configPane.getSetupParams();
 		boolean configurable = gui.requestUpgrade(setup);
+		configPane.setConfigurable(configurable);
+		footer.setConfigurable(configurable);
+		tabbedPane.setSelectedComponent(logPane);
+	}
+
+	public void applyButtonPressed() {
+		LitWRSetupParams setup = configPane.getSetupParams();
+		boolean configurable = gui.requestModification(setup);
 		configPane.setConfigurable(configurable);
 		footer.setConfigurable(configurable);
 		tabbedPane.setSelectedComponent(logPane);
@@ -287,5 +296,6 @@ public class MainWindow extends JFrame implements WindowListener{
 	public void logGameOutput(String msg) {
 		if (gameLogPane.isVisible()) gameLogPane.append(msg);
 	}
+
 
 }

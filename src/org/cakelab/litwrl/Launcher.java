@@ -8,6 +8,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.util.Arrays;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -661,6 +662,9 @@ public class Launcher {
 		return setupLitWR(params);
 	}
 	
+	public boolean modifyLitWR(LitWRSetupParams setup) {
+		return setupLitWR(setup);
+	}
 
 
 	public SetupStatus getSetupStatus(LitWRSetupParams params) {
@@ -687,6 +691,7 @@ public class Launcher {
 		Log.info("   profile:  " + params.gameConfig.getProfileName());
 		Log.info("   gamedir:  " + params.gamedir);
 		Log.info("   javaArgs: " + params.javaArgs);
+		Log.info("   addons:   " + Arrays.toString(params.optionals));
 	}
 
 	public File getTempDir() {
@@ -796,6 +801,7 @@ public class Launcher {
 	public Config getConfig() {
 		return config;
 	}
+
 
 
 

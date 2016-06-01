@@ -258,7 +258,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 		}
 		
 		
-			
+		
 		
 		//
 		// refresh set of shaders for the given version
@@ -272,7 +272,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 		
 		
 		if (OPTIONAL_ADDONS_FEATURE) {
-			optionalAddons.update(selectedShaderSet, gamedir, willUpgrade);
+			optionalAddons.updatedGameDir(litwrlcfg, selectedShaderSet, gamedir, willUpgrade);
 		} else {
 			shader.removeAllItems();
 			if (selectedShaderSet == null) {
@@ -436,7 +436,6 @@ public class ConfigPane extends ConfigPaneUIElements {
 
 	@Override
 	public void updatedUIConfigField(UIConfigField field) {
-		Log.info("received config update");
 		if (field == version) {
 			updatedVersion();
 		} else if (field == optionalAddons) {
@@ -553,7 +552,8 @@ public class ConfigPane extends ConfigPaneUIElements {
 					selectedGameType, 
 					config.getSelectedVariant(), 
 					trimJavaArgs(javaArgs.getText()), 
-					optionalAddons.getSelectedShader());
+					optionalAddons.getSelectedShader(),
+					optionalAddons.getOptionalAddons());
 		} else {
 			setup = new LitWRSetupParams(selectedGameConfig, 
 					new File(config.getWorkDir()), 
@@ -563,7 +563,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 					selectedGameType, 
 					config.getSelectedVariant(), 
 					trimJavaArgs(javaArgs.getText()), 
-					selectedShader);
+					selectedShader, null);
 		}
 		return setup;
 	}

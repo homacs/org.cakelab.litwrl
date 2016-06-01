@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import org.cakelab.json.codec.JSONCodec;
 import org.cakelab.json.codec.JSONCodecConfiguration;
@@ -25,15 +26,17 @@ public class LitWRLConfig {
 	private String variant;
 	private String version;
 	private boolean keepVersion;
+	private String[] optionals;
 	
 	private LitWRLConfig() {}
 	
-	public LitWRLConfig(String version, GameTypes type, Variants variant, boolean keepVersion) {
+	public LitWRLConfig(String version, GameTypes type, Variants variant, boolean keepVersion, String[] optionals) {
 		this.version  = version;
 		this.type = type.toString();
 		this.variant = variant.toString();
 		this.keepVersion = keepVersion;
 		this.modified = true;
+		this.optionals = optionals;
 	}
 
 	public static LitWRLConfig load(File configFile) throws IOException, JSONCodecException {
@@ -95,6 +98,40 @@ public class LitWRLConfig {
 	
 	public boolean isModified() {
 		return modified;
+	}
+
+	public boolean isOptionalAddonInstalled(String modid) {
+		if (optionals != null) {
+			for (String o : optionals) {
+				if (o.equals(modid)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public void setOptionalAddonInstalled(String id, boolean installed) {
+		if (installed) {
+			if (!isOptionalAddonInstalled(id)) {
+				if (optionals != null) {
+					optionals = Arrays.copyOf(optionals, optionals.length+1);
+					optionals[optionals.length-1] = id;
+				} else {
+					optionals = new String[]{id};
+				}
+			}
+		} else {
+			if (isOptionalAddonInstalled(id)) {
+				int i;
+				for (i = 0; i < optionals.length && !optionals[i].equals(id); i++);
+				int j;
+				for (j = i+1; j < optionals.length; i++, j++) {
+					optionals[i] = optionals[j];
+				}
+				optionals = Arrays.copyOf(optionals, i);
+			}
+		}
 	}
 	
 }

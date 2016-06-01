@@ -22,7 +22,6 @@ public class SetupControl {
 		this.repository = repository;
 		this.taskman = taskman;
 	}
-
 	
 	public void scheduleSetupTasks() throws Throwable {
 
@@ -30,7 +29,6 @@ public class SetupControl {
 			Log.error("game type mismatch. This launcher cannot setup game type "+ setupParams.type);
 			return;
 		}
-		
 		
 		SetupService litwr = getSetupService(setupParams.version);
 		if (litwr.hasUpgrade()) {
@@ -41,9 +39,11 @@ public class SetupControl {
 			SetupService formerLitWR = getSetupService(currentVersion);
 			
 			litwr.scheduleUpgrades(taskman, formerLitWR);
-		} else {
+		} else if (!litwr.isBaseInstalled()) {			
 			litwr.scheduleDownloads(taskman, false);
 			litwr.scheduleInstalls(taskman, false);
+		} else if (litwr.hasModifications()) {
+			litwr.scheduleModifications(taskman, false);
 		}
 		
 	}
@@ -56,18 +56,17 @@ public class SetupControl {
 		}
 		return service;
 	}
-
 	
 	public SetupStatus getSetupStatus() throws Throwable {
 		SetupService service = getSetupService(setupParams.version);
-		SetupStatus result = new SetupStatus(setupParams, service.isInstalled(), service.hasUpgrade());
+		SetupStatus result = new SetupStatus(setupParams, service.isBaseInstalled(), service.hasUpgrade(), service.hasModifications());
 		return result;
 	}
 
 
 	public boolean needsDownloads() throws Throwable {
 		SetupService service = getSetupService(setupParams.version);
-		return ((service.hasUpgrade() || !service.isInstalled()) && !service.isDownloaded());
+		return ((service.hasUpgrade() || !service.isBaseInstalled()) && !service.isDownloaded());
 	}
 
 

@@ -2,6 +2,7 @@ package org.cakelab.litwrl.setup.litwr;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.cakelab.json.JSONException;
 import org.cakelab.json.codec.JSONCodecException;
@@ -41,23 +42,21 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 	protected MinecraftClient minecraftClient;
 	protected SetupService forge;
 	protected File configDir;
-	protected File configFile;
 	protected File modsDir;
 	private boolean hideLauncher = true;
-	private ShaderSetup shader;
-	private SetupService shadersMod;
-	private SetupService optifine;
-	private SetupService dynamicLights;
-	private boolean shadersEnabled;
+	
+	private ArrayList<SetupService> optionals;
+	
 	private LitWRLConfig litwrlcfg;
 	private SetupService multiplayer;
 	private LitWRSetupParams litwrlParams;
+	private File configFile;
 	
 	
 	public LifeInTheWoodsClient(LitWRSetupParams params, PackageDescriptor descriptor, LitWRLRepository repository) {
 		super(params, descriptor, repository);
 		this.litwrlParams = params;
-
+		this.optionals = new ArrayList<SetupService>();
 	}
 
 	@Override
@@ -92,39 +91,43 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 		minecraftClient.init();
 		forge.init();
 
-		
-		if (!setupParams.shader.equals(Shaders.SHADER_NONE) && !setupParams.shader.equals(Shaders.SHADER_INTERNAL)) {
-			try {
-				String location = descriptor.findOptionalDependency("meta/shaders");
-				PackageDescriptor metaShaders = repository.getLocalPackageDescriptorFromLocation(location);
-	
-				location = metaShaders.findRequiredDependency("thirdparty/shadersmod");
-				PackageDescriptor pd = repository.getLocalPackageDescriptorFromLocation(location);
-				shadersMod = ShadersMod.getSetupService(setupParams, pd, repository);
-				shadersMod.init();
-	
-				location = metaShaders.findRequiredDependency("thirdparty/optifine");
-				pd = repository.getLocalPackageDescriptorFromLocation(location);
-				optifine = OptiFine.getSetupService(setupParams, pd, repository);
-				optifine.init();
-				
+
+		try {
+			// TODO: move the decision if optionals will be installed in GUI
+			String location = descriptor.findOptionalDependency("meta/shaders");
+			PackageDescriptor metaShaders = repository.getLocalPackageDescriptorFromLocation(location);
+
+			location = metaShaders.findRequiredDependency("thirdparty/shadersmod");
+			PackageDescriptor pd = repository.getLocalPackageDescriptorFromLocation(location);
+			SetupService shadersMod = ShadersMod.getSetupService(setupParams, pd, repository);
+			shadersMod.init();
+			optionals.add(shadersMod);
+
+			location = metaShaders.findRequiredDependency("thirdparty/optifine");
+			pd = repository.getLocalPackageDescriptorFromLocation(location);
+			SetupService optifine = OptiFine.getSetupService(setupParams, pd, repository);
+			optifine.init();
+			optionals.add(optifine);
+			
+			location = descriptor.findOptionalDependency("thirdparty/dynamiclights");
+			pd = repository.getLocalPackageDescriptorFromLocation(location);
+			SetupService dynamicLights = DynamicLights.getSetupService(setupParams, pd, repository);
+			dynamicLights.init();
+			optionals.add(dynamicLights);
+			
+			if (Shaders.isNonStandardShader(setupParams.shader)) {
 				Shaders<String> shaders = new Shaders<String>(metaShaders.location, metaShaders, repository);
 				pd = shaders.getPackageDescriptor(setupParams.shader);
 				if (pd == null) pd = shaders.migrateUnknownShader(setupParams.gamedir, setupParams.shader);
-				shader = shaders.getSetupService(setupParams, pd, repository);
+				ShaderSetup shader = shaders.getSetupService(setupParams, pd, repository);
 				shader.init();
-				
-	
-				location = descriptor.findOptionalDependency("thirdparty/dynamiclights");
-				pd = repository.getLocalPackageDescriptorFromLocation(location);
-				dynamicLights = DynamicLights.getSetupService(setupParams, pd, repository);
-				dynamicLights.init();
-				shadersEnabled = true;
-			} catch (IllegalArgumentException e) {
-				shadersEnabled = false;
+				optionals.add(shader);
 			}
+			
+		} catch (IllegalArgumentException e) {
+			Log.warn("while attempting to install optional addons", e);
 		}
-		
+
 		//
 		// multiplayer server lists
 		//
@@ -146,12 +149,9 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 				&& minecraftClient.isDownloaded() 
 				&& forge.isDownloaded() 
 				&& isLocalPackageAvailable();
-		if (shadersEnabled && Shaders.isNonStandardShader(setupParams.shader)) {
-			downloaded = downloaded 
-					&& shadersMod.isDownloaded() 
-					&& optifine.isDownloaded() 
-					&& shader.isDownloaded()
-					&& dynamicLights.isDownloaded();
+		
+		for (SetupService optional : optionals) {
+			if (!optional.isDownloaded()) return false;
 		}
 		
 		if (multiplayer != null) {
@@ -161,20 +161,14 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 	}
 
 	@Override
-	public boolean isInstalled() {
-		boolean installed = minecraftBootstrap.isInstalled() 
-				&& minecraftClient.isInstalled() 
-				&& forge.isInstalled() 
+	public boolean isBaseInstalled() {
+		boolean installed = minecraftBootstrap.isBaseInstalled() 
+				&& minecraftClient.isBaseInstalled() 
+				&& forge.isBaseInstalled() 
 				&& isModsInstalled();
-		if (shadersEnabled && Shaders.isNonStandardShader(setupParams.shader)) {
-			installed = installed 
-					&& shadersMod.isInstalled() 
-					&& optifine.isInstalled() 
-					&& shader.isInstalled()
-					&& dynamicLights.isInstalled();
-		}
+		
 		if (multiplayer != null) {
-			installed = installed && multiplayer.isInstalled();
+			installed = installed && multiplayer.isBaseInstalled();
 		}
 		return installed;
 	}
@@ -206,15 +200,27 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 		}
 	}
 	
+
+	@Override
+	public boolean hasModifications() {
+		// ask each optional addon if it requires a change
+		for (SetupService s : optionals) {
+			if (s.hasModifications()) return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void scheduleModifications(TaskManager taskman, boolean force) throws Throwable {
+		for (SetupService s : optionals) {
+			s.scheduleModifications(taskman, force);
+		}
+	}
+	
 	@Override
 	public String getInstalledVersion() throws Throwable {
-		LitWRLConfig litwrlcfg;
-		try {
-			litwrlcfg = LitWRLConfig.load(configFile);
-			return litwrlcfg.getVersion();
-		} catch (Throwable e) {
-			throw new UnsupportedOperationException(descriptor.name + " is not installed");
-		}
+		if (litwrlcfg != null) return litwrlcfg.getVersion();
+		else throw new UnsupportedOperationException(descriptor.name + " is not installed");
 	}
 
 	@Override
@@ -222,11 +228,8 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 		minecraftBootstrap.scheduleDownloads(taskman, forced);
 		minecraftClient.scheduleDownloads(taskman, forced);
 		forge.scheduleDownloads(taskman, forced);
-		if (shadersEnabled && Shaders.isNonStandardShader(setupParams.shader)) {
-			shadersMod.scheduleDownloads(taskman, forced);
-			optifine.scheduleDownloads(taskman, forced);
-			shader.scheduleDownloads(taskman, forced);
-			dynamicLights.scheduleDownloads(taskman, forced);
+		for (SetupService optional : optionals) {
+			optional.scheduleDownloads(taskman, forced);
 		}
 		
 		if (multiplayer != null) {
@@ -241,11 +244,8 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 		minecraftBootstrap.scheduleInstalls(taskman, false);
 		minecraftClient.scheduleInstalls(taskman, false);
 		forge.scheduleInstalls(taskman, false);
-		if (shadersEnabled && Shaders.isNonStandardShader(setupParams.shader)) {
-			shadersMod.scheduleInstalls(taskman, force);
-			optifine.scheduleInstalls(taskman, force);
-			shader.scheduleInstalls(taskman, force);
-			dynamicLights.scheduleInstalls(taskman, force);
+		for (SetupService optional : optionals) {
+			optional.scheduleInstalls(taskman, force);
 		}
 		
 		if (multiplayer != null) {
@@ -263,7 +263,7 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 			if (OS.isMac()) {
 				taskman.addSingleTask(new Delete("installing mod-pack", new File(setupParams.gamedir, MinecraftClient.SUBDIR_MODS + File.separator + "Waila-1.5.10_1.7.10.jar").getAbsolutePath()));
 			}
-			taskman.addSingleTask(new FinishLitWRLSetup(new LitWRLConfig(setupParams.version, setupParams.type, litwrlParams.variant, litwrlParams.keepVersion), configFile));
+			taskman.addSingleTask(new FinishLitWRLSetup(new LitWRLConfig(setupParams.version, setupParams.type, litwrlParams.variant, litwrlParams.keepVersion, litwrlParams.optionals), configFile));
 		}
 
 	}
@@ -293,18 +293,15 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 		if (OS.isMac()) {
 			taskman.addSingleTask(new Delete("upgrading mod-pack", new File(setupParams.gamedir, MinecraftClient.SUBDIR_MODS + File.separator + "Waila-1.5.10_1.7.10.jar").getAbsolutePath()));
 		}
-		taskman.addSingleTask(new FinishLitWRLSetup(new LitWRLConfig(setupParams.version, setupParams.type, litwrlParams.variant, litwrlParams.keepVersion), configFile));
+		taskman.addSingleTask(new FinishLitWRLSetup(new LitWRLConfig(setupParams.version, setupParams.type, litwrlParams.variant, litwrlParams.keepVersion, litwrlParams.optionals), configFile));
 	}
 
 
 	
 	@Override
 	public void scheduleRemove(TaskManager taskman) throws Throwable {
-		if (shadersEnabled) {
-			dynamicLights.scheduleRemove(taskman);
-			shader.scheduleRemove(taskman);
-			optifine.scheduleRemove(taskman);
-			shadersMod.scheduleRemove(taskman);
+		for (SetupService optional : optionals) {
+			optional.scheduleRemove(taskman);
 		}
 		
 		if (multiplayer != null) {
@@ -394,6 +391,5 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 			}
 		}
 	}
-
 
 }

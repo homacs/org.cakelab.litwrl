@@ -3,6 +3,7 @@ package org.cakelab.litwrl.gui.tabs.config;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
@@ -17,8 +18,12 @@ import javax.swing.border.TitledBorder;
 
 import org.cakelab.litwrl.gui.utils.FileEdit;
 import org.cakelab.litwrl.gui.utils.GUIUtils;
+import org.cakelab.litwrl.setup.dynamiclights.DynamicLights;
+import org.cakelab.litwrl.setup.litwr.LitWRLConfig;
+import org.cakelab.litwrl.setup.optifine.OptiFine;
 import org.cakelab.litwrl.setup.shaders.Shaders;
 import org.cakelab.litwrl.setup.shadersmod.OptionsShaders;
+import org.cakelab.litwrl.setup.shadersmod.ShadersMod;
 
 
 /** This class is for future purposes (not yet active).
@@ -42,6 +47,9 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 	private FileEdit gamedir;
 	private Shaders<String> selectedShaderSet;
 	private String selectedShader;
+	
+	/** indicates whether the user has manually removed or added optional mods */
+	private boolean userCustomized;
 
 	
 	public ConfigOptionalAddons(ConfigUpdateListener listener) {
@@ -69,7 +77,6 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 				.addComponent(label, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addComponent(value, 0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
 	}
-
 
 	private void addConfigArea() {
 		configArea = new JPanel();
@@ -105,16 +112,19 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 		label = new JLabel("Shaders Mod");
 		shadersMod = new JCheckBox();
 		shadersMod.setEnabled(false);
+		shadersMod.addActionListener(this);
 		addRow(label, shadersMod, "Required for shaders.");
 		
 		label = new JLabel("OptiFine");
 		optifine = new JCheckBox();
 		optifine.setEnabled(false);
+		optifine.addActionListener(this);
 		addRow(label, optifine, "Optimizes performance - especially recommended for shaders.");
 		
 		label = new JLabel("Dynamic Lights");
 		dynamicLights = new JCheckBox();
 		dynamicLights.setEnabled(false);
+		dynamicLights.addActionListener(this);
 		addRow(label, dynamicLights, "Adds light effects to torches.");
 		
 		layout.setHorizontalGroup(layout.createSequentialGroup()
@@ -127,10 +137,20 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (isUpdating()) return;
 		
+		if (isUpdating()) return;
+
 		if (e.getSource().equals(shader)) {
 			setSelectedShader((String) shader.getSelectedItem());
+		} else if (e.getSource().equals(shadersMod)) {
+			checkUserCustomization();
+			updateService.forwardConfigUpdate();
+		} else if (e.getSource().equals(optifine)) {
+			checkUserCustomization();
+			updateService.forwardConfigUpdate();
+		} else if (e.getSource().equals(dynamicLights)) {
+			checkUserCustomization();
+			updateService.forwardConfigUpdate();
 		}
 	}
 
@@ -148,7 +168,7 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 
 	public void setConfigurable(boolean configurable) {
 		shader.setEnabled(configurable);
-		shadersMod.setEnabled(configurable);
+		shadersMod.setEnabled(configurable && !Shaders.isNonStandardShader((String)shader.getSelectedItem()));
 		optifine.setEnabled(configurable);
 		dynamicLights.setEnabled(configurable);
 	}
@@ -168,61 +188,93 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 		updateService.removeConfigUpdateListener(listener);
 	}
 
-	public void update(Shaders<String> shaderSet, FileEdit gamedir, boolean willUpgrade) {
-		if (this.selectedShaderSet != null && this.selectedShaderSet.getIdentifier().equals(shaderSet.getIdentifier())) return;
-		this.selectedShaderSet = shaderSet;
+	
+	public void updatedGameDir(LitWRLConfig litwrlcfg, Shaders<String> shaderSet, FileEdit gamedir, boolean willUpgrade) {
 		this.gamedir = gamedir;
+		this.selectedShader = null;
 		
 		beginUpdateSection();
-		shader.removeAllItems();
-		if (selectedShaderSet == null) {
-			// shaders not supported or local repository inconsistent
-			// Get into a safe state:
-			shader.addItem(Shaders.SHADER_NONE);
-			try {
-				OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
-				String shaderPackFileName = optionsShaders.getShaderPack();
-				String shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
-				if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
-					shader.addItem(shaderName);
-				} else {
-					shaderName = Shaders.SHADER_NONE;
-				}
-				setSelectedShader(shaderName);
-			} catch (IOException e) {
-				setSelectedShader(Shaders.SHADER_NONE);
-			}
+		
+		shadersMod.setSelected(false);
+		optifine.setSelected(false);
+		dynamicLights.setSelected(false);
+		if (litwrlcfg != null) {
+			if (litwrlcfg.isOptionalAddonInstalled(ShadersMod.getID())) shadersMod.setSelected(true);
+			if (litwrlcfg.isOptionalAddonInstalled(OptiFine.getID())) optifine.setSelected(true);
+			if (litwrlcfg.isOptionalAddonInstalled(DynamicLights.getID())) dynamicLights.setSelected(true);
+		}
+		checkUserCustomization();
+		
+		updatedShaderSet(shaderSet, willUpgrade);
+
+		endUpdateSection();
+	}
+	
+	private void checkUserCustomization() {
+		if (shadersMod.isSelected() == optifine.isSelected() && shadersMod.isSelected() == dynamicLights.isSelected()) {
+			userCustomized = false;
 		} else {
-			
-			for (String s : selectedShaderSet.getAvailableShaders()) {
-				shader.addItem(s);
-			}
-			try {
-				OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
-				String shaderPackFileName = optionsShaders.getShaderPack();
-				String shaderName;
+			userCustomized = true;
+		}
+	}
+
+	private void updatedShaderSet(Shaders<String> shaderSet, boolean willUpgrade) {
+
+		this.selectedShaderSet = shaderSet;
+		try {
+			beginUpdateSection();
+			shader.removeAllItems();
+			if (selectedShaderSet == null) {
+				// shaders not supported or local repository inconsistent
+				// Get into a safe state:
+				shader.addItem(Shaders.SHADER_NONE);
 				try {
-					if (willUpgrade) {
-						shaderName = selectedShaderSet.getNameOfUpgrade(shaderPackFileName);
-					} else {
-						shaderName = selectedShaderSet.getNameOf(shaderPackFileName);
-					}
-				} catch (IllegalArgumentException e) {
-					shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
+					OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
+					String shaderPackFileName = optionsShaders.getShaderPack();
+					String shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
 					if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
 						shader.addItem(shaderName);
 					} else {
 						shaderName = Shaders.SHADER_NONE;
 					}
+					setSelectedShader(shaderName);
+				} catch (IOException e) {
+					setSelectedShader(Shaders.SHADER_NONE);
 				}
-				setSelectedShader(shaderName);
-			} catch (IOException e) {
-				setSelectedShader(Shaders.SHADER_NONE);
+			} else {
+				
+				for (String s : selectedShaderSet.getAvailableShaders()) {
+					shader.addItem(s);
+				}
+				try {
+					OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
+					String shaderPackFileName = optionsShaders.getShaderPack();
+					String shaderName;
+					try {
+						if (willUpgrade) {
+							shaderName = selectedShaderSet.getNameOfUpgrade(shaderPackFileName);
+						} else {
+							shaderName = selectedShaderSet.getNameOf(shaderPackFileName);
+						}
+					} catch (IllegalArgumentException e) {
+						shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
+						if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
+							shader.addItem(shaderName);
+						} else {
+							shaderName = Shaders.SHADER_NONE;
+						}
+					}
+					setSelectedShader(shaderName);
+				} catch (IOException e) {
+					setSelectedShader(Shaders.SHADER_NONE);
+				}
 			}
+		} finally {
+			endUpdateSection();
 		}
-		endUpdateSection();
+		
 	}
-	
+
 	void setSelectedShader(String shaderPack) {
 		beginUpdateSection();
 		if (selectedShader == shaderPack) return;
@@ -254,6 +306,22 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 
 			selectedShader = shaderPack;
 			shader.setSelectedItem(shaderPack);
+			
+			
+			if (Shaders.isNonStandardShader(selectedShader)) {
+				shadersMod.setSelected(true);
+				shadersMod.setEnabled(false);
+				if (!userCustomized) {
+					optifine.setSelected(true);
+					dynamicLights.setSelected(true);
+				}
+			} else {
+				shadersMod.setEnabled(true);
+				if (!userCustomized) {
+					shadersMod.setSelected(false);
+				}
+			}
+			
 			updateService.forwardConfigUpdate();
 		}
 		
@@ -263,6 +331,16 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 	public String getSelectedShader() {
 		String selected = (String)shader.getSelectedItem();
 		return selected;
+	}
+
+	public String[] getOptionalAddons() {
+		ArrayList<String> optionals = new ArrayList<String>();
+		if (optifine.isSelected()) optionals.add(OptiFine.getID());
+		if (shadersMod.isSelected()) optionals.add(ShadersMod.getID());
+		if (dynamicLights.isSelected()) optionals.add(DynamicLights.getID());
+		if (Shaders.isNonStandardShader(selectedShader)) optionals.add(selectedShaderSet.getPackageDescriptor(selectedShader).getID());
+		String[] a = new String[optionals.size()];
+		return optionals.toArray(a);
 	}
 
 }

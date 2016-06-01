@@ -37,7 +37,7 @@ public class MultiplayerMeta extends SetupService {
 	}
 
 	@Override
-	public boolean isInstalled() {
+	public boolean isBaseInstalled() {
 		try {
 			ServersDat serversDat = ServersDat.loadFromGamedir(setupParams.gamedir);
 			for (ServerInfo server : serverList) {
@@ -82,6 +82,17 @@ public class MultiplayerMeta extends SetupService {
 	public static SetupService getSetupService(SetupParameters setupParams,
 			PackageDescriptor pd, Repository repository) {
 		return new MultiplayerMeta(setupParams, pd, repository);
+	}
+
+	@Override
+	public boolean hasModifications() {
+		// TODO not defined for multiplayer package
+		return false;
+	}
+
+	@Override
+	public void scheduleModifications(TaskManager taskman, boolean force) {
+		// TODO not defined for multiplayer package
 	}
 
 }

@@ -111,6 +111,26 @@ public class LitWRLGUI extends PluginAdapter implements TaskMonitor {
 		}.start();
 		return false;
 	}
+	
+	public boolean requestModification(LitWRSetupParams setup) {
+		new Thread() {
+			public void run ()  {
+				final boolean success = launcher.modifyLitWR(setup);
+				SwingUtilities.invokeLater(new Runnable() {
+
+					@Override
+					public void run() {
+						window.setupFinished(success);
+					}
+					
+				});
+			}
+		}.start();
+		return false;
+	}
+
+
+	
 	public boolean requestLaunch(final LitWRSetupParams setup) {
 		new Thread() {
 			public void run ()  {

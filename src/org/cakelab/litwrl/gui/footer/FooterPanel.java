@@ -23,8 +23,9 @@ public class FooterPanel extends JPanel implements ActionListener {
 		Play,
 		Install,
 		Upgrade,
+		Apply,
 		Initialising, 
-		Invalid
+		Invalid, 
 	}
 
 	public static FooterPanel create(boolean enabled) {
@@ -103,6 +104,9 @@ public class FooterPanel extends JPanel implements ActionListener {
 		case NEEDS_UPGRADE:
 			state = State.Upgrade;
 			break;
+		case NEEDS_MODIFICATION:
+			state = State.Apply;
+			break;
 		case INCONSISTENT:
 			state = State.Invalid;
 			break;
@@ -129,6 +133,9 @@ public class FooterPanel extends JPanel implements ActionListener {
 			case Upgrade:
 				launchButton.setText("upgrading ..");
 				break;
+			case Apply:
+				launchButton.setText("modifying ..");
+				break;
 			case Initialising:
 				launchButton.setText("initialising ..");
 				break;
@@ -143,6 +150,9 @@ public class FooterPanel extends JPanel implements ActionListener {
 				break;
 			case Install:
 				launchButton.setText(State.Install.name());
+				break;
+			case Apply:
+				launchButton.setText(State.Apply.name());
 				break;
 			case Upgrade:
 				launchButton.setText(State.Upgrade.name());
@@ -169,6 +179,9 @@ public class FooterPanel extends JPanel implements ActionListener {
 				break;
 			case Upgrade:
 				MainWindow.INSTANCE.upgradeButtonPressed();
+				break;
+			case Apply:
+				MainWindow.INSTANCE.applyButtonPressed();
 				break;
 			default:
 				throw new IllegalArgumentException("Footer panel in inconsistent state.");

@@ -36,7 +36,7 @@ public class ShaderSetup extends SetupService {
 	}
 
 	@Override
-	public boolean isInstalled() {
+	public boolean isBaseInstalled() {
 		boolean installed = shaderFile.exists();
 		try {
 			OptionsShaders options = OptionsShaders.loadFromGamedir(setupParams.gamedir);
@@ -61,7 +61,7 @@ public class ShaderSetup extends SetupService {
 
 	@Override
 	public void scheduleInstalls(TaskManager taskman, boolean force) throws Throwable {
-		if (!isInstalled() || force) {
+		if (!isBaseInstalled() || force) {
 			if (!shaderFile.exists() || force) {
 				taskman.addSingleTask(new Copy("installing shader", getPackageRepositoryFile().getPath(), shaderFile.getPath()));
 			}
@@ -78,7 +78,7 @@ public class ShaderSetup extends SetupService {
 	@Override
 	public void scheduleRemove(TaskManager taskman) {
 
-		if (isInstalled()) {
+		if (isBaseInstalled()) {
 			OptionsShaders options;
 			try {
 				options = OptionsShaders.loadFromGamedir(setupParams.gamedir);
@@ -92,6 +92,18 @@ public class ShaderSetup extends SetupService {
 			}
 			taskman.addSingleTask(new Delete("upgrading mod-pack", shaderFile.getAbsolutePath()));
 		}
+	}
+
+	@Override
+	public boolean hasModifications() {
+		return !isBaseInstalled();
+	}
+
+	@Override
+	public void scheduleModifications(TaskManager taskman, boolean force) throws Throwable {
+		scheduleRemove(taskman);
+		scheduleDownloads(taskman, force);
+		scheduleInstalls(taskman, force);
 	}
 
 }

@@ -21,16 +21,13 @@ public class LauncherUpdate extends SetupService {
 		this.launcher = launcher;
 	}
 
-
-
 	@Override
 	public void init() throws Throwable {
-		
 	}
 
 
 	@Override
-	public boolean isInstalled() {
+	public boolean isBaseInstalled() {
 		// we would run the new version if it was installed.
 		// So, the only time this setup service exists, is when it is not installed.
 		return false;
@@ -44,7 +41,12 @@ public class LauncherUpdate extends SetupService {
 		// always true
 		return true;
 	}
-
+	
+	@Override
+	public boolean hasModifications() {
+		// launcher is a standalone package with no optional addons
+		return true;
+	}
 
 	@Override
 	public void scheduleDownloads(TaskManager taskman, boolean forced) throws Throwable {
@@ -83,10 +85,15 @@ public class LauncherUpdate extends SetupService {
 		scheduleInstalls(taskman, false);
 	}
 
-
 	@Override
 	public void scheduleRemove(TaskManager taskman) {
-		// TODO Auto-generated method stub
+		// TODO support cleanup
+		
+	}
+
+	@Override
+	public void scheduleModifications(TaskManager taskman, boolean force) {
+		// launcher has no optional addons
 		
 	}
 

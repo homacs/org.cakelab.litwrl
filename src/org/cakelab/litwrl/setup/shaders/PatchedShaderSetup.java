@@ -46,8 +46,8 @@ public class PatchedShaderSetup extends ShaderSetup {
 	}
 
 	@Override
-	public boolean isInstalled() {
-		return super.isInstalled();
+	public boolean isBaseInstalled() {
+		return super.isBaseInstalled();
 	}
 
 	@Override
