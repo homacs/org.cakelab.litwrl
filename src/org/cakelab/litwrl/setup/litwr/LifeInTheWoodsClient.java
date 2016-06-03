@@ -260,9 +260,6 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 			taskman.addSingleTask(new SetOptions("installing mod-pack", setupParams.gamedir.getAbsolutePath(), setupParams.gameConfig));
 			
 			taskman.addSingleTask(new Unzip("installing mod-pack", repository.getLocalFileLocation(descriptor, descriptor.filename).getAbsolutePath(), setupParams.gamedir.getAbsolutePath()));
-			if (OS.isMac()) {
-				taskman.addSingleTask(new Delete("installing mod-pack", new File(setupParams.gamedir, MinecraftClient.SUBDIR_MODS + File.separator + "Waila-1.5.10_1.7.10.jar").getAbsolutePath()));
-			}
 			taskman.addSingleTask(new FinishLitWRLSetup(new LitWRLConfig(setupParams.version, setupParams.type, litwrlParams.variant, litwrlParams.keepVersion, litwrlParams.optionals), configFile));
 		}
 
@@ -290,9 +287,6 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 		// and finally we schedule installation of the new package
 		//
 		taskman.addSingleTask(new Unzip("upgrading mod-pack", repository.getLocalFileLocation(descriptor, descriptor.filename).getAbsolutePath(), setupParams.gamedir.getAbsolutePath()));
-		if (OS.isMac()) {
-			taskman.addSingleTask(new Delete("upgrading mod-pack", new File(setupParams.gamedir, MinecraftClient.SUBDIR_MODS + File.separator + "Waila-1.5.10_1.7.10.jar").getAbsolutePath()));
-		}
 		taskman.addSingleTask(new FinishLitWRLSetup(new LitWRLConfig(setupParams.version, setupParams.type, litwrlParams.variant, litwrlParams.keepVersion, litwrlParams.optionals), configFile));
 	}
 
