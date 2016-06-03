@@ -45,7 +45,7 @@ public class LitWRLRepository extends Repository {
 	
 	public void init() throws IOException, JSONCodecException, ServerLockedException, TransportException {
 		// nothing litwrl specific
-		super.init();
+		super.init(true);
 	}
 
 	
