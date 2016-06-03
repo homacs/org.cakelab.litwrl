@@ -8,7 +8,6 @@ import java.nio.file.Files;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import org.cakelab.json.JSONException;
 import org.cakelab.json.codec.JSONCodecException;
@@ -22,7 +21,6 @@ import org.cakelab.litwrl.gui.utils.notification.JTextAreaChangeNotificationServ
 import org.cakelab.litwrl.setup.LitWRSetupParams;
 import org.cakelab.litwrl.setup.litwr.LitWRLConfig;
 import org.cakelab.litwrl.setup.shaders.Shaders;
-import org.cakelab.litwrl.setup.shadersmod.OptionsShaders;
 import org.cakelab.omcl.config.GameConfig;
 import org.cakelab.omcl.config.GameTypes;
 import org.cakelab.omcl.repository.Versions;
@@ -54,9 +52,6 @@ public class ConfigPane extends ConfigPaneUIElements {
 	/** litwr installation config based on gamedir */
 	private LitWRLConfig litwrlcfg;
 	
-	/** Selected set of shaders based on litwr game config and version */
-	private Shaders<String> selectedShaderSet;
-	private String selectedShader;
 	
 	private boolean validContent = false;
 	private boolean modified = false;
@@ -123,51 +118,6 @@ public class ConfigPane extends ConfigPaneUIElements {
 		endUpdateSection();
 	}
 
-	private void setSelectedShader(String selectedItem) {
-		beginUpdateSection();
-		if (OPTIONAL_ADDONS_FEATURE) {
-			optionalAddons.setSelectedShader(selectedItem);
-		}
-		if (selectedShader != selectedItem) {
-			boolean isUnknown = false;
-			try {
-				String filename;
-				try {
-					if (selectedShaderSet != null) {
-						filename = selectedShaderSet.getFilenameOf(selectedItem);
-					} else {
-						filename = Shaders.getUnknownShaderFileName(selectedItem);
-						isUnknown = true;
-					}
-				} catch (IllegalArgumentException e) {
-					filename = Shaders.getUnknownShaderFileName(selectedItem);
-					isUnknown = true;
-				}
-				
-				if (isUnknown && !Shaders.isInstalled(filename, gamedir.getSelectedFile())) {
-					selectedItem = Shaders.SHADER_NONE;
-				}
-				
-				Shaders.setShaderOptions(filename, gamedir.getSelectedFile());
-			} catch (IOException e) {
-				// nevermind
-			}
-
-			selectedShader = selectedItem;
-			shader.setSelectedItem(selectedItem);
-
-			modified = true;
-		}
-		SwingUtilities.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				checkModified();
-			}
-			
-		});
-		endUpdateSection();
-	}
 
 	private void setDefaults() {
 		beginUpdateSection();
@@ -176,16 +126,30 @@ public class ConfigPane extends ConfigPaneUIElements {
 		if (answer == JOptionPane.CLOSED_OPTION || answer == JOptionPane.CANCEL_OPTION) {
 			return;
 		}
+		
+		setConfigurable(false);
+
 		Log.info("resetting to default config");
 		String workDir = Launcher.INSTANCE.getDefaultWorkDir();
 		if (!workDir.equals(workingDir.getSelectedFile().getAbsolutePath())) {
+			workingDir.setSelectedFile(workDir);
 			config.setWorkDir(workDir);
-			updatedWorkDir();
+			modified = true;
 		}
-		
 		javaArgs.setText(trimJavaArgs(getOptimizedJavaArgs()));
+		String defaultGameDir = createDefaultGamePath();
+		if (!defaultGameDir.equals(gamedir.getSelectedFile().getAbsolutePath())) {
+			gamedir.setSelectedFile(defaultGameDir);
+			modified = true;
+		}
+
+		optionalAddons.setDefaults();
 		
-		setSelectedShader(Shaders.SHADER_NONE);
+		version.setKeepVersion(false);
+		version.update();
+		updatedVersion();
+
+		setConfigurable(true);
 		endUpdateSection();
 	}
 
@@ -234,6 +198,10 @@ public class ConfigPane extends ConfigPaneUIElements {
 		} catch (IOException | JSONCodecException e) {
 			// nevermind .. we'll fix it below
 		}
+
+		
+		optionalAddons.updatedGameDir(litwrlcfg, gamedir);
+
 		
 		String latestLitWRVersion = Launcher.INSTANCE.getLatestLitWRVersion(selectedGameType, selectedVariant);
 		if (latestLitWRVersion == null) latestLitWRVersion = "0.0.0";
@@ -250,7 +218,6 @@ public class ConfigPane extends ConfigPaneUIElements {
 
 	private void updatedVersion() {
 		beginUpdateSection();
-		
 		boolean willUpgrade = version.isVersionUpgrade();
 		
 		if (!willUpgrade && litwrlcfg != null) {
@@ -258,68 +225,18 @@ public class ConfigPane extends ConfigPaneUIElements {
 		}
 		
 		
-		
-		
+		Shaders<String> selectedShaderSet = null;
 		//
 		// refresh set of shaders for the given version
 		//
 		try {
 			selectedShaderSet = Launcher.INSTANCE.getLitWRShaders(selectedGameType, selectedVariant, version.getVersion());
-		} catch (Throwable e) {
-			// repository inconsistent
-			selectedShaderSet = null;
+		} catch (Exception e) {
+			// inconsistent repository
 		}
 		
-		
-		if (OPTIONAL_ADDONS_FEATURE) {
-			optionalAddons.updatedGameDir(litwrlcfg, selectedShaderSet, gamedir, willUpgrade);
-		} else {
-			shader.removeAllItems();
-			if (selectedShaderSet == null) {
-				// shaders not supported or local repository inconsistent
-				// Get into a safe state:
-				shader.addItem(Shaders.SHADER_NONE);
-				try {
-					OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
-					String shaderPackFileName = optionsShaders.getShaderPack();
-					String shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
-					if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
-						shader.addItem(shaderName);
-					} else {
-						shaderName = Shaders.SHADER_NONE;
-					}
-					setSelectedShader(shaderName);
-				} catch (IOException e) {
-					setSelectedShader(Shaders.SHADER_NONE);
-				}
-			} else {
-				for (String s : selectedShaderSet.getAvailableShaders()) {
-					shader.addItem(s);
-				}
-				try {
-					OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
-					String shaderPackFileName = optionsShaders.getShaderPack();
-					String shaderName;
-					try {
-						if (willUpgrade) {
-							shaderName = selectedShaderSet.getNameOfUpgrade(shaderPackFileName);
-						} else {
-							shaderName = selectedShaderSet.getNameOf(shaderPackFileName);
-						}
-					} catch (IllegalArgumentException e) {
-						shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
-						if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
-							shader.addItem(shaderName);
-						} else {
-							shaderName = Shaders.SHADER_NONE;
-						}
-					}
-					setSelectedShader(shaderName);
-				} catch (IOException e) {
-					setSelectedShader(Shaders.SHADER_NONE);
-				}
-			}
-		}
+		optionalAddons.updatedShaderSet(selectedShaderSet, willUpgrade);
+
 		endUpdateSection();
 	}
 
@@ -329,7 +246,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 			return "-Xmx1G -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:-UseAdaptiveSizePolicy -Xmn128M";
 		} else {
 			// try to get 4G, 2G is good, 1G is minimum
-			int heapMemory = Math.min((int)(((float)totalMB)*3.0/4.0), 2048);
+			int heapMemory = Math.min((int)(((float)totalMB)*3.0/8.0), 2048);
 			if (heapMemory < 1024) {
 				// We assume that this is an error of the JMX implementation
 				// and just set it to the minimum values.
@@ -426,8 +343,6 @@ public class ConfigPane extends ConfigPaneUIElements {
 			if (e.getActionCommand().equals("comboBoxChanged")) {
 				updatedVariant(variantSelector.getSelectedVariant());
 			}
-		} else if (e.getSource().equals(shader)) {
-			setSelectedShader((String) shader.getSelectedItem());
 		} else if (e.getSource().equals(resetButton)) {
 			setDefaults();
 		}
@@ -543,48 +458,29 @@ public class ConfigPane extends ConfigPaneUIElements {
 
 	public LitWRSetupParams getSetupParams() {
 		LitWRSetupParams setup;
-		if (OPTIONAL_ADDONS_FEATURE) {
-			setup = new LitWRSetupParams(selectedGameConfig, 
-					new File(config.getWorkDir()), 
-					gamedir.getSelectedFile(), 
-					version.getVersion(), 
-					version.isKeepVersion(),
-					selectedGameType, 
-					config.getSelectedVariant(), 
-					trimJavaArgs(javaArgs.getText()), 
-					optionalAddons.getSelectedShader(),
-					optionalAddons.getOptionalAddons());
-		} else {
-			setup = new LitWRSetupParams(selectedGameConfig, 
-					new File(config.getWorkDir()), 
-					gamedir.getSelectedFile(), 
-					version.getVersion(), 
-					version.isKeepVersion(),
-					selectedGameType, 
-					config.getSelectedVariant(), 
-					trimJavaArgs(javaArgs.getText()), 
-					selectedShader, null);
-		}
+		setup = new LitWRSetupParams(selectedGameConfig, 
+				new File(config.getWorkDir()), 
+				gamedir.getSelectedFile(), 
+				version.getVersion(), 
+				version.isKeepVersion(),
+				selectedGameType, 
+				config.getSelectedVariant(), 
+				trimJavaArgs(javaArgs.getText()), 
+				optionalAddons.getSelectedShader(),
+				optionalAddons.getOptionalAddons());
 		return setup;
 	}
 
 
 
 	public void setConfigurable(boolean configurable) {
-		if (configurable) {
-			updatedWorkDir();
-		}
 		workingDir.setEditable(configurable);
 		gamedir.setEditable(configurable);
 		javaArgs.setEditable(configurable);
 		resetButton.setEnabled(configurable);
 		userSelector.setEnabled(configurable);
 		version.setConfigurable(configurable);
-		if (OPTIONAL_ADDONS_FEATURE) {
-			optionalAddons.setConfigurable(configurable);
-		} else {
-			shader.setEnabled(configurable);
-		}
+		optionalAddons.setConfigurable(configurable);
 	}
 
 	private boolean isUpdating() {
@@ -593,13 +489,13 @@ public class ConfigPane extends ConfigPaneUIElements {
 
 	void beginUpdateSection() {
 		this.updating += 1;
-		if (OPTIONAL_ADDONS_FEATURE) optionalAddons.beginUpdateSection();
+		optionalAddons.beginUpdateSection();
 	}
 	
 	void endUpdateSection() {
 		this.updating -= 1;
 		assert(this.updating >= 0);
-		if (OPTIONAL_ADDONS_FEATURE) optionalAddons.endUpdateSection();
+		optionalAddons.endUpdateSection();
 		if (!isUpdating()) {
 			checkModified();
 		}

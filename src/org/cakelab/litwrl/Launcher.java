@@ -671,7 +671,7 @@ public class Launcher {
 		try {
 			setupControl = new SetupControl(params, repository, taskman);
 			SetupStatus status = setupControl.getSetupStatus();
-			if (!canInstall && (!status.isInstalled() || status.hasUpgrade())) {
+			if (!canInstall && (!status.isInstalled() || status.hasUpgrade() || status.hasModifications())) {
 				return null;
 			} else {
 				return status;

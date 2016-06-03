@@ -134,7 +134,7 @@ public class FooterPanel extends JPanel implements ActionListener {
 				launchButton.setText("upgrading ..");
 				break;
 			case Apply:
-				launchButton.setText("modifying ..");
+				launchButton.setText("applying changes ..");
 				break;
 			case Initialising:
 				launchButton.setText("initialising ..");
@@ -152,7 +152,7 @@ public class FooterPanel extends JPanel implements ActionListener {
 				launchButton.setText(State.Install.name());
 				break;
 			case Apply:
-				launchButton.setText(State.Apply.name());
+				launchButton.setText("Apply Changes");
 				break;
 			case Upgrade:
 				launchButton.setText(State.Upgrade.name());

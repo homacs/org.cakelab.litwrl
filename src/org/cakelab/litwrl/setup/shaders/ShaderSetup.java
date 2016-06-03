@@ -98,8 +98,8 @@ public class ShaderSetup extends SetupService {
 			} catch (IOException e) {
 				// nevermind, does not exist
 			}
-			taskman.addSingleTask(new Delete("upgrading mod-pack", shaderFile.getAbsolutePath()));
-			taskman.addSingleTask(new Delete("upgrading mod-pack", shaderBackupFile.getAbsolutePath()));
+			if (shaderFile.exists()) taskman.addSingleTask(new Delete("upgrading mod-pack", shaderFile.getAbsolutePath()));
+			if (shaderBackupFile.exists()) taskman.addSingleTask(new Delete("upgrading mod-pack", shaderBackupFile.getAbsolutePath()));
 		}
 	}
 
@@ -110,7 +110,6 @@ public class ShaderSetup extends SetupService {
 
 	@Override
 	public void scheduleModifications(TaskManager taskman, boolean force) throws Throwable {
-		scheduleRemove(taskman);
 		scheduleDownloads(taskman, force);
 		scheduleInstalls(taskman, true);
 	}

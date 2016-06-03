@@ -101,8 +101,8 @@ public class Shaders<I> {
 	}
 
 
-	public String getNameOfUpgrade(String shaderPackFileName) {
-
+	public String getNameOfEquivalent(String shaderPackFileName) {
+		if (shaderPackFileName == null) throw new IllegalArgumentException("requested shader pack file is null");
 		if (shaderPackFileName.equals(SHADER_NONE) || shaderPackFileName.equals(SHADER_INTERNAL)) {
 			return shaderPackFileName;
 		}
@@ -251,6 +251,7 @@ public class Shaders<I> {
 
 
 	public static boolean isInstalled(String filename, File gamedir) {
+		if (filename == null) return false;
 		return new File(new File(gamedir, "shaderpacks"), filename).exists();
 	}
 

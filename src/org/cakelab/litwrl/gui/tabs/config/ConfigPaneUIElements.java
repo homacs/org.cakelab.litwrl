@@ -10,7 +10,6 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -27,8 +26,6 @@ import org.cakelab.litwrl.gui.utils.notification.DelayedNotificationReceiver;
 
 @SuppressWarnings("serial")
 public abstract class ConfigPaneUIElements extends JScrollPane implements ActionListener, FileVerifier, DelayedNotificationReceiver, ConfigUpdateListener {
-	// TODO: remove when done
-	static final boolean OPTIONAL_ADDONS_FEATURE = true;
 
 	protected VariantSelector variantSelector;
 
@@ -39,7 +36,6 @@ public abstract class ConfigPaneUIElements extends JScrollPane implements Action
 	protected JTextField profile;
 	protected FileEdit gamedir;
 	protected JTextArea javaArgs;
-	protected JComboBox<String> shader;
 	protected JButton resetButton;
 	protected ConfigOptionalAddons optionalAddons;
 
@@ -121,8 +117,6 @@ public abstract class ConfigPaneUIElements extends JScrollPane implements Action
 		javaArgs.setEditable(false);
 		addRow(label, javaArgs, "These are the command line arguments for\nthe Java VM running the Minecraft client.");
 		
-		addShadersSection();
-
 		addOptionalAddonsSection();
 		
 		addResetSection();
@@ -189,14 +183,14 @@ public abstract class ConfigPaneUIElements extends JScrollPane implements Action
 		verticalGroup.addComponent(value);
 		beginLayoutSubSection();
 	}
+	
 	private void addOptionalAddonsSection() {
-		if (OPTIONAL_ADDONS_FEATURE) {
-			
-			JLabel label = new JLabel();
-			optionalAddons = new ConfigOptionalAddons(this);
-			addSection(label, optionalAddons, "Allows to add or remove recommended addons.");
-			
-		}
+		JLabel label = new JLabel();
+		optionalAddons = new ConfigOptionalAddons(this);
+		addSection(label, optionalAddons, "Section to configure optional features.\n"
+				+ "Please note, these features require you to download\n"
+				+ "certain files manually. But don't worry, we will\n"
+				+ "guide you to the right pages to do so.");
 	}
 
 
@@ -216,25 +210,5 @@ public abstract class ConfigPaneUIElements extends JScrollPane implements Action
 		addRow(label, resetPanel, null);
 	}
 
-
-
-	private void addShadersSection() {
-		if (!OPTIONAL_ADDONS_FEATURE) {
-			JLabel label = new JLabel("Shader:");
-			shader = new JComboBox<String>();
-			shader.setEditable(false);
-			shader.setEnabled(false);
-			shader.addActionListener(this);
-			
-			addRow(label, shader, 
-					"This option allows you to use shader packs.\n"
-					+ "You can select a shader pack to be installed\n"
-					+ "and used when you start the game.\n"
-					+ "\n"
-					+ "Please note, that this requires you to download\n"
-					+ "certain files manually. But don't worry, we will\n"
-					+ "guide you to the right pages to do so.");
-		}
-	}
 
 }
