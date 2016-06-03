@@ -223,6 +223,7 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 		this.selectedShaderSet = shaderSet;
 		try {
 			beginUpdateSection();
+			
 			shader.removeAllItems();
 			if (selectedShaderSet == null) {
 				// shaders not supported or local repository inconsistent
@@ -317,9 +318,6 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 				}
 			} else {
 				shadersMod.setEnabled(true);
-				if (!userCustomized) {
-					shadersMod.setSelected(false);
-				}
 			}
 			
 			updateService.forwardConfigUpdate();

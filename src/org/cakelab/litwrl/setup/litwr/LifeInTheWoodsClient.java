@@ -203,7 +203,7 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 
 	@Override
 	public boolean hasModifications() {
-		// ask each optional addon if it requires a change
+		// ask each setup service of optional addons if it requires a modification
 		for (SetupService s : optionals) {
 			if (s.hasModifications()) return true;
 		}

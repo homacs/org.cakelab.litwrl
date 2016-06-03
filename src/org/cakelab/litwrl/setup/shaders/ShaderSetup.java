@@ -18,6 +18,7 @@ public class ShaderSetup extends SetupService {
 
 	private File shaderFile;
 	private File optionsfile;
+	private File shaderBackupFile;
 
 	protected ShaderSetup(SetupParameters setupParams, PackageDescriptor pd,
 			Repository repository) {
@@ -28,6 +29,13 @@ public class ShaderSetup extends SetupService {
 	public void init() throws Throwable {
 		optionsfile = new File(setupParams.gamedir + File.separator + OptionsShaders.FILENAME);
 		shaderFile = new File(setupParams.gamedir,MinecraftClient.SUBDIR_SHADERPACKS + File.separator + descriptor.filename);
+		shaderBackupFile = new File(setupParams.gamedir, 
+				MinecraftClient.SUBDIR_MODS + 
+				File.separator + "resources" + 
+				File.separator + "litwr" + 
+				File.separator + "shaderpatch" + 
+				File.separator + "backup" + 
+				File.separator + descriptor.filename);
 	}
 
 	@Override
@@ -91,6 +99,7 @@ public class ShaderSetup extends SetupService {
 				// nevermind, does not exist
 			}
 			taskman.addSingleTask(new Delete("upgrading mod-pack", shaderFile.getAbsolutePath()));
+			taskman.addSingleTask(new Delete("upgrading mod-pack", shaderBackupFile.getAbsolutePath()));
 		}
 	}
 
@@ -103,7 +112,7 @@ public class ShaderSetup extends SetupService {
 	public void scheduleModifications(TaskManager taskman, boolean force) throws Throwable {
 		scheduleRemove(taskman);
 		scheduleDownloads(taskman, force);
-		scheduleInstalls(taskman, force);
+		scheduleInstalls(taskman, true);
 	}
 
 }

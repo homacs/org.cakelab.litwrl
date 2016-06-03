@@ -29,21 +29,11 @@ public abstract class OptionalModSetupServiceBase extends ModSetupServiceBase {
 	@Override
 	public void init() throws Throwable {
 		super.init();
-		requestedInstall = containsOptionalAddon(setupParams.optionals, descriptor.getID());
+		requestedInstall = setupParams.containsOptionalAddon(descriptor.getID());
 	}
 
-	private boolean containsOptionalAddon(String[] optionals, String location) {
-		if (optionals != null) {
-			for (String l : optionals) {
-				if (l.equals(location)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-
+	
+	
 	@Override
 	public boolean hasModifications() {
 		boolean hasModification = (isBaseInstalled() != requestedInstall);
