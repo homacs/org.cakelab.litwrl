@@ -135,6 +135,7 @@ public class FileEdit extends JPanel implements ActionListener, DelayedNotificat
 		}
 		InputVerifier inputVerifier = new InputVerifier(){
 			@Override
+			synchronized
 			public boolean verify(JComponent input) {
 				try {
 					boolean result = !errorLabel.isVisible();
@@ -146,7 +147,8 @@ public class FileEdit extends JPanel implements ActionListener, DelayedNotificat
 					return result;
 				} catch (Throwable t) {
 					Log.error("received exception while validating directory " + folder.getText(), t);
-					setErrorMessage(t.getMessage());
+					String err = "received exception while validating directory " + folder.getText() + ": " + t.getMessage();
+					setErrorMessage(err);
 					setInvalid(true);
 					return false;
 				}

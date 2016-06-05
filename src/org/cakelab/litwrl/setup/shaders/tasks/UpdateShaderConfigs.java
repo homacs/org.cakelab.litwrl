@@ -26,6 +26,10 @@ public class UpdateShaderConfigs extends RunnableTask {
 		try {
 			
 			File osFile = new File(configFile);
+			if (!Shaders.isNonStandardShader(shaderFilename) && !osFile.exists()) {
+				// ignore this case, because it happens only during removal
+				return;
+			}
 			Shaders.setShaderOptions(shaderFilename, osFile.getParentFile());
 			
 		} catch (IOException e) {

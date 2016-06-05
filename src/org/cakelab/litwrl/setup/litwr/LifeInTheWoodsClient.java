@@ -262,7 +262,6 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 			taskman.addSingleTask(new Unzip("installing mod-pack", repository.getLocalFileLocation(descriptor, descriptor.filename).getAbsolutePath(), setupParams.gamedir.getAbsolutePath()));
 			taskman.addSingleTask(new FinishLitWRLSetup(new LitWRLConfig(setupParams.version, setupParams.type, litwrlParams.variant, litwrlParams.keepVersion, litwrlParams.optionals), configFile));
 		}
-
 	}
 	
 	@Override
@@ -294,7 +293,9 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 	
 	@Override
 	public void scheduleRemove(TaskManager taskman) throws Throwable {
-		for (SetupService optional : optionals) {
+		// removals in revers order
+		for (int i = optionals.size()-1; i >= 0; i--) {
+			SetupService optional = optionals.get(i);
 			optional.scheduleRemove(taskman);
 		}
 		

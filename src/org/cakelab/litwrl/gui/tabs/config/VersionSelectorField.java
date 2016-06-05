@@ -126,7 +126,8 @@ public class VersionSelectorField extends JPanel implements UIConfigField, Actio
 		this.installed = installed;
 		int i;
 		for (i = 0; i < version.getItemCount(); i++) {
-			if (version.getItemAt(i).equals(installed)) break;
+			String v = version.getItemAt(i);
+			if (v != null && v.equals(installed)) break;
 		}
 		if (i == version.getItemCount()) {
 			version.addItem(installed);

@@ -86,6 +86,8 @@ public class ConfigPane extends ConfigPaneUIElements {
 		}
 		workingDir.init(workDir, this, false);
 		
+		loadProfiles();
+		
 		updatedVariant(config.getSelectedVariant());
 		
 		validContent = validateContent();
@@ -114,46 +116,12 @@ public class ConfigPane extends ConfigPaneUIElements {
 
 		profile.setText(selectedGameConfig.getProfileName());
 
-		updatedWorkDir();
+		updatedProfile();
 		endUpdateSection();
 	}
 
 
-	private void setDefaults() {
-		beginUpdateSection();
-		int answer = JOptionPane.showConfirmDialog(this, "This will reset all settings to their default values.", Launcher.APPLICATION_NAME + " - Question", JOptionPane.OK_CANCEL_OPTION);
-		
-		if (answer == JOptionPane.CLOSED_OPTION || answer == JOptionPane.CANCEL_OPTION) {
-			return;
-		}
-		
-		setConfigurable(false);
-
-		Log.info("resetting to default config");
-		String workDir = Launcher.INSTANCE.getDefaultWorkDir();
-		if (!workDir.equals(workingDir.getSelectedFile().getAbsolutePath())) {
-			workingDir.setSelectedFile(workDir);
-			config.setWorkDir(workDir);
-			modified = true;
-		}
-		javaArgs.setText(trimJavaArgs(getOptimizedJavaArgs()));
-		String defaultGameDir = createDefaultGamePath();
-		if (!defaultGameDir.equals(gamedir.getSelectedFile().getAbsolutePath())) {
-			gamedir.setSelectedFile(defaultGameDir);
-			modified = true;
-		}
-
-		optionalAddons.setDefaults();
-		
-		version.setKeepVersion(false);
-		version.update();
-		updatedVersion();
-
-		setConfigurable(true);
-		endUpdateSection();
-	}
-
-	public void updatedWorkDir() {
+	public void loadProfiles() {
 		beginUpdateSection();
 		try {
 			launcherProfiles = LauncherProfiles.load(new File(workingDir.getSelectedFile(), LauncherProfiles.PROFILES_FILE));
@@ -162,8 +130,11 @@ public class ConfigPane extends ConfigPaneUIElements {
 		}
 
 		userSelector.init(launcherProfiles);
+		endUpdateSection();
+	}
 
-		
+	public void updatedProfile() {
+		beginUpdateSection();
 		profileExists = false;
 		if (launcherProfiles != null) {
 			profileExists = launcherProfiles.exists(profile.getText());
@@ -180,13 +151,20 @@ public class ConfigPane extends ConfigPaneUIElements {
 		}
 
 		if (profileExists) {
-			String args = launcherProfiles.getJavaArgs(selectedGameConfig.getProfileName());
+			String args = launcherProfiles.getJavaArgs(profile.getText());
 			javaArgs.setText(trimJavaArgs(args));
 		} else {
 			javaArgs.setText(trimJavaArgs(getOptimizedJavaArgs()));
 		}
 		
 		updatedGameDir();
+		endUpdateSection();
+	}
+	
+	public void updatedWorkDir() {
+		beginUpdateSection();
+		loadProfiles();
+		updatedProfile();
 		endUpdateSection();
 	}
 	
@@ -269,6 +247,42 @@ public class ConfigPane extends ConfigPaneUIElements {
 		}
 	}
 
+
+	private void setDefaults() {
+		beginUpdateSection();
+		int answer = JOptionPane.showConfirmDialog(this, "This will reset all settings to their default values.", Launcher.APPLICATION_NAME + " - Question", JOptionPane.OK_CANCEL_OPTION);
+		
+		if (answer == JOptionPane.CLOSED_OPTION || answer == JOptionPane.CANCEL_OPTION) {
+			return;
+		}
+		
+		setConfigurable(false);
+
+		Log.info("resetting to default config");
+		String workDir = Launcher.INSTANCE.getDefaultWorkDir();
+		if (!workDir.equals(workingDir.getSelectedFile().getAbsolutePath())) {
+			workingDir.setSelectedFile(workDir);
+			config.setWorkDir(workDir);
+			modified = true;
+		}
+		javaArgs.setText(trimJavaArgs(getOptimizedJavaArgs()));
+		String defaultGameDir = createDefaultGamePath();
+		if (!defaultGameDir.equals(gamedir.getSelectedFile().getAbsolutePath())) {
+			gamedir.setSelectedFile(defaultGameDir);
+			modified = true;
+		}
+
+		optionalAddons.setDefaults();
+		
+		version.setKeepVersion(false);
+		version.update();
+		updatedVersion();
+
+		setConfigurable(true);
+		endUpdateSection();
+	}
+
+	
 	private String trimJavaArgs(String args) {
 		return args != null ? args.replaceAll("" + Regex.utf_whitespace_class + Regex.utf_whitespace_class + "*", " ").trim() : "";
 	}
@@ -340,9 +354,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 		if (isUpdating()) return;
 		
 		if (e.getSource().equals(variantSelector)) {
-			if (e.getActionCommand().equals("comboBoxChanged")) {
-				updatedVariant(variantSelector.getSelectedVariant());
-			}
+			updatedVariant(variantSelector.getSelectedVariant());
 		} else if (e.getSource().equals(resetButton)) {
 			setDefaults();
 		}
