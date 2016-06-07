@@ -66,7 +66,7 @@ public class MainWindow extends JFrame implements WindowListener{
 		setTitle(Launcher.APPLICATION_NAME);
 
 		setResizable(true);
-		Dimension dim = new Dimension(800, 750);
+		Dimension dim = new Dimension(800, 800);
 		GUIUtils.adjustToDesktopSize(dim);
 		setSize(dim);
 		GUIUtils.centerWindow(this);

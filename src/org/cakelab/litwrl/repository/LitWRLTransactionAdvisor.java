@@ -17,9 +17,11 @@ public class LitWRLTransactionAdvisor extends UpdateServer.DefaultTransactionAdv
 	
 	@Override
 	public void checkRetry(URLPath location, int i, Throwable e) throws Throwable {
-		if (e instanceof FileNotFoundException) throw new TransactionFallThrough(e);
-		if (treatCorruptedFilesAsNoLongerExisting && e instanceof JSONCodecException) {
-			throw new TransactionFallThrough(new FileNotFoundException(e.getMessage()));
+		if (location.getLast().equals(PackageDescriptor.FILENAME)) {
+			if (e instanceof FileNotFoundException) throw new TransactionFallThrough(e);
+			if (treatCorruptedFilesAsNoLongerExisting && e instanceof JSONCodecException) {
+				throw new TransactionFallThrough(new FileNotFoundException(e.getMessage()));
+			}
 		}
 		super.checkRetry(location, i, e);
 	}
