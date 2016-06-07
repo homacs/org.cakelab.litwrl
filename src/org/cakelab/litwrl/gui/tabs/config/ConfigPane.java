@@ -208,7 +208,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 		// refresh set of shaders for the given version
 		//
 		try {
-			selectedShaderSet = Launcher.INSTANCE.getLitWRShaders(selectedGameType, selectedVariant, version.getVersion());
+			selectedShaderSet = Launcher.INSTANCE.fetchLitWRShaders(selectedGameType, selectedVariant, version.getVersion());
 		} catch (Exception e) {
 			// inconsistent repository
 		}

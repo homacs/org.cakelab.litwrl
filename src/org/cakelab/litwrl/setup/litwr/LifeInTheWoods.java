@@ -30,13 +30,6 @@ public class LifeInTheWoods {
 		return getSetupService(pd, setup, repository);
 		
 	}
-	
-
-	
-
-	
-
-
 
 	
 }

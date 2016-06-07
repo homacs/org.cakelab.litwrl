@@ -53,6 +53,8 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 	private File configFile;
 	
 	
+	
+
 	public LifeInTheWoodsClient(LitWRSetupParams params, PackageDescriptor descriptor, LitWRLRepository repository) {
 		super(params, descriptor, repository);
 		this.litwrlParams = params;

@@ -383,7 +383,7 @@ public class Launcher {
 		Thread connectPrimary = new Thread("connectPrimary"){
 			public void run() {
 				try {
-					primaryUpdateServer = pool.connect(revision);
+					primaryUpdateServer = pool.connect(revision, LitWRLRepository.TX_ADVISOR);
 				} catch (Throwable t) {
 					Log.warn("can't connect to any update server in pool.", t);
 				}
@@ -396,7 +396,7 @@ public class Launcher {
 		Thread connectSecondary = new Thread("connectSecondary"){
 			public void run() {
 				try {
-					secondaryUpdateServer = new UpdateServer(new URL(config.getSecondaryUpdateURL()));
+					secondaryUpdateServer = new UpdateServer(new URL(config.getSecondaryUpdateURL()), LitWRLRepository.TX_ADVISOR);
 				} catch (Throwable t) {
 					Log.warn("can't connect to secondary update server.", t);
 				}
@@ -640,20 +640,29 @@ public class Launcher {
 	}
 	
 	
-	public Shaders<String> getLitWRShaders(GameTypes type,
+	public Shaders<String> fetchLitWRShaders(GameTypes type,
 			Variants variant, String version) throws Exception {
 		try {
-			PackageDescriptor descriptor = repository.fetchLitWRDependencies(type, variant, version);
+			PackageDescriptor descriptor;
+			if (!canInstall) {
+				descriptor = repository.getLocalLitWRPackageDescriptor(type, variant, version);
+			} else {
+				descriptor = repository.fetchLitWRDependencies(type, variant, version);
+			}
 			if (descriptor == null) return null;
+			
 			String location = descriptor.findOptionalDependency("meta/shaders");
 			PackageDescriptor metaShaders = repository.getLocalPackageDescriptorFromLocation(location);
+			if (metaShaders == null) return null;
 			
 			Shaders<String> shaders = new Shaders<String>(metaShaders.location, metaShaders, repository);
 			return shaders;
-
+			
 		} catch (IllegalArgumentException e) {
 			// no shaders available
 			throw e;
+		} catch (FileNotFoundException e) {
+			return null;
 		}
 	}
 

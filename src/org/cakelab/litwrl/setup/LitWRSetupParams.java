@@ -26,7 +26,6 @@ public class LitWRSetupParams extends SetupParameters {
 				+ keepVersion + ", javaArgs=" + javaArgs + ", shader=" + shader
 				+ ", optionals=" + Arrays.toString(optionals) + "]";
 	}
-	
-	
+
 
 }

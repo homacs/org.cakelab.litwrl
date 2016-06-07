@@ -13,6 +13,7 @@ import org.cakelab.omcl.repository.PackageDescriptor;
 import org.cakelab.omcl.repository.Repository;
 import org.cakelab.omcl.repository.Versions;
 import org.cakelab.omcl.update.ServerLockedException;
+import org.cakelab.omcl.update.TransactionAdvisor;
 import org.cakelab.omcl.update.TransportException;
 import org.cakelab.omcl.update.URLPath;
 import org.cakelab.omcl.update.UpdateServer;
@@ -37,6 +38,7 @@ public class LitWRLRepository extends Repository {
 
 	
 	public static final String VERSIONS_FILE = "versions.json";
+	public static final TransactionAdvisor TX_ADVISOR = new LitWRLTransactionAdvisor();
 
 	public LitWRLRepository(UpdateServer updateServer, File root) {
 		super(updateServer, root);
