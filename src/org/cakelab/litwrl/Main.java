@@ -40,7 +40,7 @@ public class Main {
 	}
 	
 	private static void checkJava() {
-		String errorPrefix ="The launcher requires Oracle Java SE v1.8 or higher.<br/>";
+		String errorPrefix ="The mod-pack v1.1 requires Oracle Java SE v1.8 or higher.<br/>";
 		String downloadSuggestion = "<br/><p>Please locate an appropriate Java installation<br/>"
 				+ "on your system or download it from:</p><br/>"
 				+ "<a href=\"http://java.oracle.com\">http://java.oracle.com/</a>";

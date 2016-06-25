@@ -250,26 +250,18 @@ public class MainWindow extends JFrame implements WindowListener{
 	@Override
 	public void windowOpened(WindowEvent arg0) {}
 
-
-
 	public void updateProgress(long total, long current, float percent,
 			String status) {
 		footer.updateProgress(total, current, percent, status);
 	}
 
-
-
 	public void endProgress() {
 		footer.endProgress();
 	}
 
-
-
 	public void setCurrentTask(RunnableTask task) {
 		footer.setCurrentTask(task);
 	}
-
-
 
 	public void taskFailed(RunnableTask task) {
 		footer.setCurrentTask(null);
@@ -278,8 +270,6 @@ public class MainWindow extends JFrame implements WindowListener{
 			
 		
 	}
-
-
 
 	protected String toTitleString(String str) {
 		if (str == null) return null;
@@ -290,8 +280,6 @@ public class MainWindow extends JFrame implements WindowListener{
 			return firstLetter + str.substring(1);
 		}
 	}
-
-
 
 	public void logGameOutput(String msg) {
 		if (gameLogPane.isVisible()) gameLogPane.append(msg);

@@ -112,7 +112,7 @@ public class LitWRLGUI extends PluginAdapter implements TaskMonitor {
 		return false;
 	}
 	
-	public boolean requestModification(LitWRSetupParams setup) {
+	public boolean requestModification(final LitWRSetupParams setup) {
 		new Thread() {
 			public void run ()  {
 				final boolean success = launcher.modifyLitWR(setup);
