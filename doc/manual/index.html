@@ -103,8 +103,8 @@
 		(Windows/MacOS/Linux).
 		</p>
 		<h2 id="Prerequisites">Prerequisites</h2>
-		<p>Minimum requirement is <b>Oracle Java SE 1.7</b> either the JRE or the JDK package. 
-			However, it is recommended by Mojang to use the latest Java version for better performance. 
+		<p>Minimum requirement for the mod-pack is <b>Oracle Java SE 1.8</b> either the JRE or the JDK package. 
+			It is also recommended by Mojang to use the latest Java version for better performance.
 			Download Java 1.8 <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">here</a>. 
 			In case that link is no longer valid go <a href="http://java.oracle.com/">here</a> and 
 			navigate to Java SE (which means "Standard Edition").
@@ -175,7 +175,7 @@
 		> java -jar litwrl.jar
 		</pre>
 		<p>
-		Make sure you have at least Oracle Java SE 1.7 installed (see <a href="#Prerequisites">Prerequisites</a>).
+		Make sure you have at least Oracle Java SE 1.8 installed (see <a href="#Prerequisites">Prerequisites</a>).
 		</p>
 		<h1 id="Application">Application</h1>
 		<h2 id="Start">Start</h2>
@@ -295,6 +295,16 @@
 			elements on the <em>Config</em> tab beginning at the top.
 		</p>
 		<div align="center"><img src="images/config-page.png"/></div>
+		<h4 id="User">User</h4>
+		<p>The launcher supports multiple user accounts. The drop down box allows
+		    to switch between known user accounts. During installation, 
+		    the launcher will copy the user accounts of your standard Minecraft 
+		    installation and automatically select the one you have recently used.
+		    If you would like to add another account, then chose the field 
+		    "login on next start". The launcher will then open a login prompt
+		    when you start the game.
+		</p>
+		
 		<h4 id="WorkingDirectory">Working Directory</h4>
 		<p>This field contains the path to the Minecraft working directory 
 			(see also Section <a href="#Directories">Directories</a>). 
@@ -331,11 +341,32 @@
 			corner (footer) of the launcher GUI (see also Section 
 			<a href="#GameVariant">Game Variant</a>).
 		</p>
-		<h3 id="ConfigVersion">Version</h3>
-		<p>This field displays the current version of the mod-pack. This is not the launcher version.
-		The launcher version is always displayed in the window title.</p>
-		<h3 id="ConfigProfile">Profile</h3>
-		<p>This field displays the name of the profile which is also the name of the game directory 
+		<h4 id="ConfigVersion">Version</h4>
+		<p> This field displays the version of the selected variant of the 
+		    mod-pack which is either currently installed or will be installed 
+		    when you hit the <em>Install/Play</em> button. In case you are 
+		    installing the mod-pack for the first time, this field allows you
+		    to chose one of the versions available on the update server. 
+		    By default, the launcher will select the most recent version.
+	    </p>
+	    <p> Behind the version field is a radio button showing the text 
+	        <em>Keep</em>. In case the update server offers a newer version
+	        of the mod-pack, this button allows you to <em>keep</em> an already 
+	        installed version until you decide to upgrade. This allows you to 
+	        play with an older version until you think it is safe to upgrade.
+			Also, when you first install a variant and select an older version, the 
+	        launcher will automatically activate the <em>Keep</em> button.
+	    </p>
+	    <p> Once installed, you cannot downgrade a given version of the 
+	        mod-pack (just not supported). In case you want to check if an upgrade
+	        will be successful (considering an upgrade of a world you have used 
+	        in an older version), then create a backup first: Copy the game folder
+	        (see above) to a save location. If you decide to keep the older version
+	        then copy the backup back to its original location and set the tick to 
+	        <em>Keep</em> this version.
+	    </p>
+		<h4 id="ConfigProfile">Profile</h4>
+		<p>This field displays the name of the profile which is also the default name of the game directory 
 		(see Section <a href="#Directories">Directories</a>). 
 		The name of the profile always consists of the prefix 
 		<code>LitWR.</code> followed by the name of the variant. When you 
@@ -344,7 +375,15 @@
 		</p>
 		<h4 id="ConfigGameDirectory">Game Directory</h4>
 		<p>This field displays the game directory of the selected 
-			LitWR variant (see Section <a href="#Directories">Directories</a>).
+			LitWR variant (see Section <a href="#Directories">Directories</a>). 
+			By default the launcher suggests a location for the game directory 
+			in its local folder.
+		</p>
+		<p> You <em>can</em> chose a different location for the game directory here. 
+		    In this case, please note that the game directory is specific for the 
+		    selected game variant and version. Do not use the same game directory for
+		    different variants. If you select an existing directory, the launcher 
+		    will detect the version but not its variant.
 		</p>
 		<h4 id="JVMArguments">JVM Arguments</h4>
 		<p>This field contains the arguments which will be given to 
@@ -353,22 +392,47 @@
 		hardware and adjusts these arguments to optimise performance.
 		</p>
 		<p>
-		<b>Warning:</b> JVM arguments have significant impact on the 
+		JVM arguments have significant impact on the 
 		performance and can cause the game to crash or not start at all. 
 		You can always reset these arguments by clicking the 
 		<em>Reset</em> button below.
 		</p>
-		<h4 id="Shader">Shader</h4>
-		<p>This field generally allows you to activate visual 
-			enhancements to Minecraft. Visual enhancements include at 
-			formost a shader and the mods ShaderModCore and OptiFine to 
-			make the shader work, but also the mod DynamicLights, 
-			which lets torches emit light while holding them in 
-			your hand.
+		<h4 id="OptionalFeatures"><u>Optional Features Section</u></h4>
+		<p>
+		Shader pack and some of the mods are optional and require 
+		a seperate download. Thus they have got its own section on the config page. 
+		Optional features include a shader and the mods ShaderModCore and OptiFine to 
+		make the shader work, but also the mod DynamicLights, 
+		which lets torches emit light while holding them in 
+		your hand.
 		</p>
-		<p>The list of shaders is ordered by performance impact. 
-		The topmost are the lightest and the bottommost reduce 
-		FPS more.
+		<p>
+		If one of those optional features is selected, the 
+		installation process will require you to download some 
+		packages through your Internet browser. But don't worry, 
+		the launcher will guide you and you will basically just 
+		have to click buttons and links. 
+		</p>
+		<p>Features can be enabled or disabled which results in 
+		   either installation or deinstallation. In case of 
+		   changes to the current configuration the 
+		   <em>Install/Play</em> button will reflect this by 
+		   showing the text <em>Apply Changes</em>. A click on this
+		   button will then execute the required operations to apply
+		   the changes.
+		</p>
+		<h4 id="Shader">Shader</h4>
+		<p> This field generally allows you to select one of the supported 
+		    shaders or those shaders, you have manually installed. 
+            The list of shaders is ordered by performance impact. 
+		    The topmost are the lightest and the bottommost reduce 
+		    FPS more. The empty field, or field <em>none</em> or 
+		    <em>internal</em> represent Minecraft vanilla shading, i.e. no custom shaders. 
+		</p>
+		<p> When selecting a custom shader for the first, the launcher will 
+		    automatically add all optional features as well. The 
+		    ShadersMod is required by all shaders. Other features 
+		    can be turned off in case your game runs better without them.
 		</p>
 		<p> To support the Streams mod (generates flowing rivers) shaders 
 			are getting patched during the start of the Minecraft client. 
@@ -379,15 +443,7 @@
 			<a href="#HelperModShaderPatching">Shader Patching</a> 
 			in order to learn how you can add support for your shader.
 		</p>
-		<p>When a shader was selected, the installation process 
-			will require you to download some packages through your 
-			Internet browser. But don't worry, the launcher will guide 
-			you and you will basically just have to click 
-			buttons and links. The empty field, or field 
-			<em>none</em> or <em>internal</em> represent 
-			Minecraft vanilla shading (i.e. no custom shaders).
-		</p>
-		<p><b>Please note:</b> Activation of shaders is twofold: It makes your game 
+		<p>Activation of shaders is twofold: It makes your game 
 		look prettier (at least for most people) but it reduces 
 		frames per second and game performance in general. 
 		Reduced FPS can cause motion sickness for some people, 
@@ -400,6 +456,22 @@
 		that have been reported earlier. In this case refer to the 
 		<a href="http://homac.cakelab.org/projects/litwrl/support/faq.html">FAQ</a> 
 		to solve them.
+		</p>
+		<h4 id="ShadersMod">Shaders Mod</h4>
+		<p>If this tick is set, the launcher will install the Shaders Mod which is 
+		   required for all shaders.  In case a custom shader is selected, this tick
+		   will be automatically set.
+		</p>
+		<h4 id="OptiFine">OptiFine</h4>
+		<p>
+		OptiFine improves game performance even if you are not using shaders. 
+		</p>
+		
+		<h4 id="DynamicLights">Dynamic Lights</h4>
+		<p>
+		This is a mod, which lets items emit light, even when you hold them in 
+		your hands wear them on your head or drop them on the floor. Downside 
+		is, that it can be quite resource intensive.
 		</p>
 		<h4 id="ResetButton"><em>Reset</em> Button</h4>
 		<p>The reset button resets the JVM arguments and the Shader to its default settings.
@@ -683,7 +755,7 @@
 		the download when the shader was updated.
 		</p>
 		<h2>Open Source</h2>
-		<p>The launcher and the shader are open source. Everybody can 
+		<p>The launcher is open source. Everybody can 
 		review the source code <a href="http://homac.cakelab.org/projects/litwrl">here</a>.	This guarantees that no one can add 
 		malicious code or spy functionalities without other people 
 		getting aware of it.
