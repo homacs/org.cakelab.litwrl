@@ -34,7 +34,7 @@ public class ShadersMod extends OptionalModSetupServiceBase {
 
 	@Override
 	public void scheduleInstalls(TaskManager taskman, boolean force) throws Throwable {
-		if (!isBaseInstalled() || force) {
+		if ((requestedInstall && !isBaseInstalled()) || force) {
 			super.scheduleInstalls(taskman, force);
 			taskman.addSingleTask(new CreateShaderOptions("installing shaders", optionsfile));
 		}

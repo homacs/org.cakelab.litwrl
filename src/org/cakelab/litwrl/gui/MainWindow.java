@@ -222,6 +222,7 @@ public class MainWindow extends JFrame implements WindowListener{
 	
 	public void launchFinished(boolean success) {
 		this.setVisible(true);
+		configPane.updatedVersion();
 		configPane.setConfigurable(true);
 		footer.setConfigurable(true);
 	}

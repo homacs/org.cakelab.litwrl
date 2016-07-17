@@ -56,7 +56,7 @@ import org.cakelab.omcl.utils.log.LogFileListener;
 public class Launcher {
 
 	/** Version of the running launcher */
-	public static final String LAUNCHER_VERSION = "1.3.8";
+	public static final String LAUNCHER_VERSION = "1.3.9";
 	/** maximum litwr version we can install with this launcher */
 	private static final String MAX_LITWR_VERSION = "1.2.0";
 
@@ -649,19 +649,30 @@ public class Launcher {
 			} else {
 				descriptor = repository.fetchLitWRDependencies(type, variant, version);
 			}
-			if (descriptor == null) return null;
+			if (descriptor == null) {
+				Log.warn("could not find package descriptor for " + 
+							type.toString().toLowerCase() + File.separator +
+							variant.toString().toLowerCase() + File.separator +
+							version);
+				return null;
+			}
 			
 			String location = descriptor.findOptionalDependency("meta/shaders");
 			PackageDescriptor metaShaders = repository.getLocalPackageDescriptorFromLocation(location);
-			if (metaShaders == null) return null;
+			if (metaShaders == null) {
+				Log.warn("could not find package descriptor for " + location);
+				return null;
+			}
 			
 			Shaders<String> shaders = new Shaders<String>(metaShaders.location, metaShaders, repository);
 			return shaders;
 			
 		} catch (IllegalArgumentException e) {
 			// no shaders available
+			Log.warn("no shaders available for chosen mod-pack version");
 			throw e;
 		} catch (FileNotFoundException e) {
+			Log.warn("error in fetchLitWRShaders", e);
 			return null;
 		}
 	}

@@ -62,12 +62,6 @@
 			Depending on which LitWR variant you are playing (<em>Basic</em> or <em>Hungry</em>) 
 			you will find all those folders in these two directories.
 		</dd>
-		<dt id="0009">See-through on Different Objects with Shaders Enabled</dt>
-		<dd>This is a confirmed bug for ATI graphics cards with Sildurs shaders 
-		    in version 1.13. 
-			<br/>Current solution: Download and install a different shader 
-			(e.g. <a href="http://adf.ly/1K0UX6">Sildur's Medium v1.08</a>).
-		</dd>
 		<dt id="0013">Game Crashes with "NullPointerException" or "Ticking Memory .."</dt>
 		<dd>Originally, it is a memory issue (meaning the JVM doesn't get
 			enough memory or can't free memory fast enough).
@@ -89,31 +83,13 @@
 			<li>Reduce <code>Video Settings -> Fog Start</code>.</li>
 			</ul>
 		</dd>
-		<dt id="0015">Can't change the games folder on config tab</dt>
-		<dd>This feature is simply not yet supported by the launcher. 
-		If you really need it then use the original Minecraft launcher.
-		If you want to use the files which have already been installed by the LitWR launcher,
-		then follow these steps:
-		<ol>
-		<li>Copy the folder <code>&lt;your-home-dir&gt;/.litwrl/games</code> to the new location where you want your profiles to be stored.</li>
-		<li>Open the command prompt.</li>
-		<li>Start the Minecraft launcher with the following command:
-			<code>java -jar &lt;your-home-dir&gt;/.litwrl/repository/thirdparty/minecraft/bootstrap/05/Minecraft.jar --workDir &lt;minecraft-dir&gt;</code>, where <code>&lt;minecraft-dir&gt;</code> stands for the minecraft working directory used by the launcher. By default this is <code>&lt;your-home-dir&gt;/.litwrl/minecraft</code> 
-			but you might have changed it in the config tab of the launcher.</li>
-		<li>In the running minecraft launcher navigate to the profile edit tab and adjust the working directory for each existing profile.</li>
-		<li>Launch in any of the profiles with the Minecraft launcher as usual.</li>
-		</ol>
-		<p>If you follow this procedure, it is recommended to create a desktop shortcut with the command given in (3) since you will need it to start the Minecraft launcher for LitWR from now on.</p>
-		</dd>
 		<dt id="0016">I have to relogin each time I switch from a different Minecraft installation</dt>
-		<dd>The launcher can share the Minecraft directory with your usuall Minecraft installation. 
+		<dd>The launcher can share the Minecraft directory with your usual Minecraft installation. 
 			In this case you will not have to relogin when you switch between Life in 
 			the Woods Renaissance and your usual Minecraft installation (see also Section <a href="http://homac.cakelab.org/projects/litwrl/manual/index.html#Configuration">Configuration</a> in the user manual).<br/>
 		</dd>
 		<dt id="0021">How can I switch between different Mojang accounts?</dt>
-		<dd>The launcher does not support switching between different accounts. 
-			The easiest way to realise it is to create another user account in 
-			your operating system.
+		<dd>See config tab in the launcher.
 		</dd> 
 		<dt id="0017">How Can I Restart the Installation?</dt>
 		<dd>Remove the launchers local cache (repository).<br/> 
@@ -130,6 +106,9 @@
 			<code>
 				/home/&lt;your-login&gt;/.litwrl/repository
 			</code>
+		</dd>
+		<dt id="vanillaLauncher">Launcher is missing a feature I need</dt>
+		<dd>Follow this <a href="../manual#VanillaLauncher">guide</a> to switch to the vanilla Minecraft launcher.
 		</dd>
 		<dt>XY does not work, can I install manually?</dt>
 		<dd>

@@ -13,6 +13,7 @@ import org.cakelab.omcl.setup.minecraft.MinecraftClient;
 import org.cakelab.omcl.setup.tasks.Copy;
 import org.cakelab.omcl.setup.tasks.Delete;
 import org.cakelab.omcl.taskman.TaskManager;
+import org.cakelab.omcl.utils.log.Log;
 
 public class ShaderSetup extends SetupService {
 
@@ -45,14 +46,23 @@ public class ShaderSetup extends SetupService {
 
 	@Override
 	public boolean isBaseInstalled() {
-		boolean installed = shaderFile.exists();
-		try {
-			OptionsShaders options = OptionsShaders.loadFromGamedir(setupParams.gamedir);
-			installed = installed && options.getShaderPack().equals(shaderFile.getName());
-		} catch (IOException e) {
-			installed = false;
+		if (!shaderFile.exists()) {
+			return false;
 		}
-		return installed;
+		try {
+			if (!OptionsShaders.existsIn(setupParams.gamedir)) {
+				return false;
+			} else {
+				OptionsShaders options = OptionsShaders.loadFromGamedir(setupParams.gamedir);
+				if (!options.getShaderPack().equals(shaderFile.getName())) {
+					return false;
+				}
+			}
+		} catch (IOException e) {
+			Log.error("can't access optionsshaders.txt file", e);
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -70,7 +80,7 @@ public class ShaderSetup extends SetupService {
 	@Override
 	public void scheduleInstalls(TaskManager taskman, boolean force) throws Throwable {
 		if (!isBaseInstalled() || force) {
-			if (!shaderFile.exists() || force) {
+			if (!shaderFile.exists()) {
 				taskman.addSingleTask(new Copy("installing shader", getPackageRepositoryFile().getPath(), shaderFile.getPath()));
 			}
 			taskman.addSingleTask(new UpdateShaderConfigs(shaderFile.getName(), optionsfile));
@@ -87,16 +97,9 @@ public class ShaderSetup extends SetupService {
 	public void scheduleRemove(TaskManager taskman) {
 
 		if (isBaseInstalled()) {
-			OptionsShaders options;
-			try {
-				options = OptionsShaders.loadFromGamedir(setupParams.gamedir);
-				options.getShaderPack().equals(shaderFile.getName());
-				taskman.addSingleTask(new UpdateShaderConfigs(Shaders.SHADER_NONE, optionsfile));
-				if (!isLocalPackageAvailable()) {
-					taskman.addSingleTask(new Copy("saving shader", shaderFile.getPath(), getPackageRepositoryFile().getPath()));
-				}
-			} catch (IOException e) {
-				// nevermind, does not exist
+			taskman.addSingleTask(new UpdateShaderConfigs(Shaders.SHADER_NONE, optionsfile));
+			if (!isLocalPackageAvailable()) {
+				taskman.addSingleTask(new Copy("saving shader", shaderFile.getPath(), getPackageRepositoryFile().getPath()));
 			}
 			if (shaderFile.exists()) taskman.addSingleTask(new Delete("upgrading mod-pack", shaderFile.getAbsolutePath()));
 			if (shaderBackupFile.exists()) taskman.addSingleTask(new Delete("upgrading mod-pack", shaderBackupFile.getAbsolutePath()));

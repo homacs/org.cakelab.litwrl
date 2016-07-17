@@ -43,12 +43,16 @@ public class OptionsShaders extends PropertiesFile {
 	public static OptionsShaders loadFromGamedir(File gamedir) throws IOException {
 		// TODO: make interfaces of OptionsFiles consistent in regards to loadFromGamedir()
 		File f = new File(gamedir, FILENAME);
+		if (!f.exists()) return null;
 		OptionsShaders result = new OptionsShaders();
 		result.loadFile(f);
 		return result;
 	}
 
-	
+	public static boolean existsIn(File gamedir) throws IOException {
+		File f = new File(gamedir, FILENAME);
+		return f.exists();
+	}
 	
 	public String getShaderPack() {
 		return getProperty(PROPERTY_SHADERPACK);

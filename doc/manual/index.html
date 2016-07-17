@@ -91,6 +91,14 @@
 		</td></tr>
 		<tr><td>
 			<h2><a href="#Troubleshooting">Troubleshooting</a></h2>
+			<table>
+				<tr><td>
+			    <a href="#FirstAid">First Aid</a>
+			    </td></tr>
+				<tr><td>
+			    <a href="#VanillaLauncher">Switch to Vanilla Minecraft Launcher</a>
+			    </td></tr>
+		    </table>
 		</td></tr>
 		<tr><td>
 			<h2><a href="#SecurityAndPrivacy">Security and Privacy Statement</a></h2>
@@ -478,8 +486,9 @@
 			In case of the JVM arguments, that means that the launcher will reassess your 
 			hardware which might come handy in case you have added memory for example.
 		</p>
-			
-			
+
+
+		
 		<h1 id="HelperMod">Helper Mod</h1>
 		The helper mod does a couple of things which can't be achieved by just 
 		adding configurations to the mod-pack:
@@ -733,6 +742,7 @@
 		</pre>
 		
 		<h1 id="Troubleshooting">Troubleshooting</h1>
+		<h2 id="FirstAid">First Aid</h2>
 		<p>The launcher developer maintains a <a href="http://homac.cakelab.org/projects/litwrl/support">support web-site</a>.
 		It features:
 		</p>
@@ -740,6 +750,34 @@
 		<li>a <a href="http://homac.cakelab.org/projects/litwrl/support/bugs.html">list</a> of filed bugs and feature requests,</li>
 		<li>and <a href="http://homac.cakelab.org/projects/litwrl/support/report.html">instructions</a> to report bugs or request features.</li>
 		</ul>
+		
+		
+		<h2 id="VanillaLauncher">Switch to Vanilla Minecraft Launcher</h2>
+		<p>In case you need certain features not supported by the LitWR Launcher 
+		   you can easily switch to the vanilla Minecraft Launcher following this guide. 
+		</p>
+		<p>By default the launcher creates its own Minecraft installation to keep things separated.
+		   The easiest way to switch to the vanilla Launcher is to use the vanilla Minecraft 
+		   installation instead.
+		</p>
+		<ol>
+			<li>Start the LitWR Launcher</li>
+			<li>On its config tab change the <a href="#WorkingDirectory">working directory</a> 
+			    to point to the vanilla Minecraft directory.</li>
+			<li>Hit the <a href="#Interface">Install</a> button. This will install the required 
+			    Minecraft version and Forge in your vanilla Minecraft directory and creates 
+			    a profile entry according to your current settings.</li>
+			<li>Close the LitWR launcher.</li>
+			<li>Start the vanilla Minecraft launcher.</li>
+			<li>In the lower left corner of the window, select the LitWR profile which was 
+			    created by the installation. The name of the profile depends on the game 
+			    variant you have chose, i.e. <em>LitWR.Basic</em> or <em>LitWR.Hungry</em>.
+			</li>
+		</ol>
+		<p>You can now start and configure the game with the vanilla Minecraft launcher.</p>
+		
+		
+		
 		<h1 id="SecurityAndPrivacy">Security and Privacy Statement</h1>
 		<h2>Privacy</h2>
 		<p>Neither the launcher nor the helper mod gather or distributes any kind of information 

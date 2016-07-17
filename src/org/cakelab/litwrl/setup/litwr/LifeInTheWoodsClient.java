@@ -231,7 +231,7 @@ public abstract class LifeInTheWoodsClient extends SetupService implements Launc
 		minecraftClient.scheduleDownloads(taskman, forced);
 		forge.scheduleDownloads(taskman, forced);
 		for (SetupService optional : optionals) {
-			optional.scheduleDownloads(taskman, forced);
+			optional.scheduleDownloads(taskman, false);
 		}
 		
 		if (multiplayer != null) {

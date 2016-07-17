@@ -11,7 +11,7 @@ import org.cakelab.omcl.taskman.TaskManager;
 
 public abstract class OptionalModSetupServiceBase extends ModSetupServiceBase {
 
-	private boolean requestedInstall;
+	protected boolean requestedInstall;
 	private LitWRLConfig litwrlcfg;
 
 	protected OptionalModSetupServiceBase(SetupParameters setupParams,
@@ -41,6 +41,13 @@ public abstract class OptionalModSetupServiceBase extends ModSetupServiceBase {
 	}
 
 	@Override
+	public void scheduleDownloads(TaskManager taskman, boolean forced) throws Throwable {
+		if (forced || requestedInstall) {
+			super.scheduleDownloads(taskman, forced);
+		}
+	}
+
+	@Override
 	public void scheduleModifications(TaskManager taskman, boolean force) throws Throwable {
 		if (requestedInstall) {
 			scheduleDownloads(taskman, force);
@@ -50,11 +57,10 @@ public abstract class OptionalModSetupServiceBase extends ModSetupServiceBase {
 		}
 	}
 
-
 	@Override
 	public void scheduleInstalls(TaskManager taskman, boolean force)
 			throws Throwable {
-		if (!isBaseInstalled() || force) {
+		if (requestedInstall && !isBaseInstalled() || force) {
 			super.scheduleInstalls(taskman, force);
 			taskman.addSingleTask(new LitwrCfgAddOptional("installing mod", descriptor.getID(), setupParams.gamedir.getAbsolutePath()));
 		}

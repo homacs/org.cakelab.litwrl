@@ -175,6 +175,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 			litwrlcfg = LitWRLConfig.loadFromGameDir(gamedir.getSelectedFile());
 		} catch (IOException | JSONCodecException e) {
 			// nevermind .. we'll fix it below
+			Log.info("no config found .. proceeding");
 		}
 
 		
@@ -194,7 +195,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 
 
 
-	private void updatedVersion() {
+	public void updatedVersion() {
 		beginUpdateSection();
 		boolean willUpgrade = version.isVersionUpgrade();
 		
@@ -211,6 +212,7 @@ public class ConfigPane extends ConfigPaneUIElements {
 			selectedShaderSet = Launcher.INSTANCE.fetchLitWRShaders(selectedGameType, selectedVariant, version.getVersion());
 		} catch (Exception e) {
 			// inconsistent repository
+			Log.warn("detected possible inconsistency in repository", e);
 		}
 		
 		optionalAddons.updatedShaderSet(selectedShaderSet, willUpgrade);

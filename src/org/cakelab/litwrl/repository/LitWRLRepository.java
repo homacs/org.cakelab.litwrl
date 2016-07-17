@@ -35,7 +35,6 @@ import org.cakelab.omcl.utils.log.Log;
  *
  */
 public class LitWRLRepository extends Repository {
-
 	
 	public static final String VERSIONS_FILE = "versions.json";
 	public static final TransactionAdvisor TX_ADVISOR = new LitWRLTransactionAdvisor();

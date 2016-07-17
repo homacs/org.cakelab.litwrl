@@ -121,7 +121,7 @@ public class Shaders<I> {
 				}
 			}
 		}
-		if (bestMatch == null) throw new IllegalArgumentException();
+		if (bestMatch == null) throw new IllegalArgumentException("no match found for shader pack file name '" + shaderPackFileName + "'");
 		return bestMatch;
 	}
 
@@ -160,7 +160,7 @@ public class Shaders<I> {
 
 
 
-	private String getUnknownShaderLocation(String shaderName) {
+	public String getUnknownShaderLocation(String shaderName) {
 		return "thirdparty/shaders/user/" + shaderName;
 	}
 
@@ -185,6 +185,7 @@ public class Shaders<I> {
 
 	public static void setShaderOptions(String shaderFilename, File gamedir) throws IOException {
 		OptionsShaders optionsshaders = OptionsShaders.loadFromGamedir(gamedir);
+		
 		String previous = optionsshaders.getShaderPack();
 		if (previous.equals(shaderFilename)) return;
 		

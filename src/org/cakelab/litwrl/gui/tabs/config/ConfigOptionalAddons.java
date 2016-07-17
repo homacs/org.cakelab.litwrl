@@ -24,6 +24,7 @@ import org.cakelab.litwrl.setup.optifine.OptiFine;
 import org.cakelab.litwrl.setup.shaders.Shaders;
 import org.cakelab.litwrl.setup.shadersmod.OptionsShaders;
 import org.cakelab.litwrl.setup.shadersmod.ShadersMod;
+import org.cakelab.omcl.repository.PackageDescriptor;
 import org.cakelab.omcl.utils.log.Log;
 
 
@@ -225,17 +226,21 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 				// shaders not supported or local repository inconsistent
 				// Get into a safe state:
 				shader.addItem(Shaders.SHADER_NONE);
+				
 				try {
-					OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
-					String shaderPackFileName = optionsShaders.getShaderPack();
-					String shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
-					if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
-						shader.addItem(shaderName);
-					} else {
-						shaderName = Shaders.SHADER_NONE;
+					String shaderName = Shaders.SHADER_NONE; // fallback
+					
+					if (OptionsShaders.existsIn(gamedir.getSelectedFile())) {
+						OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
+						String shaderPackFileName = optionsShaders.getShaderPack();
+						shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
+						if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
+							shader.addItem(shaderName);
+						}
 					}
 					setSelectedShader(shaderName);
 				} catch (IOException e) {
+					Log.error("can't read shader options file", e);
 					setSelectedShader(Shaders.SHADER_NONE);
 				}
 			} else {
@@ -244,21 +249,25 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 					shader.addItem(s);
 				}
 				try {
-					OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
-					String shaderPackFileName = optionsShaders.getShaderPack();
-					String shaderName;
-					try {
-						shaderName = selectedShaderSet.getNameOfEquivalent(shaderPackFileName);
-					} catch (IllegalArgumentException e) {
-						shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
-						if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
-							shader.addItem(shaderName);
-						} else {
-							shaderName = Shaders.SHADER_NONE;
+					String shaderName = Shaders.SHADER_NONE; // fallback
+					
+					if (OptionsShaders.existsIn(gamedir.getSelectedFile())) {
+						OptionsShaders optionsShaders = OptionsShaders.loadFromGamedir(gamedir.getSelectedFile());
+						String shaderPackFileName = optionsShaders.getShaderPack();
+						try {
+							shaderName = selectedShaderSet.getNameOfEquivalent(shaderPackFileName);
+						} catch (IllegalArgumentException e) {
+							shaderName = Shaders.getUnknownShaderName(shaderPackFileName);
+							if (Shaders.isInstalled(shaderPackFileName, gamedir.getSelectedFile())) {
+								shader.addItem(shaderName);
+							} else {
+								shaderName = Shaders.SHADER_NONE;
+							}
 						}
 					}
 					setSelectedShader(shaderName);
 				} catch (IOException e) {
+					Log.error("can't access shader options file", e);
 					setSelectedShader(Shaders.SHADER_NONE);
 				}
 			}
@@ -293,11 +302,12 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 				if (isUnknown && !Shaders.isInstalled(filename, gamedir.getSelectedFile())) {
 					shaderPack = Shaders.SHADER_NONE;
 				}
-				
-				Shaders.setShaderOptions(filename, gamedir.getSelectedFile());
-				
+				if (OptionsShaders.existsIn(gamedir.getSelectedFile())) {
+					Shaders.setShaderOptions(filename, gamedir.getSelectedFile());
+				}
 			} catch (IOException e) {
-				// nevermind
+				// This happens only if the file optionsshaders.txt is not accessible.
+				Log.error("failed to set shader file", e);
 			}
 
 			selectedShader = shaderPack;
@@ -334,7 +344,16 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 		if (optifine.isSelected()) optionals.add(OptiFine.getID());
 		if (shadersMod.isSelected()) optionals.add(ShadersMod.getID());
 		if (dynamicLights.isSelected()) optionals.add(DynamicLights.getID());
-		if (Shaders.isNonStandardShader(selectedShader)) optionals.add(selectedShaderSet.getPackageDescriptor(selectedShader).getID());
+		
+		if (Shaders.isNonStandardShader(selectedShader)) {
+			PackageDescriptor descriptor = selectedShaderSet.getPackageDescriptor(selectedShader);
+			if (descriptor != null) {
+				optionals.add(descriptor.getID());
+			} else {
+				// user installed shader
+				optionals.add(selectedShaderSet.getUnknownShaderLocation(selectedShader));
+			}
+		}
 		String[] a = new String[optionals.size()];
 		return optionals.toArray(a);
 	}

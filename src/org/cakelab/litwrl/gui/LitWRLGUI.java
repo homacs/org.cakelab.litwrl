@@ -55,15 +55,8 @@ public class LitWRLGUI extends PluginAdapter implements TaskMonitor {
 
 	public void init(final Variants[] variants, final Config config) {
 		online = !config.isOffline();
-		SwingUtilities.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				window.init(variants, config);
-				window.finishInitialisation();
-			}
-			
-		});
+		window.init(variants, config);
+		window.finishInitialisation();
 	}
 
 	public void exit(int status) {
