@@ -99,6 +99,7 @@ public class ShaderSetup extends SetupService {
 		if (isBaseInstalled()) {
 			taskman.addSingleTask(new UpdateShaderConfigs(Shaders.SHADER_NONE, optionsfile));
 			if (!isLocalPackageAvailable()) {
+				// FIXME: causes patched shaders to be reused if the repository has been deleted in the meantime.
 				taskman.addSingleTask(new Copy("saving shader", shaderFile.getPath(), getPackageRepositoryFile().getPath()));
 			}
 			if (shaderFile.exists()) taskman.addSingleTask(new Delete("upgrading mod-pack", shaderFile.getAbsolutePath()));

@@ -56,7 +56,7 @@ import org.cakelab.omcl.utils.log.LogFileListener;
 public class Launcher {
 
 	/** Version of the running launcher */
-	public static final String LAUNCHER_VERSION = "1.3.9";
+	public static final String LAUNCHER_VERSION = "1.3.10";
 	/** maximum litwr version we can install with this launcher */
 	private static final String MAX_LITWR_VERSION = "1.2.0";
 
