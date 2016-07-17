@@ -45,9 +45,9 @@ Details below.
 0. INSTALL JAVA
 ===============
 In order to run Minecraft (and Life in the Woods 
-Renaissance) you need "Oracle" Java SE 7 (aka Java 1.7) 
+Renaissance) you need "Oracle" Java SE 8 (aka Java 1.8) 
 or higher (higher is better). When downloading chose either
-the JDK or JRE package.
+the JDK (required on Mac) or JRE package.
 
 Download Java here:
 
