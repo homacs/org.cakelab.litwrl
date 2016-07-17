@@ -28,9 +28,6 @@ import org.cakelab.omcl.repository.PackageDescriptor;
 import org.cakelab.omcl.utils.log.Log;
 
 
-/** This class is for future purposes (not yet active).
- * 
- */
 @SuppressWarnings("serial")
 public class ConfigOptionalAddons extends JPanel implements UIConfigField, ActionListener {
 	private GroupLayout layout;
@@ -105,7 +102,9 @@ public class ConfigOptionalAddons extends JPanel implements UIConfigField, Actio
 		addRow(label, shader, 
 				"This option allows you to use supported shader packs.\n"
 				+ "You can select a shader pack to be installed\n"
-				+ "and used when you start the game.");
+				+ "and used when you start the game. Selecting it here\n"
+				+ "will also adjust video settings to match requirements\n"
+				+ "of the shader.");
 
 		label = new JLabel("Shaders Mod");
 		shadersMod = new JCheckBox();

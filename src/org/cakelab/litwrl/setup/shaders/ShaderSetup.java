@@ -80,7 +80,7 @@ public class ShaderSetup extends SetupService {
 	@Override
 	public void scheduleInstalls(TaskManager taskman, boolean force) throws Throwable {
 		if (!isBaseInstalled() || force) {
-			if (!shaderFile.exists()) {
+			if (!shaderFile.exists() || force) {
 				taskman.addSingleTask(new Copy("installing shader", getPackageRepositoryFile().getPath(), shaderFile.getPath()));
 			}
 			taskman.addSingleTask(new UpdateShaderConfigs(shaderFile.getName(), optionsfile));

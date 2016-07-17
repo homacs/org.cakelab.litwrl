@@ -152,8 +152,8 @@ public class Shaders<I> {
 	public PackageDescriptor migrateUnknownShader(File gamedir, String shaderName) {
 		String filename = getUnknownShaderFileName(shaderName);
 		if (!isInstalled(filename, gamedir)) return getPackageDescriptor(Shaders.SHADER_NONE);
-		
-		PackageDescriptor shader = new PackageDescriptor(shaderName, "0", filename, getUnknownShaderLocation(shaderName), "");
+		String location = getUnknownShaderLocation(shaderName);
+		PackageDescriptor shader = new PackageDescriptor(shaderName, "0", filename, location, "");
 		available.add(shader);
 		return shader;
 	}

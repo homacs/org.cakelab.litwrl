@@ -226,8 +226,6 @@ public class MainWindow extends JFrame implements WindowListener{
 		configPane.setConfigurable(true);
 		footer.setConfigurable(true);
 	}
-
-
 	
 	@Override
 	public void windowClosing(WindowEvent arg0) {
