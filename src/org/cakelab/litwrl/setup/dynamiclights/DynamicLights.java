@@ -38,7 +38,7 @@ public class DynamicLights extends OptionalModSetupServiceBase {
 
 	@Override
 	public void scheduleInstalls(TaskManager taskman, boolean force) throws Throwable {
-		if (!isBaseInstalled() || force) {
+		if ((requestedInstall && !isBaseInstalled()) || force) {
 			File tmpdir = new File(Launcher.INSTANCE.getTempDir(), descriptor.filename);
 			taskman.addSingleTask(new Unzip("installing mod", getPackageRepositoryFile().getPath(), tmpdir.getPath()));
 			taskman.addSingleTask(new Copy("installing mod", new File(tmpdir, "mods/" + jarfile).getPath(), modfile.getPath()));
