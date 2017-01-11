@@ -33,7 +33,7 @@ For further details refer to the launcher's User Manual
 
 To install the launcher you have to
 
-  0. have Java 7 or higher installed
+  0. have Java 8 or higher installed
   1. unzip this package
   2. execute installation script to create shortcut
   3. copy shortcut to desktop (or anywhere else)
@@ -116,7 +116,7 @@ Double click on
     windows\install.bat
 
 
-!If nothing happens, then open the command prompt and execute 
+If nothing happens, then open the command prompt and execute 
 the commands
 
     cd <path-to-the-folder-you-have-unzipped>

@@ -6,69 +6,13 @@ Launcher
 ** IMPORTANT TOPICS **
 
 ==    MODPACK    ==
-+ add: new OptiFine
-+ add: new Bibliocraft
-+ fix: PMP Salves issue
-+ mod: adapt ruins to new block IDs!
-+ fix: Ruins bug with file loading
-+ fix: can't plant rice as intended by harvestcraft
-+ fix: shelves issue (bibliocraft)
-       see email: SusanneWagner@gmail.com: "LitWR - Bug"
-+ fix: BOP causes shader to flicker with multi-core chunk loading
-+ fix: nei: RestartableTask->ModSlabItem: IndexOutOfBoundsException: index (5) must be less than size (5)
-	followed by:
-	   nei->TextureUtils: Unable to determine registrant mod for codechicken.lib.render.TextureUtils
-	followed by:
-	   WrUpdateThread: IndexOutOfBoundsException: index (6) must be less than size (5)
-    followed by: 
-       WrUpdateThread: IllegalStateException: Already tesselating!
-	followed by: crash.
-+ fix: fresh milk dup bug: see email Phillip Schrigten: "Life in the Woods - Fresh Milk dupe Bug"
-+ add: fishing net from oceancraft?
-+ test: day-night cycle correct?
-+ test: aggressive mob spawning, lag related?
-
-+ mod: Forge             (newest)
-+ mod: CodeChickenCore   (NEI needs it)
-+ mod: NEI               (due to bugs with NEI)
-+ mod: Farseek (due to bugs with farseek)
-+ mod: Streams (depends on farseek)
-+ mod: newest Bibliocraft (is already at v1.11.4)
-+ mod: newest HarvestCraft
-+ mod: newest VeganOptions
-+ mod: newest ShaderModCore (affects shader patching)
-+ mod: newest OptiFine      (affects video settings optimisation)
-+ add: resource packs for Antique Atlas
-+ add: multi-player server IPs (Vortex)
-+ test: upgrading of existing worlds to new mods
-		(consider: changed block/item ids, shader patching)
-+ test: compatibility of different mod versions with older versions on server side
-		(consider: changed block/item ids, shader patching)
-
 
 ==    LAUNCHER    ==
-UPDATE FAQ
-: game crashing after a couple of minutes
-: Issues with german umlaute -> use Oracle Java SE 1.8 JRE see bugs.html
-
-+ fix: determine required JVM during installation (referring to JDK bug)
-+ fix: install and run needs Admin privileges? 
-+ fix: Programme instead of "Program Files"
-+ fix: reset of video configs when upgrading/switching?
-+ fix: found user added shader 'Sildurs Vibrant Shaders v1.13 Extreme'
-+ fix: java version detection not correct for all systems -> allow to proceed anyway
-+ fix: jvm arguments: arguments worked the first time - after closing/starting the =## was replaced w/ a special character (-XX:MaxGCPauseMillis=50 -XX:TargetSurvivorRatio=90)
-       (might just be the encoding in utf8 on ieee-8859)
-+ mod: reduce excessive testing of transaction token
++ add: FastCraft support (http://forum.industrial-craft.net/index.php?page=Thread&threadID=10820)
 + del: get rid of jtattoo to reduce download size (1mb)
-+ add: allow changing game dir (requires check for existing gamedir, support move)
 + add: uninstall
-+ fet: support optifine install without shader
 
 ==   Helper Mod  ==
-+ fix: bug(s) in shader patching
-+ fix: zeusStableE6 from SunsofOld
-+ fix: remove files (see email from Tim)
 
 
 
