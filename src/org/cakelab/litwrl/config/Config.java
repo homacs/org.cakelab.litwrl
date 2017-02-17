@@ -13,8 +13,6 @@ import org.cakelab.json.codec.JSONCodecException;
 import org.cakelab.litwrl.Launcher;
 import org.cakelab.omcl.config.GameConfig;
 import org.cakelab.omcl.config.GameTypes;
-import org.cakelab.omcl.update.UpdateServer;
-import org.cakelab.omcl.update.UpdateServerPool;
 import org.cakelab.omcl.utils.log.Log;
 
 public class Config {
@@ -32,9 +30,13 @@ public class Config {
 	private String workdir            = null;
 	private String selectedVariant    = Variants.BASIC.toString();
 	private String selectedType       = GameTypes.CLIENT.toString();
-	private String updateURL          = UpdateServer.PRIMARY_UPDATE_URL;
-	private String secondaryUpdateUrl = UpdateServer.SECONDARY_UPDATE_URL;
-	private String[] serverPool = UpdateServerPool.UPDATE_URLS; 
+	private String updateURL          = "http://lifeinthewoods.ca/litwr/repository";
+	private String secondaryUpdateUrl = "http://homac.cakelab.org/projects/litwrl/repository";
+	private String[] serverPool       = new String[] {
+			"http://www.lifeinthewoods.eu/litwr/repository",
+			"http://lifeinthewoods.phedran.com/litwr/repository",
+			"http://lifeinthewoods.getitfromhere.co.uk/litwr/repository"
+		};
 	private GameConfig[] configs      = new GameConfig[0];
 	private String lastVersion        = "0.0.0";
 	private boolean showGameLog       = false;
