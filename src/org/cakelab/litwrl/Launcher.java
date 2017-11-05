@@ -56,7 +56,7 @@ import org.cakelab.omcl.utils.log.LogFileListener;
 public class Launcher {
 
 	/** Version of the running launcher */
-	public static final String LAUNCHER_VERSION = "1.3.11";
+	public static final String LAUNCHER_VERSION = "1.3.12";
 	/** maximum litwr version we can install with this launcher */
 	private static final String MAX_LITWR_VERSION = "1.2.0";
 
@@ -267,6 +267,12 @@ public class Launcher {
 			if (last.getMinor() <= 3) {
 				if (last.getBuild() <= 3) {
 					config.setDownShowUpgradeWarning(false);
+				}
+				// minecraft launcher changed -> delete cached launcher
+				if (last.getBuild() < 12) {
+					if (config.getWorkDir() != null) {
+						FileSystem.delete(new File(new File(config.getWorkDir()),MinecraftBootstrap.LAUNCHER_JAR));
+					}
 				}
 			}
 		}

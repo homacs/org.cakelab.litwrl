@@ -3,11 +3,11 @@
     <!--ANT 1.7 is required                                        -->
 	
 	<target name="init">
-		<property name="launcher.version" value="1.3.11"/>
+		<property name="launcher.version" value="1.3.12"/>
 		
 		<property name="repos" value="../../../.."/>
 		<property name="web" value="${repos}/litwr/repository/trunk/LitWRRepository"/>
-		<property name="omcl" value="${repos}/litwr/omcl/trunk/OpenMCL"/>
+		<property name="omcl.dir" value="${repos}/litwr/omcl/trunk"/>
 		<property name="json" value="${repos}/org.cakelab.json"/>
 		
 		<property name="repository" value="${web}/repository"/>
@@ -30,7 +30,12 @@
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="./bin"/>
-            <fileset dir="${omcl}/bin"/>
+            <fileset dir="${omcl.dir}/OpenMCL/bin"/>
+            <fileset dir="${omcl.dir}/Tools/bin"/>
+            <fileset dir="${omcl.dir}/plugins/Forge-1.4/bin"/>
+            <fileset dir="${omcl.dir}/plugins/Forge-1.5/bin"/>
+            <fileset dir="${omcl.dir}/plugins/Forge-10.13.2/bin"/>
+            <fileset dir="${omcl.dir}/plugins/Forge-10.13.4/bin"/>
             <fileset dir="${json}/bin"/>
             <zipfileset excludes="META-INF/*.SF" src="./libs/JTattoo-1.6.11.jar"/>
         </jar>
