@@ -258,6 +258,32 @@ function isVersionGE(v1, v2) {
 	return false;
 }
 
+function isVersionLT(v1, v2) {
+	var key = "version.major"
+		if (v1.Item(key) < v2.Item(key)) {
+			return true;
+		} else if (v1.Item(key) == v2.Item(key)) {
+			key = "version.minor"
+			if (v1.Item(key) < v2.Item(key)) {
+				return true;
+			} else if (v1.Item(key) == v2.Item(key)) {
+				key = "version.build"
+				if (v1.Item(key) < v2.Item(key)) {
+					return true;
+				} else if (v1.Item(key) == v2.Item(key)) {
+					key = "version.revision"
+					if (v1.Item(key) < v2.Item(key)) {
+						return true;
+					}
+				} else {
+				}
+			}
+		}
+		log( v1.Item("version.full") + " >= " + v2.Item("version.full"));
+		return false;
+}
+
+
 function isArchSupported(props) {
 	if (ARCH64) {
 		return props.Item("is64bit");
@@ -348,8 +374,14 @@ function getJavaExecutables() {
 
 
 function getJava() {
+	var min = "1.8.0";
+	var max = "9.0.0";
+	
 	var minimum = new ActiveXObject("Scripting.Dictionary");
-	getJavaVersion(minimum, "\"1.8.0\"");
+	getJavaVersion(minimum, "\"" + min + "\"");
+
+	var maximum = new ActiveXObject("Scripting.Dictionary");
+	getJavaVersion(maximum, "\"" + max + "\"");
 	
 	var selected = minimum;
 	
@@ -360,7 +392,7 @@ function getJava() {
 			log("checking: " + filespec);
 			if (fso.FileExists(filespec)) {
 				var props = getJVMProperties(filespec);
-				if (isArchSupported(props) && isVersionGE(props, selected)) 
+				if (isArchSupported(props) && isVersionGE(props, selected) && isVersionLT(props, maximum)) 
 				{
 					selected = props;
 				}
@@ -369,11 +401,13 @@ function getJava() {
 	}
 
 	if (selected == minimum) {
-		var javaSpec = "Oracle Java SE 1.8";
+		var javaSpecMin = "Oracle Java SE " + min;
+		var javaSpecMax = "Oracle Java SE " + max;
 		if (ARCH64) {
-			javaSpec = javaSpec + " 64bit";
+			javaSpecMin = javaSpecMin + " 64bit";
+			javaSpecMax = javaSpecMax + " 64bit";
 		}
-		showError("\nYou need to have at least\n\n" + javaSpec + "\n\ninstalled.\n");
+		showError("\nYou need to have at least\n\n" + javaSpecMin + " but less than " + javaSpecMax + "\n\ninstalled.\n");
 		return null;
 	}
 	
