@@ -185,6 +185,46 @@ function java_version_ge () {
 }
 
 #
+# Compares to versions (param:v1 and param:v2)
+# and tests if (v1 < v2).
+# Function returns with -1 (error) if (v1 < v2).
+# Function returns with 0 (success) if (v1 >= v2).
+#
+function java_version_lt () {
+
+	# no trap here!
+
+	ver1="$1"
+	ver2="$2"
+
+	echo "${ver1} ${ver2}" 	| awk '{\
+		v1_len=split ( $1, v1, "[^0-9]" ) ;\
+		v2_len=split ( $2, v2, "[^0-9]" ) ;\
+		\
+		if ( v1[1] < v2[1] ) {\
+			exit 0 ;\
+		} else if ( v1[1] == v2[1] ) {\
+			if ( v1[2] < v2[2] ) {\
+				exit 0 ;\
+			} else if ( v1[2] == v2[2] ) {\
+				if ( v1[3] < v2[3] ) {\
+					exit 0 ;\
+				} else if ( v1[3] == v2[3] ) {\
+					if ( v1[4] < v2[4] ) {\
+						exit 0 ;\
+					}\
+				}\
+			}\
+		}\
+		exit -1 ;\
+	}'
+	
+	# no more commands here!
+
+	# exit value of awk is used as return value of function.
+}
+
+#
 # Tests based on java -version whether the vendor is
 # NOT Oracle. However, Apple Java has the same output
 # as Oracle Java, but Apple stopped Java development
@@ -213,6 +253,11 @@ function java_vendor_not_oracle () {
 # Only the best executable will be returned or none.
 #
 function search_java_home () {
+	
+	min_version="1.8.0"
+	max_version="9.0.0"
+	
+	
 	#
 	# create a list of all available java executables
 	#
@@ -239,7 +284,7 @@ function search_java_home () {
 	# 
 	# select the best
 	#
-	current_version="1.8.0"
+	current_version=$min_version
 	cat "${list}" | sort | while read exe ; do
 		if [ "${previous}" == "${exe}" ] || ! [ -x "${exe}" ] ; then
 			# ignore duplicates
@@ -255,8 +300,9 @@ function search_java_home () {
 			# apple java 1.6 will be filtered in version check
 			if java_arch_supported "${exe}" ; then
 				log "arch supported" ;
-				if java_version_ge "$v" "${current_version}" ; then
-					log "$v >= ${current_version}"
+				if java_version_ge "$v" "${current_version}" && java_version_lt "$v" "${max_version}" ; then
+					log "$v >= ${current_version} && $v < ${max_version}"
+					# save path in a file
 					echo "${exe}" > "${javaexe}";
 					current_version="$v" ;
 				else
