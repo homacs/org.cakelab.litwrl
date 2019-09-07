@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.cakelab.json"/>
 	<classpathentry kind="lib" path="libs/JTattoo-1.6.11.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/OpenMCL-trunk"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/OpenMCL"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-8-oracle"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
