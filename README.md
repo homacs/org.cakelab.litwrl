@@ -6,3 +6,6 @@ Further information can be found on [cakelab.org](http://homac.cakelab.org/proje
 The source code is mirrored on [github](https://github.com/homacs/org.cakelab.litwrl)
 
 
+If you've cloned this from github, then you will need these repositories too:
+
+- [OpenMCL](https://github.com/homacs/org.cakelab.omcl)
